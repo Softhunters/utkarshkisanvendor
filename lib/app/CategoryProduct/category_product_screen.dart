@@ -1,6 +1,6 @@
 import 'package:currency_converter/currency.dart';
-import 'package:e_commerce/app/CategoryProduct/product_detail_screen.dart';
-import 'package:e_commerce/common_widgets/urls.dart';
+import 'package:utkrashvendor/app/CategoryProduct/product_detail_screen.dart';
+import 'package:utkrashvendor/common_widgets/urls.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -14,14 +14,17 @@ import '../Home/controller/home_controller.dart';
 import '../Search/search_screen.dart';
 
 class CategoryProduct extends StatelessWidget {
-  final String categoryName;
+  // final String categoryName;
   final String cateSlug;
 
   const CategoryProduct(
-      {super.key, required this.categoryName, required this.cateSlug});
+      {super.key,
+       // required this.categoryName,
+        required this.cateSlug});
 
   @override
   Widget build(BuildContext context) {
+
     double width = MediaQuery.sizeOf(context).width;
     double height = MediaQuery.sizeOf(context).height;
     final screenSize = ScreenUtils.getScreenSize(context);
@@ -37,7 +40,9 @@ class CategoryProduct extends StatelessWidget {
 
 
     return Consumer<HomeController>(
+
       builder: (context, controller, child) => Scaffold(
+
         appBar: AppBar(
           leading: GestureDetector(
               onTap: () {
@@ -48,7 +53,7 @@ class CategoryProduct extends StatelessWidget {
                 Get.back();
               },
               child: const Icon(Icons.arrow_back)),
-          title: Text(categoryName,
+          title: Text(controller.categoryName,
               style: Theme.of(context)
                   .textTheme
                   .titleMedium
@@ -57,7 +62,8 @@ class CategoryProduct extends StatelessWidget {
           actions: [
             GestureDetector(
                 onTap: () {
-                  Get.to(const SearchScreen());
+
+                  Get.to(()=>const SearchScreen());
                 },
                 child: const Icon(Icons.search)),
             const SizedBox(
@@ -183,7 +189,7 @@ class CategoryProduct extends StatelessWidget {
                           : controller.cateProduct.isNotEmpty,
                       replacement: Center(
                         child: Text(
-                          "Product Not Available",
+                          "No product Added yet. Please check back later!",
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -214,7 +220,8 @@ class CategoryProduct extends StatelessWidget {
                               controller.changePriceWithIndex(data.id);
                               controller.saveProductDetailslug(data.slug);
                               controller.getProductDetail(data.slug, 0);
-                              Get.to(ProductDetailScreen(
+
+                              Get.to(()=>ProductDetailScreen(
                                 productSlug: data.slug!,
                                 id: data.id??0,
                               ));
@@ -247,19 +254,19 @@ class CategoryProduct extends StatelessWidget {
                                                 right: 5,
                                                 child: GestureDetector(
                                                     onTap: () {
-                                                      controller.addWishlistProduct(data.id,4);
+                                                      controller.addWishlistProduct(data.id,4,(data.seller?.venderId??"1").toString());
                                                     },
                                                     child: const Icon(
-                                                        Icons.favorite_border)))
+                                                        Icons.favorite_border,color: AppColors.yellowishColor,)))
                                             : Positioned(
                                                 top: 5,
                                                 right: 5,
                                                 child: GestureDetector(
                                                     onTap: () {
-                                                      controller.addWishlistProduct(data.id,4);
+                                                      controller.addWishlistProduct(data.id,4,(data.seller?.venderId??'1').toString());
                                                     },
                                                     child: const Icon(
-                                                        Icons.favorite))),
+                                                        Icons.favorite,color: AppColors.yellowishColor,))),
 
                                         if(data.reviewsCount !=0)
                                           Positioned(
@@ -356,7 +363,7 @@ class CategoryProduct extends StatelessWidget {
                                         children: [
                                           Text(
                                             data.name ?? "",
-                                            maxLines: 1,
+                                            maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
                                                 .textTheme
@@ -387,47 +394,58 @@ class CategoryProduct extends StatelessWidget {
                                                       return const Text("Loading..");
                                                     }
                                                     double regularPrice = regularPriceSnapshot.data ?? 0.0;
-                                                    return Row(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                    return Column(
                                                       children: [
-                                                        Text(
-                                                          currencyProvider.selectedCurrency == Currency.inr
-                                                              ? "₹${data.salePrice ?? " "}"
-                                                              : "\$${salePrice.toStringAsFixed(2)}",
-                                                          maxLines: 1,
-                                                          style: Theme.of(context)
-                                                              .textTheme
-                                                              .labelSmall
-                                                              ?.copyWith(
-                                                              fontSize: 9,
-                                                              fontWeight: FontWeight.w600),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+
+                                                              "₹${double.tryParse(data.salePrice ?? " ")?.toStringAsFixed(2)}",
+
+                                                              maxLines: 1,
+                                                              style: Theme.of(context)
+                                                                  .textTheme
+                                                                  .labelSmall
+                                                                  ?.copyWith(
+                                                                  fontSize: 12,
+                                                                  fontWeight: FontWeight.w600),
+                                                            ),
+                                                            const SizedBox(width: 2),
+
+                                                          ],
                                                         ),
-                                                        const SizedBox(width: 2),
                                                         if (salePrice != regularPrice)
-                                                          Text(
-                                                            currencyProvider.selectedCurrency == Currency.inr
-                                                                ? "₹${data.regularPrice ?? " "}"
-                                                                : "\$${regularPrice.toStringAsFixed(2)}",
-                                                            maxLines: 1,
-                                                            style: Theme.of(context)
-                                                                .textTheme
-                                                                .labelSmall
-                                                                ?.copyWith(
-                                                                fontSize: 7,
-                                                                decoration: TextDecoration.lineThrough,
-                                                                color: AppColors.redColor),
-                                                          ),
-                                                        const SizedBox(width: 2),
-                                                        if (salePrice != regularPrice)
-                                                          Text(
-                                                            "${data.discountValue}% off",
-                                                            maxLines: 1,
-                                                            style: Theme.of(context)
-                                                                .textTheme
-                                                                .labelSmall,
-                                                          ),
+                                                        Row(
+                                                            children:[
+
+
+                                                                Text(
+                                                                  "₹${double.tryParse(data.regularPrice ?? " ")?.toStringAsFixed(2)}",
+
+                                                                  maxLines: 1,
+                                                                  style: Theme.of(context)
+                                                                      .textTheme
+                                                                      .labelSmall
+                                                                      ?.copyWith(
+                                                                      fontSize: 9,
+                                                                      decoration: TextDecoration.lineThrough,
+                                                                      color: AppColors.redColor),
+                                                                ),
+                                                              const SizedBox(width: 2),
+
+                                                                Text(
+                                                                  "${data.discountValue}% Off",
+                                                                  maxLines: 1,
+                                                                  style: Theme.of(context)
+                                                                      .textTheme
+                                                                      .labelSmall,
+                                                                ),
+                                                            ]
+                                                        )
                                                       ],
                                                     );
+
                                                   },
                                                 );
                                               },
@@ -507,7 +525,7 @@ class CategoryProduct extends StatelessWidget {
 
     double screenWidth = MediaQuery.of(context).size.width;
 
-    double childAspectRatio1 = screenHeight / screenWidth * .32;
+    double childAspectRatio1 = screenHeight / screenWidth * .27;
 
     return childAspectRatio1;
   }

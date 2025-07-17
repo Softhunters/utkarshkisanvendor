@@ -1,0 +1,2 @@
+/Users/apple/Desktop/e_Commerce/android/app/.cxx/Debug/5l4h4b5j/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/apple/Desktop/e_Commerce/android/app/.cxx/Debug/5l4h4b5j/armeabi-v7a/CMakeFiles/rebuild_cache.dir

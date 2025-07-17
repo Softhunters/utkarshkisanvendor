@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:e_commerce/app/onBoard/on_boarding_screen.dart';
-import 'package:e_commerce/common_widgets/app_strings.dart';
-import 'package:e_commerce/config/theme.dart';
+import 'package:utkrashvendor/app/kisan%20Dashboard/controller/dashboard_controller.dart';
+import 'package:utkrashvendor/app/onBoard/on_boarding_screen.dart';
+import 'package:utkrashvendor/common_widgets/app_strings.dart';
+import 'package:utkrashvendor/config/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -39,7 +40,7 @@ class MyHttpOverrides extends HttpOverrides{
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
-  await Firebase.initializeApp();
+   await Firebase.initializeApp();
   await SharedStorage.init();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setPreferredOrientations([
@@ -74,6 +75,8 @@ void main() async {
         create: (context) => BrandController()),
     ChangeNotifierProvider<CurrencyProvider>(
         create: (context) => CurrencyProvider()),
+    ChangeNotifierProvider<DashboardController>(
+        create: (context) => DashboardController()),
   ], child: const MyApp()));
 }
 
@@ -109,7 +112,8 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'E-Commerce App',
       theme: AppTheme.light,
-      themeMode: ThemeMode.system,
+
+      themeMode: ThemeMode.light,
       darkTheme: AppTheme.dark,
       home: OnBoardScreen(),
       // routes: {
@@ -158,7 +162,11 @@ class _MyAppState extends State<MyApp> {
 
     firebaseMessaging.getToken().then((String? token) async {
       if (token == null) {
-      } else {}
+      } else {
+        print("qqqqqqqqqqqq ${token}");
+        var fcmToken = token;
+        SharedStorage.localStorage?.setString("fcm_token", fcmToken ?? "");
+      }
     }).catchError((error) {
       print(error.toString());
     });

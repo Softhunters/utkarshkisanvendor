@@ -1,6 +1,7 @@
 import 'package:country_picker/country_picker.dart';
-import 'package:e_commerce/app/Auth/view/otp_verify.dart';
-import 'package:e_commerce/app/Auth/view_model/auth_controller.dart';
+import 'package:flutter/services.dart';
+import 'package:utkrashvendor/app/Auth/view/otp_verify.dart';
+import 'package:utkrashvendor/app/Auth/view_model/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
@@ -64,7 +65,7 @@ class PhoneLogin extends StatelessWidget {
                       ),
                       Center(
                           child: Image.asset(
-                        "assets/images/splash_icon.png",
+                        "assets/images/app_logo_large.png",
                         height: height * .15,
                       )),
                       SizedBox(
@@ -76,7 +77,7 @@ class PhoneLogin extends StatelessWidget {
                             .textTheme
                             .headlineLarge
                             ?.copyWith(
-                                fontSize: 40, fontWeight: FontWeight.w500),
+                                fontSize: 32, fontWeight: FontWeight.w500),
                       ),
                       SizedBox(
                         height: height * .06,
@@ -100,7 +101,10 @@ class PhoneLogin extends StatelessWidget {
                             SizedBox(height: height * .015),
                             TextFormField(
                               controller: controller.mobileNumberController,
-                              keyboardType: TextInputType.visiblePassword,
+                              keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               decoration: InputDecoration(
                                 // contentPadding: EdgeInsets.all(10.0),
                                 border: OutlineInputBorder(
@@ -222,9 +226,11 @@ class PhoneLogin extends StatelessWidget {
                                 return;
                               }else {
                               controller.otpSend(
+
                                 (value) {
+
                                   if (value) {
-                                    Get.to(OtpVerification());
+                                    Get.to(()=>OtpVerification());
                                   }
                                 },
                               );

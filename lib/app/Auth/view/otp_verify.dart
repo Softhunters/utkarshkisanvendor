@@ -35,23 +35,18 @@ class _OtpVerificationState extends State<OtpVerification> {
   String storedOTP = "";
   AuthController? _authController;
 
-  void startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_secondsRemaining > 0) {
-          _secondsRemaining--;
-        } else {
-          _timer?.cancel();
-        }
-      });
-    });
-  }
+
 
   @override
   void initState() {
     super.initState();
     errorController = StreamController<ErrorAnimationType>();
-    startTimer();
+
+    // Use controller timer
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final controller = Provider.of<AuthController>(context, listen: false);
+      controller.startOtpTimer();
+    });
   }
 
   @override
@@ -63,10 +58,8 @@ class _OtpVerificationState extends State<OtpVerification> {
 
   @override
   void dispose() {
-    errorController!.close();
-    _timer?.cancel();
-    // You can safely use _authController here
-    _authController?.someCleanupMethod();
+    errorController?.close();
+    _authController?.cancelOtpTimer();
     super.dispose();
   }
 
@@ -131,22 +124,25 @@ class _OtpVerificationState extends State<OtpVerification> {
                                 length: 6,
                                 blinkWhenObscuring: true,
                                 animationType: AnimationType.fade,
+                                textStyle: TextStyle(
+                                  color: AppColors.primaryBlack
+                                ),
                                 pinTheme: PinTheme(
                                   shape: PinCodeFieldShape.box,
                                   borderRadius: BorderRadius.circular(10),
                                   borderWidth: 1,
                                   fieldHeight: 45,
                                   fieldWidth: 45,
-                                  selectedFillColor: AppColors.otpFieldColor,
-                                  activeFillColor: AppColors.otpFieldColor,
-                                  activeColor: AppColors.primaryBlack,
+                                  selectedFillColor: AppColors.grey1.shade200,
+                                  activeFillColor: AppColors.grey1.shade200,
+                                  activeColor: AppColors.primaryColor,
                                   inactiveColor: AppColors.primaryBlack,
                                   disabledColor: AppColors.redColor,
                                   errorBorderColor: AppColors.redColor,
-                                  inactiveFillColor: AppColors.otpFieldColor,
+                                  inactiveFillColor: AppColors.grey1.shade200,
                                   selectedColor: AppColors.green,
                                 ),
-                                cursorColor: Colors.black,
+                                cursorColor: AppColors.primaryColor,
                                 animationDuration:
                                 const Duration(milliseconds: 300),
                                 enableActiveFill: true,
@@ -157,7 +153,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                                 AutovalidateMode.disabled,
                                 onCompleted: (v) {},
                                 onChanged: (value) {
-                                  // debugPrint(value);
+
                                   // currentText =value;
                                   controller.setCurrentText(value);
                                 },
@@ -226,7 +222,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                             if (controller.secondsRemaining == 0)
                               TextButton(
                                 onPressed: () {
-                                  startTimer();
+                                  controller.startOtpTimer();
                                   otpController.clear();
                                   controller.otpSend(
                                         (value) {},

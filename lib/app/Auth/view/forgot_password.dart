@@ -1,11 +1,13 @@
-import 'package:e_commerce/app/Auth/view/login_screen.dart';
+import 'package:utkrashvendor/app/Auth/view/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common_widgets/app_colors.dart';
+import '../../../common_widgets/snack_bar.dart';
 import '../../../widgets/app_button_widget.dart';
 import '../view_model/auth_controller.dart';
+import 'login_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -41,7 +43,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     bool validateEmail(String email) {
       // Regular expression for email validation
       final RegExp emailRegex =
-          RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$');
+      RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$');
 
       return emailRegex.hasMatch(email);
     }
@@ -55,10 +57,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           },
           child: Column(
             children: [
-
               Center(
                 child: Image.asset(
-                  "assets/images/splash_icon.png",
+                  "assets/images/app_logo_large.png",
                   width: 150,
                 ),
               ),
@@ -100,7 +101,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             Icons.mail,
                             color: AppColors.divideColor,
                           ),
-          
+
                           hintText: 'Email',
                         ),
                         maxLines: 1,
@@ -141,21 +142,27 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
     controller.forgotPassword(
       controller.forgotPasswordController.text,
-      (value) {
-        print(value);
-        if (value == true) {
-          openDialog(context);
+          (response) {
+        final bool isSuccess = response['success'] ?? false;
+        final String message = response['message'] ?? 'No message received';
 
-          // Get.to(OtpVerification(email:  controller.forgotPasswordController.text,indexx: 0,));
-          // Navigator.pushNamed(context, "/resetpassword");
+        if (isSuccess) {
+          openDialog(context, message);
+          controller.forgotPasswordController.clear();
+        } else {
+          controller.forgotPasswordController.clear();
+          showSnackBar(
+            snackPosition: SnackPosition.TOP,
+            title: "Error",
+            description: message,
+          );
         }
       },
     );
+
   }
 
-  openDialog(
-    BuildContext context,
-  ) {
+  openDialog(BuildContext context, String message) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -169,30 +176,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               content: Text(
-                "Please check your email inbox and change your password.",
+                message, // ✅ show backend message here
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               actions: [
-                // ElevatedButton(
-                //     onPressed: () {
-                //       setState(() {
-                //         Navigator.pop(context);
-                //       });
-                //     },
-                //     child: Text(
-                //       "No",
-                //       style: Theme.of(context).textTheme.titleSmall,
-                //     )),
                 ElevatedButton(
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      Get.offAll(LoginScreen());
-                      // controller.deleteAllWishlistProduct();
-                    },
-                    child: Text(
-                      "Ok",
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ))
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    Get.offAll(LoginScreen());
+                  },
+                  child: Text(
+                    "OK",
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                )
               ],
             );
           },

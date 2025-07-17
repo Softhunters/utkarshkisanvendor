@@ -1,12 +1,12 @@
-import 'package:e_commerce/app/CartSection/Controller/cart_controller.dart';
-import 'package:e_commerce/app/CartSection/View/CheckOut/all_promo_coupan.dart';
-import 'package:e_commerce/app/CartSection/View/CheckOut/choose_shipping.dart';
-import 'package:e_commerce/app/CartSection/View/CheckOut/shipping_address.dart';
-import 'package:e_commerce/app/Payment/View/payment_screen.dart';
-import 'package:e_commerce/app/Profile/Controller/profile_controller.dart';
-import 'package:e_commerce/common_widgets/snack_bar.dart';
-import 'package:e_commerce/widgets/app_button_widget.dart';
-import 'package:e_commerce/widgets/text_fields.dart';
+import 'package:utkrashvendor/app/CartSection/Controller/cart_controller.dart';
+import 'package:utkrashvendor/app/CartSection/View/CheckOut/all_promo_coupan.dart';
+import 'package:utkrashvendor/app/CartSection/View/CheckOut/choose_shipping.dart';
+import 'package:utkrashvendor/app/CartSection/View/CheckOut/shipping_address.dart';
+import 'package:utkrashvendor/app/Payment/View/payment_screen.dart';
+import 'package:utkrashvendor/app/Profile/Controller/profile_controller.dart';
+import 'package:utkrashvendor/common_widgets/snack_bar.dart';
+import 'package:utkrashvendor/widgets/app_button_widget.dart';
+import 'package:utkrashvendor/widgets/text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
@@ -26,6 +26,7 @@ class CheckOutScreen extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
 
     return Consumer<CartController>(
+
       builder: (context, cartProvider, child) => Scaffold(
         appBar: AppBar(
           leading: GestureDetector(
@@ -47,19 +48,19 @@ class CheckOutScreen extends StatelessWidget {
           elevation: 0,
           surfaceTintColor: AppColors.white,
         ),
-        bottomNavigationBar: Card(
+        bottomNavigationBar: SafeArea(child: Card(
           surfaceTintColor: AppColors.white,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
                 child: AppButton(
                   title: "Continue Payment",
                   onTap: () {
                     // cartProvider.searchController.clear();
                     // if(cartProvider.checkOutAddress !=null) {
-                    Get.to(const PaymentOptionScreen());
+                    Get.to(()=>const PaymentOptionScreen());
                     //   }else{
                     //   showSnackBar(snackPosition: SnackPosition.TOP,
                     //   title: "Warning",
@@ -69,10 +70,10 @@ class CheckOutScreen extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(height: 20)
+              
             ],
           ),
-        ),
+        )),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -247,7 +248,7 @@ class CheckOutScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final data = controller.checkOutProduct[index];
               return Card(
-                surfaceTintColor: AppColors.white,
+                elevation: 1,
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 4.0, vertical: 10),
@@ -260,7 +261,7 @@ class CheckOutScreen extends StatelessWidget {
                           Container(
                             width: width * .2,
                             child: MyCacheNetworkImages(
-                              imageUrl: "$imageURL${data.image}",
+                              imageUrl: "$imageURL${data.productImage}",
                               width: 70,
                               height: 90,
                               radius: 10,
@@ -278,7 +279,7 @@ class CheckOutScreen extends StatelessWidget {
                                 Container(
                                   width: width * .6,
                                   child: Text(
-                                    data.name ?? "",
+                                    data.productName ?? "",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context)
@@ -294,7 +295,7 @@ class CheckOutScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      data.salePrice ?? "",
+                                      data.product?.salePrice ?? "",
                                       maxLines: 1,
                                       style: Theme.of(context)
                                           .textTheme
@@ -305,8 +306,9 @@ class CheckOutScreen extends StatelessWidget {
                                     SizedBox(
                                       width: 10,
                                     ),
+                                    if(double.tryParse(data.product?.salePrice ?? "")!=double.tryParse(data.product?.regularPrice ?? ""))
                                     Text(
-                                      data.regularPrice ?? "",
+                                      data.product?.regularPrice ?? "",
                                       maxLines: 1,
                                       style: Theme.of(context)
                                           .textTheme
@@ -320,8 +322,9 @@ class CheckOutScreen extends StatelessWidget {
                                     SizedBox(
                                       width: 10,
                                     ),
+                                    if(double.tryParse(data.product?.salePrice ?? "")!=double.tryParse(data.product?.regularPrice ?? ""))
                                     Text(
-                                      "${data.discountValue}% off",
+                                      "${data.product?.discountValue}% off",
                                       maxLines: 1,
                                       style: Theme.of(context)
                                           .textTheme
@@ -344,7 +347,7 @@ class CheckOutScreen extends StatelessWidget {
                                           color: AppColors.divideColor),
                                       child: Center(
                                         child: Text(
-                                          data.qty ?? "",
+                                          (data.quantity ?? "").toString(),
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyLarge
@@ -397,7 +400,7 @@ class CheckOutScreen extends StatelessWidget {
         ),
         ListTile(
           onTap: () async {
-            var result = await Get.to(const ChooseShipping());
+            var result = await Get.to(()=>const ChooseShipping());
             if (result != null) {
               read.setvalue(true);
               read.updateShippingValue(result);
@@ -472,7 +475,7 @@ class CheckOutScreen extends StatelessWidget {
               height: 55,
               child: GestureDetector(
                 onTap: () {
-                  Get.to(const ChoosePromoCoupon());
+                  Get.to(()=>const ChoosePromoCoupon());
                 },
                 child: AppTextFormWidget(
 
@@ -494,7 +497,7 @@ class CheckOutScreen extends StatelessWidget {
             GestureDetector(
               onTap: () async {
                 controller.getPromoCode();
-                var result = await Get.to(const ChoosePromoCoupon());
+                var result = await Get.to(()=>const ChoosePromoCoupon());
                 if (result != null) {
                   // controller.setCouponValue(true);
                   // controller.updateCouponValue(result);
@@ -532,7 +535,7 @@ class CheckOutScreen extends StatelessWidget {
                       "Total Amount",
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
-                    Text("₹${controller.totalamount}",
+                    Text("₹${num.tryParse(controller.totalamount)?.toStringAsFixed(2)}",
                         style: Theme.of(context).textTheme.bodyLarge),
                   ],
                 ),

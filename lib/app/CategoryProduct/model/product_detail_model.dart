@@ -1,4 +1,4 @@
-import 'package:e_commerce/app/Home/model/home_model.dart';
+import 'package:utkrashvendor/app/Home/model/home_model.dart';
 
 class ProductDetailModel {
   bool? status;
@@ -26,8 +26,11 @@ class ProductData {
   Products? product;
   List<Varaiants>? varaiants;
   List<Reviews>? reviews;
+  List<SellerList>? sellerList;
+  List<SellerCartList>? sellerCartList;
+  String? edit;
 
-  ProductData({this.product, this.varaiants,this.reviews});
+  ProductData({this.product, this.varaiants,this.reviews,this.sellerList,this.edit});
 
   ProductData.fromJson(Map<String, dynamic> json) {
     product =
@@ -37,11 +40,27 @@ class ProductData {
       json['varaiants'].forEach((v) {
         varaiants!.add(new Varaiants.fromJson(v));
       });
+      edit = json['edit'];
+
     }
     if (json['reviews'] != null) {
       reviews = <Reviews>[];
       json['reviews'].forEach((v) {
         reviews!.add(new Reviews.fromJson(v));
+      });
+    }
+
+    if (json['seller_list'] != null) {
+      sellerList = <SellerList>[];
+      json['seller_list'].forEach((v) {
+        sellerList!.add(new SellerList.fromJson(v));
+      });
+    }
+
+    if (json['seller_cart_list'] != null) {
+      sellerCartList = <SellerCartList>[];
+      json['seller_cart_list'].forEach((v) {
+        sellerCartList!.add(new SellerCartList.fromJson(v));
       });
     }
   }
@@ -57,10 +76,41 @@ class ProductData {
     if (this.reviews != null) {
       data['reviews'] = this.reviews!.map((v) => v.toJson()).toList();
     }
+
+    if (this.sellerList != null) {
+      data['seller_list'] = this.sellerList!.map((v) => v.toJson()).toList();
+    }
+
+    if (this.sellerCartList != null) {
+      data['seller_cart_list'] = this.sellerCartList!.map((v) => v.toJson()).toList();
+    }
+    data['edit']=this.edit;
     return data;
   }
 }
 
+
+class SellerCartList{
+  int? sellerId;
+
+
+  SellerCartList({
+    this.sellerId,
+
+  });
+
+  SellerCartList.fromJson(Map<String, dynamic> json) {
+    sellerId = json['seller_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['seller_id'] = this.sellerId;
+
+    return data;
+  }
+
+}
 
 class Products {
   int? id;
@@ -105,6 +155,8 @@ class Products {
   Category? category;
   SubCategories? subCategories;
   Brands? brands;
+  Seller? seller;
+
   // List<Reviews>? reviews;
 
   Products(
@@ -150,7 +202,9 @@ class Products {
         this.subCategories,
         this.brands,
       // this.reviews,
-      this.reviewsCount});
+      this.reviewsCount,
+      this.seller,
+      });
 
   Products.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -192,6 +246,7 @@ class Products {
     reviewsAvgRating = json['reviews_avg_rating'].toString();
     reviewsCount = json['reviews_count'];
 
+
     if (json['questions'] != null) {
       questions = <Questions>[];
       json['questions'].forEach((v) {
@@ -212,6 +267,7 @@ class Products {
         ? new SubCategories.fromJson(json['sub_categories'])
         : null;
     brands = json['brands'] != null ? new Brands.fromJson(json['brands']) : null;
+    seller = json['seller'] != null ? new Seller.fromJson(json['seller']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -270,10 +326,70 @@ class Products {
     if (this.brands != null) {
       data['brands'] = this.brands!.toJson();
     }
+    if (this.seller != null) {
+      data['seller'] = this.seller!.toJson();
+    }
 
     return data;
   }
 }
+
+class Seller{
+  int? id;
+  int? productId;
+  int? venderId;
+  num? price;
+  num? quantiity;
+  String? additionInfo;
+  int? status;
+  String? createdAt;
+  String? updatedAt;
+
+  Seller({
+    this.id,
+    this.productId,
+    this.venderId,
+    this.price,
+    this.quantiity,
+    this.additionInfo,
+    this.status,
+    this.createdAt,
+    this.updatedAt
+  });
+
+  Seller.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    productId = json['product_id'];
+    venderId = json['vendor_id'];
+    price = json['price'];
+    quantiity = json['quantity'];
+    additionInfo = json['additional_info'];
+    status = json['status'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['product_id'] = this.id;
+    data['vendor_id'] = this.id;
+    data['price'] = this.id;
+    data['quantity'] = this.id;
+    data['additional_info'] = this.id;
+    data['status'] = this.id;
+    data['created_at'] = this.id;
+    data['updated_at'] = this.id;
+    return data;
+  }
+
+}
+
+
+
+
+
 
 class Questions {
   int? id;
@@ -404,7 +520,7 @@ class Varaiants {
 
   Varaiants.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    varaintDetail = json['varaint_detail'];
+    varaintDetail = json['variant_detail'];
     regularPrice = json['regular_price'];
     salePrice = json['sale_price'];
     slug = json['slug'];
@@ -420,3 +536,68 @@ class Varaiants {
     return data;
   }
 }
+
+
+class SellerList {
+  int? id;
+  int? productId;
+  int? vendorId;
+  num? price;
+  int? quantity;
+  String? additionalInfo;
+  int? status;
+  String? createdAt;
+  String? updatedAt;
+  String? deletedAt;
+  String? sellerName;
+  String? stockStatus;
+
+  SellerList({this.id,
+    this.productId,
+    this.vendorId,
+    this.price,
+    this.quantity,
+    this.additionalInfo,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
+    this.sellerName,
+  this.stockStatus});
+
+  SellerList.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    productId = json['product_id'];
+    vendorId = json['vendor_id'];
+    price = json['price'];
+    quantity = json['quantity'];
+    additionalInfo = json['additional_info'];
+    status = json['status'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    deletedAt = json['deleted_at'];
+    sellerName = json['seller_name'];
+    stockStatus = json['stock_status'];
+
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['product_id'] = this.productId;
+    data['vendor_id'] = this.vendorId;
+    data['price'] = this.price;
+    data['quantity'] = this.quantity;
+    data['additional_info'] = this.additionalInfo;
+    data['status'] = this.status;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['deleted_at'] = this.deletedAt;
+    data['seller_name'] = this.sellerName;
+    data['stock_status'] = this.stockStatus;
+    return data;
+  }
+}
+
+
+

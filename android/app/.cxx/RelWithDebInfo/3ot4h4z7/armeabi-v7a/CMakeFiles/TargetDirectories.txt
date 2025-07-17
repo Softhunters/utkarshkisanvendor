@@ -1,0 +1,2 @@
+/Users/apple/Desktop/utkrash vendor/android/app/.cxx/RelWithDebInfo/3ot4h4z7/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/apple/Desktop/utkrash vendor/android/app/.cxx/RelWithDebInfo/3ot4h4z7/armeabi-v7a/CMakeFiles/rebuild_cache.dir

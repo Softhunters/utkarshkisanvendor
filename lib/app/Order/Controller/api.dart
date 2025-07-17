@@ -2,8 +2,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:e_commerce/app/Order/model/order_deatil_model.dart';
-import 'package:e_commerce/common_widgets/snack_bar.dart';
+import 'package:utkrashvendor/app/Order/model/order_deatil_model.dart';
+import 'package:utkrashvendor/common_widgets/snack_bar.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
@@ -87,8 +87,6 @@ class OrderApi {
 
     http.StreamedResponse response = await request.send();
 
-    // print("review status===${response.statusCode}");
-    // print(await response.stream.bytesToString());
     var data1 = await response.stream.bytesToString();
     dynamic jsonData = json.decode(data1);
 
@@ -108,13 +106,12 @@ class OrderApi {
       'Authorization': 'Bearer $token'
     };
     var url =Uri.parse("$cancelOrderURL$orderId/$itemId");
-    print(url);
+
     final response = await get(url,headers: headers);
 
     final parseData = jsonDecode(response.body);
 
-      print(parseData);
-      print(response.statusCode);
+
     if (response.statusCode == 200) {
       showSnackBar(snackPosition: SnackPosition.TOP,
       title: "Success",
@@ -133,13 +130,12 @@ class OrderApi {
       'Authorization': 'Bearer $token'
     };
     var url =Uri.parse("$returnOrderURL$orderId/$itemId");
-    print(url);
+
     final response = await get(url,headers: headers);
 
     final parseData = jsonDecode(response.body);
 
-      print(parseData);
-      print(response.statusCode);
+
     if (response.statusCode == 200) {
       showSnackBar(snackPosition: SnackPosition.TOP,
       title: "Success",

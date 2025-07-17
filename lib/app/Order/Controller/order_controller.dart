@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:e_commerce/app/Order/Controller/api.dart';
+import 'package:utkrashvendor/app/Order/Controller/api.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:image_picker/image_picker.dart';
@@ -97,7 +97,7 @@ class OrderController extends ChangeNotifier {
   }
 
   cancelOrder(String orderId, String itemId) async {
-    print("cancel Order start");
+
     final result = await orderApi.cancelOrderApi(orderId, itemId);
     if(result !=null){
       getOrders();
@@ -107,7 +107,6 @@ class OrderController extends ChangeNotifier {
   }
 
   returnOrder(String orderId, String itemId) async {
-    // print("cancel Order start");
     final result = await orderApi.returnOrderApi(orderId, itemId);
     if(result !=null){
       getOrders();

@@ -1,6 +1,6 @@
 
 
-import 'package:e_commerce/widgets/app_button_widget.dart';
+import 'package:utkrashvendor/widgets/app_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
@@ -61,13 +61,13 @@ return Consumer<CartController>(
           elevation: 0,
           surfaceTintColor: AppColors.white,
         ),
-        bottomNavigationBar: Card(
+        bottomNavigationBar: SafeArea(child: Card(
           surfaceTintColor: AppColors.white,
           child: Padding(
             padding: switch (layoutInfo){
               (_,Orientation.landscape)=>  EdgeInsets.symmetric(horizontal: 40.0,vertical: 10) ,_=>
-                  EdgeInsets.symmetric(horizontal: 10.0,vertical: 20)},
-  
+                  EdgeInsets.symmetric(horizontal: 10.0,vertical: 10)},
+
             child: AppButton(title: "Apply",    onTap: () {
               if(controller.selectedIndex != null) {
                 controller.applyPromoCode(controller.totalamount.toString(), double.parse(controller.subtotal).toStringAsFixed(2), controller.coupanCode);
@@ -76,16 +76,16 @@ return Consumer<CartController>(
                 controller.selectedIndex = null;
                 Get.back(result: controller.selectedCoupon);
               }else{
-  
+
                 showSnackBar(
                     snackPosition: SnackPosition.BOTTOM,
                     title: "Warning",
                     description: "Please select a promo option");
-  
+
               }
             },),
           ),
-        ),
+        )),
 
         body: SafeArea(
             child: Padding(

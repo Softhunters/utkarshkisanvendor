@@ -1,4 +1,4 @@
-import 'package:e_commerce/common_widgets/app_colors.dart';
+import 'package:utkrashvendor/common_widgets/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';

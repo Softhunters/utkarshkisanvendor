@@ -1,4 +1,4 @@
-import 'package:e_commerce/app/CartSection/Controller/cart_api.dart';
+import 'package:utkrashvendor/app/CartSection/Controller/cart_api.dart';
 import 'package:flutter/material.dart';
 
 import '../../Payment/View/payment_screen.dart';
@@ -26,15 +26,26 @@ class CartController extends ChangeNotifier {
   Future<CartModel?> getCartDAta() async {
     cartLoading = true;
     cartTotal = 0;
+    notifyListeners(); // Optional: If you want to show a loading indicator
+
     final result = await cartApi.getCart();
     if (result != null) {
       cartData = result.result?.cart ?? [];
+
+      // Reset before summing
+      cartTotal = 0;
+
       for (var i = 0; i < cartData.length; i++) {
-        cartTotal = cartTotal +
-            (double.parse(cartData[i].price ?? "0.0") *
-                int.parse(cartData[i].quantity ?? "0"));
-        notifyListeners();
+        final price = double.tryParse(cartData[i].price ?? "0.0") ?? 0.0;
+        final quantity = int.tryParse(cartData[i].quantity ?? "0") ?? 0;
+
+
+
+        cartTotal += price * quantity;
       }
+
+
+
       cartLoading = false;
       notifyListeners();
     }
@@ -49,8 +60,9 @@ class CartController extends ChangeNotifier {
 
   Future<CheckOutModel?> getCheckOutData() async {
     cartLoading = true;
-    cartTotal = 0;
+    // cartTotal = 0;
     final result = await cartApi.getCheckOut();
+
     if (result != null) {
       checkOutProduct = result.result?.cart ?? [];
       checkOutAddress = result.result?.addresss;
@@ -67,11 +79,12 @@ class CartController extends ChangeNotifier {
     }
   }
 
-  Future<CartModel?> addCartDAta(
-      productId, int? quantity, ValueSetter<bool> onResponse) async {
-    print(productId);
+  Future<CartModel?> addCartDAta(productId, int? quantity,
+      ValueSetter<bool> onResponse, String sId) async {
+
     cartLoading = true;
-    final result = await cartApi.addCart(productId, quantity);
+    final result = await cartApi.addCart(productId, quantity, sId);
+
     if (result != null) {
       getCartDAta();
       onResponse(true);
@@ -79,6 +92,31 @@ class CartController extends ChangeNotifier {
       cartLoading = false;
       notifyListeners();
     }
+  }
+
+  Map<int, int> sellerQuantities = {};
+
+  void initSellerQuantities(List<dynamic> sellers) {
+    for (var seller in sellers) {
+      int id = seller.vendorId ?? 0;
+      sellerQuantities[id] = 1;
+    }
+  }
+
+  void incrementQty(int vendorId) {
+    sellerQuantities[vendorId] = (sellerQuantities[vendorId] ?? 1) + 1;
+    notifyListeners();
+  }
+
+  void decrementQty(int vendorId) {
+    if ((sellerQuantities[vendorId] ?? 1) > 1) {
+      sellerQuantities[vendorId] = (sellerQuantities[vendorId] ?? 1) - 1;
+      notifyListeners();
+    }
+  }
+
+  int getQty(int vendorId) {
+    return sellerQuantities[vendorId] ?? 1;
   }
 
   Future<CartModel?> clearCartDAta() async {
@@ -119,15 +157,12 @@ class CartController extends ChangeNotifier {
     if (result != null) {
       searchController.text = result.result?.coupondata?.code ?? "";
       selectedCoupon = result.result?.coupondata;
-      appliedCouponValue =  result.result?.discount ?? "0";
+      appliedCouponValue = result.result?.discount ?? "0";
       // getCheckOutData();
       applyPromoLoading = false;
       notifyListeners();
     }
   }
-
-
-
 
   double totalCheckOutValue = 0.0;
 
@@ -238,36 +273,36 @@ class CartController extends ChangeNotifier {
   ];
 
   List<Map<String, dynamic>> paymentMethod = [
-    {
-      "name": "My Wallet",
-      "isSelected": false,
-      "type": 1,
-      "image": "assets/images/my_wallet.png"
-    },
-    {
-      "name": "PayPal",
-      "isSelected": false,
-      "type": 0,
-      "image": "assets/images/paypal.png"
-    },
-    {
-      "name": "Google Pay",
-      "isSelected": false,
-      "type": 0,
-      "image": "assets/images/google.png"
-    },
-    {
-      "name": "Apple Pay",
-      "isSelected": false,
-      "type": 0,
-      "image": "assets/images/apple.png"
-    },
-    {
-      "name": ".... .... .... 1234",
-      "isSelected": false,
-      "type": 0,
-      "image": "assets/images/card.png"
-    },
+    // {
+    //   "name": "My Wallet",
+    //   "isSelected": false,
+    //   "type": 1,
+    //   "image": "assets/images/my_wallet.png"
+    // },
+    // {
+    //   "name": "PayPal",
+    //   "isSelected": false,
+    //   "type": 0,
+    //   "image": "assets/images/paypal.png"
+    // },
+    // {
+    //   "name": "Google Pay",
+    //   "isSelected": false,
+    //   "type": 0,
+    //   "image": "assets/images/google.png"
+    // },
+    // {
+    //   "name": "Apple Pay",
+    //   "isSelected": false,
+    //   "type": 0,
+    //   "image": "assets/images/apple.png"
+    // },
+    // {
+    //   "name": ".... .... .... 1234",
+    //   "isSelected": false,
+    //   "type": 0,
+    //   "image": "assets/images/card.png"
+    // },
     {
       "name": "Cash on delivery",
       "isSelected": false,
@@ -276,16 +311,17 @@ class CartController extends ChangeNotifier {
     },
   ];
 
-String? orderNumber;
-bool loadingPayment = false;
+  String? orderNumber;
+  bool loadingPayment = false;
 
-int? checkIndex ;
-setIndex(value){
-  checkIndex = value;
-  notifyListeners();
-}
+  int? checkIndex;
 
-  makePayment(PaymentModel data,ValueSetter<bool> onResponse) async {
+  setIndex(value) {
+    checkIndex = value;
+    notifyListeners();
+  }
+
+  makePayment(PaymentModel data, ValueSetter<bool> onResponse) async {
     loadingPayment = true;
     final result = await cartApi.makePaymentApi(data);
     if (result != null) {
@@ -295,7 +331,7 @@ setIndex(value){
       loadingPayment = false;
       onResponse(true);
       notifyListeners();
-    }else{
+    } else {
       loadingPayment = false;
       onResponse(false);
       notifyListeners();

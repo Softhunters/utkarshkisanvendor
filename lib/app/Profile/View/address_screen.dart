@@ -1,5 +1,5 @@
-import 'package:e_commerce/app/Profile/View/add_address_screen.dart';
-import 'package:e_commerce/app/Profile/model/country_model.dart';
+import 'package:utkrashvendor/app/Profile/View/add_address_screen.dart';
+import 'package:utkrashvendor/app/Profile/model/country_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -39,25 +39,28 @@ class AddressesScreen extends StatelessWidget {
           elevation: 0,
           surfaceTintColor: AppColors.white,
         ),
-        bottomNavigationBar: Card(
+        bottomNavigationBar: SafeArea(child: Card(
           surfaceTintColor: AppColors.white,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
             child: AppButton(
               title: "Add new Address",
               onTap: () {
                 controller.getCountry();
-                Get.to(const AddAddressScreen(
+                Get.to(()=>const AddAddressScreen(
                   id: 0,
                 ));
               },
             ),
           ),
-        ),
+        ),),
         body: SafeArea(
             child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          child: ListView.builder(
+          child: controller.addressList.isEmpty?Center(child: Text("You haven't added an address yet.",style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.copyWith(fontWeight: FontWeight.w500),textAlign: TextAlign.center,),):ListView.builder(
             itemCount: controller.addressList.length,
             itemBuilder: (context, index) {
               var e = controller.addressList[index];
@@ -126,13 +129,13 @@ class AddressesScreen extends StatelessWidget {
                                     var type = e.addressType == "home"
                                         ? AddressType.home
                                         : e.addressType == "office"
-                                            ? AddressType.office
-                                            : AddressType.other;
+                                        ? AddressType.office
+                                        : AddressType.other;
                                     controller.setAddressType(type);
                                     controller.isChecked =
-                                        e.defaultAddress == "1" ? true : false;
+                                    e.defaultAddress == "1" ? true : false;
 
-                                    Get.to(AddAddressScreen(
+                                    Get.to(()=>AddAddressScreen(
                                       id: e.id ?? 0,
                                     ));
                                   },
@@ -165,8 +168,8 @@ class AddressesScreen extends StatelessWidget {
                               e.addressType == "home"
                                   ? "Home"
                                   : e.addressType == "office"
-                                      ? "Office"
-                                      : "Other",
+                                  ? "Office"
+                                  : "Other",
                               maxLines: 3,
                               style: Theme.of(context).textTheme.bodySmall),
                           CheckboxListTile(

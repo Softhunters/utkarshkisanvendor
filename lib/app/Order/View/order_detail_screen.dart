@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:e_commerce/app/CategoryProduct/product_detail_screen.dart';
-import 'package:e_commerce/app/Home/controller/home_controller.dart';
-import 'package:e_commerce/widgets/cache_network_image.dart';
+import 'package:utkrashvendor/app/CategoryProduct/product_detail_screen.dart';
+import 'package:utkrashvendor/app/Home/controller/home_controller.dart';
+import 'package:utkrashvendor/widgets/cache_network_image.dart';
 import 'package:easy_stepper/easy_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -172,7 +172,7 @@ class OrderDetailScreen extends StatelessWidget {
                                       ?.copyWith(
                                           fontWeight: FontWeight.w300,
                                           color: AppColors.grey1)),
-                              Text("${controller.orderDetail?.total}",
+                              Text("₹${controller.orderDetail?.total}",
                                   overflow: TextOverflow.ellipsis,
                                   style: Theme.of(context)
                                       .textTheme
@@ -247,19 +247,14 @@ class OrderDetailScreen extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    if (controller.orderDetail?.status != "canceled" ||
-                        controller.orderDetail?.status != "rejected")
+                    if (controller.orderDetail?.status != "canceled" &&
+                        controller.orderDetail?.status != "rejected") ...{
                       controller.orderDetail?.status != "delivered"
                           ? Align(
                               alignment: Alignment.centerRight,
                               child: GestureDetector(
                                 onTap: () {
-                                  var orderId =
-                                      controller.orderDetail?.id.toString();
-                                  var itemId = "";
-                                  print(orderId);
-
-                                  controller.cancelOrder(orderId ?? "", itemId);
+                                  openDialog(context,controller);
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -277,9 +272,13 @@ class OrderDetailScreen extends StatelessWidget {
                                 ),
                               ),
                             )
-                          : DateTime.now().difference(DateFormat('yyyy-MM-dd')
-                          .parse(controller.orderDetail?.deliveredDate ?? ""))
-                          .inDays > 1
+                          : DateTime.now()
+                                      .difference(DateFormat('yyyy-MM-dd')
+                                          .parse(controller
+                                                  .orderDetail?.deliveredDate ??
+                                              ""))
+                                      .inDays >
+                                  1
                               ? const SizedBox()
                               : Align(
                                   alignment: Alignment.centerRight,
@@ -288,7 +287,7 @@ class OrderDetailScreen extends StatelessWidget {
                                       var orderId =
                                           controller.orderDetail?.id.toString();
                                       var itemId = "";
-                                      print(orderId);
+
 
                                       controller.returnOrder(
                                           orderId ?? "", itemId);
@@ -311,6 +310,9 @@ class OrderDetailScreen extends StatelessWidget {
                                     ),
                                   ),
                                 )
+                    } else ...{
+                      SizedBox(),
+                    }
                   ],
                 ),
 
@@ -371,20 +373,21 @@ class OrderDetailScreen extends StatelessWidget {
                                                                 .product
                                                                 ?.slug,
                                                             0);
-                                                    Get.to(ProductDetailScreen(
-                                                      productSlug: controller
-                                                              .orderedItem[
-                                                                  index]
-                                                              .product
-                                                              ?.slug ??
-                                                          "",
-                                                      id: controller
-                                                              .orderedItem[
-                                                                  index]
-                                                              .product
-                                                              ?.id ??
-                                                          0,
-                                                    ));
+                                                    Get.to(() =>
+                                                        ProductDetailScreen(
+                                                          productSlug: controller
+                                                                  .orderedItem[
+                                                                      index]
+                                                                  .product
+                                                                  ?.slug ??
+                                                              "",
+                                                          id: controller
+                                                                  .orderedItem[
+                                                                      index]
+                                                                  .product
+                                                                  ?.id ??
+                                                              0,
+                                                        ));
                                                   },
                                                   child: MyCacheNetworkImages(
                                                     imageUrl:
@@ -420,6 +423,19 @@ class OrderDetailScreen extends StatelessWidget {
                                                 ),
                                                 Text(
                                                   "Price: ₹${controller.orderedItem[index].price ?? ""}",
+                                                  maxLines: 1,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelLarge
+                                                      ?.copyWith(
+                                                          color: AppColors
+                                                              .primaryBlack,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                ),
+                                                Text(
+                                                  "Seller Name: ${controller.orderedItem[index].seller?.name ?? ""}",
                                                   maxLines: 1,
                                                   style: Theme.of(context)
                                                       .textTheme
@@ -704,8 +720,7 @@ class OrderDetailScreen extends StatelessWidget {
                                 width: width,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
                                         flex: 1,
@@ -732,19 +747,18 @@ class OrderDetailScreen extends StatelessWidget {
                                                 .textTheme
                                                 .bodyLarge
                                                 ?.copyWith(
-                                                    color: AppColors
-                                                        .primaryColor),
+                                                    color:
+                                                        AppColors.primaryColor),
                                           ),
                                           Text(
-                                            product.product?.description ??
-                                                "",
+                                            product.product?.description ?? "",
                                             maxLines: 2,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .labelLarge
                                                 ?.copyWith(
-                                                    color: AppColors
-                                                        .divideColor),
+                                                    color:
+                                                        AppColors.divideColor),
                                           ),
                                           // IntrinsicHeight(
                                           //   child: Row(
@@ -783,8 +797,8 @@ class OrderDetailScreen extends StatelessWidget {
                                                 .textTheme
                                                 .labelLarge
                                                 ?.copyWith(
-                                                    color: AppColors
-                                                        .primaryColor),
+                                                    color:
+                                                        AppColors.primaryColor),
                                           ),
                                         ],
                                       ),
@@ -819,9 +833,8 @@ class OrderDetailScreen extends StatelessWidget {
                                             gridDelegate:
                                                 const SliverGridDelegateWithFixedCrossAxisCount(
                                                     crossAxisCount: 3),
-                                            itemBuilder:
-                                                (BuildContext context,
-                                                    int index) {
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
                                               return Padding(
                                                 padding:
                                                     const EdgeInsets.all(8.0),
@@ -915,7 +928,8 @@ class OrderDetailScreen extends StatelessWidget {
                           /// Review
                           ///
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 12.0),
                             child: AppTextFormWidget(
                               hintText: "Enter Your Review",
                               controller: read.reviewController,
@@ -968,8 +982,7 @@ class OrderDetailScreen extends StatelessWidget {
                                   title: "Submit",
                                   onTap: () {
                                     var data = ReviewCreate(
-                                        productId:
-                                            product.productId.toString(),
+                                        productId: product.productId.toString(),
                                         orderId: product.orderId.toString(),
                                         orderListId: product.id.toString(),
                                         rating: read.tutorRating.toString(),
@@ -995,6 +1008,57 @@ class OrderDetailScreen extends StatelessWidget {
             ),
           );
         });
+  }
+  openDialog(BuildContext context, OrderController controller) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              backgroundColor: AppColors.white,
+              surfaceTintColor: AppColors.white,
+              title: Text(
+                "Confirm cancel order ?",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              content: Text(
+                "Are You Sure, You want to cancel order ?",
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              actions: [
+                ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        Navigator.pop(context);
+                      });
+                    },
+                    child: Text(
+                      "No",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    )),
+                ElevatedButton(
+                    onPressed: () async {
+
+                      Navigator.pop(context);
+                      var orderId =
+                      controller.orderDetail?.id.toString();
+                      var itemId = "";
+
+
+                      controller.cancelOrder(orderId ?? "", itemId);
+
+                    },
+                    child: Text(
+                      "Yes",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ))
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }
 

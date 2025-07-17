@@ -135,7 +135,6 @@ class PinFieldsScreen extends StatelessWidget {
                     }
 
                     /// code of api
-                    print(pin);
                   },
                 )
               ],

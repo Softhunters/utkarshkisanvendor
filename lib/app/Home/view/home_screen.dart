@@ -1,12 +1,12 @@
 import 'package:currency_converter/currency.dart';
-import 'package:e_commerce/app/CartSection/Controller/cart_controller.dart';
-import 'package:e_commerce/app/Home/controller/home_controller.dart';
-import 'package:e_commerce/app/Home/widget/home_slider.dart';
-import 'package:e_commerce/app/Search/search_screen.dart';
-import 'package:e_commerce/app/Wishlist/wishlist_screen.dart';
-import 'package:e_commerce/common_widgets/app_colors.dart';
-import 'package:e_commerce/common_widgets/urls.dart';
-import 'package:e_commerce/widgets/text_fields.dart';
+import 'package:utkrashvendor/app/CartSection/Controller/cart_controller.dart';
+import 'package:utkrashvendor/app/Home/controller/home_controller.dart';
+import 'package:utkrashvendor/app/Home/widget/home_slider.dart';
+import 'package:utkrashvendor/app/Search/search_screen.dart';
+import 'package:utkrashvendor/app/Wishlist/wishlist_screen.dart';
+import 'package:utkrashvendor/common_widgets/app_colors.dart';
+import 'package:utkrashvendor/common_widgets/urls.dart';
+import 'package:utkrashvendor/widgets/text_fields.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -28,9 +28,27 @@ import 'all_brand.dart';
 import 'all_category_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({
+  HomeScreen({
     super.key,
   });
+
+  String firstSagment = '';
+  String secondSagment = '';
+  String thirdSagment = '';
+
+  void fetchSagmentKeyword(String? urlLink) {
+    final url = Uri.parse("${urlLink}");
+
+    // Get all segments between slashes
+    List<String> segments = url.pathSegments;
+
+    // Output
+    for (var segment in segments) {
+      firstSagment = segments.length > 0 ? segments[0] : '';
+      secondSagment = segments.length > 1 ? segments[1] : '';
+      thirdSagment = segments.length > 2 ? segments[2] : '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +91,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.to(const SearchScreen());
+                        Get.to(() => const SearchScreen());
                       },
                       child: AppTextFormWidget(
                         enable: false,
@@ -112,28 +130,28 @@ class HomeScreen extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Special Offer",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge
-                  ?.copyWith(fontWeight: FontWeight.w700, fontSize: 16),
-            ),
-            GestureDetector(
-              onTap: () {
-                Get.to(const AllOfferScreen());
-              },
-              child: Text("See All",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: AppColors.primaryColor)),
-            ),
-          ],
-        ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   children: [
+        //     Text(
+        //       "Special Offer",
+        //       style: Theme.of(context)
+        //           .textTheme
+        //           .bodyLarge
+        //           ?.copyWith(fontWeight: FontWeight.w700, fontSize: 16),
+        //     ),
+        //     GestureDetector(
+        //       onTap: () {
+        //         Get.to(() => const AllOfferScreen());
+        //       },
+        //       child: Text("See All",
+        //           style: Theme.of(context)
+        //               .textTheme
+        //               .bodySmall
+        //               ?.copyWith(color: AppColors.primaryColor)),
+        //     ),
+        //   ],
+        // ),
         const SizedBox(
           height: 10,
         ),
@@ -166,7 +184,7 @@ class HomeScreen extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                Get.to(const AllCategoryListScreen());
+                Get.to(() => const AllCategoryListScreen());
               },
               child: Text("See All",
                   style: Theme.of(context)
@@ -201,16 +219,18 @@ class HomeScreen extends StatelessWidget {
                           if (catId == "null") {
                             controller.setcatFavIndex("null", slug, "null");
                             controller.getCategoryData(slug, 0);
+                            controller.setCategoryBySlug(slug ?? "");
                           } else {
                             controller.setcatFavIndex(
                                 data.slug, slug, data.slug);
+                            controller.setCategoryBySlug(slug ?? "");
                             controller.getSubCategoryData(slug, data.slug, 0);
                           }
 
-                          Get.to(CategoryProduct(
-                            categoryName: data.name ?? "",
-                            cateSlug: slug ?? "",
-                          ));
+                          Get.to(() => CategoryProduct(
+                                //   categoryName: data.name ?? "",
+                                cateSlug: slug ?? "",
+                              ));
                         },
                         child: Container(
                           width: 87,
@@ -283,7 +303,7 @@ class HomeScreen extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                Get.to(const AllBrand());
+                Get.to(() => const AllBrand());
               },
               child: Text("See All",
                   style: Theme.of(context)
@@ -311,7 +331,7 @@ class HomeScreen extends StatelessWidget {
                     controller.setFavIndex(index);
                     brandController.getBrandDAta(data.brandSlug ?? "");
 
-                    Get.to(const BrandProductScreen());
+                    Get.to(() => const BrandProductScreen());
                   },
                   child: Container(
                     height: 20,
@@ -366,17 +386,41 @@ class HomeScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               var data = controller.banner[index];
               bool isSelected = controller.favoriteIndex == index;
-              return Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: MyCacheNetworkImages(
-                  imageUrl: "$bannerURL${data.images}",
-                  radius: 20,
-                  fit: BoxFit.cover,
-                  width: MediaQuery.sizeOf(context).width *
-                      switch (layoutInfo) {
-                        (_, Orientation.landscape) => .68,
-                        _ => .9
-                      },
+              return GestureDetector(
+                onTap: () async {
+                  fetchSagmentKeyword(data.link);
+
+                  if (firstSagment == "category" && thirdSagment == "") {
+                    await controller.getCategoryData(secondSagment, 0);
+                    controller.setCategoryBySlug(secondSagment ?? "");
+                    Get.to(() => CategoryProduct(cateSlug: secondSagment));
+                  } else if (firstSagment == "category" && thirdSagment != "") {
+                    await controller.getSubCategoryData(
+                        secondSagment, thirdSagment, 0);
+                    controller.setCategoryBySlug(secondSagment ?? "");
+                    Get.to(() => CategoryProduct(cateSlug: secondSagment));
+                  } else if (firstSagment == "product-detail" &&
+                      thirdSagment == "") {
+                    await controller.saveProductDetailslug(secondSagment);
+                    await controller.getProductDetail(secondSagment, 0);
+                    Get.to(() => ProductDetailScreen(
+                          productSlug: secondSagment,
+                          id: 0,
+                        ));
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: MyCacheNetworkImages(
+                    imageUrl: "$bannerURL${data.images}",
+                    radius: 20,
+                    fit: BoxFit.cover,
+                    width: MediaQuery.sizeOf(context).width *
+                        switch (layoutInfo) {
+                          (_, Orientation.landscape) => .68,
+                          _ => .9
+                        },
+                  ),
                 ),
               );
             },
@@ -398,7 +442,7 @@ class HomeScreen extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 controller.getShopProductData(0);
-                Get.to(const LatestProductScreen());
+                Get.to(() => const LatestProductScreen());
               },
               child: Text("See All",
                   style: Theme.of(context)
@@ -414,255 +458,321 @@ class HomeScreen extends StatelessWidget {
         Container(
             // height: height * .54,
             child: GridView.builder(
-              itemCount: controller.featureProducts.length > 8
-                  ? 8
-                  : controller.allProducts.length > 6
+          itemCount: controller.featureProducts.length > 8
+              ? 8
+              : controller.allProducts.length > 6
                   ? 6
                   : controller.allProducts.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: switch (layoutInfo) {
-                  (_, Orientation.landscape) => 3,
-                  _ => 2,
-                },
-                childAspectRatio: _calculateAspectRatio(context),
-                crossAxisSpacing: 0,
-                mainAxisSpacing: 0,
-              ),
-              itemBuilder: (context, index) {
-                var data = controller.allProducts[index];
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: switch (layoutInfo) {
+              (_, Orientation.landscape) => 3,
+              _ => 2,
+            },
+            childAspectRatio: _calculateAspectRatio(context),
+            crossAxisSpacing: 0,
+            mainAxisSpacing: 0,
+          ),
+          itemBuilder: (context, index) {
+            var data = controller.allProducts[index];
 
-                return GestureDetector(
-                  onTap: () {
-                    controller.changePriceWithIndex(data.id);
-                    controller.saveProductDetailslug(data.slug);
-                    controller.getProductDetail(data.slug, 0);
-                    print(data.salePrice);
-                    print(data.regularPrice);
-                    Get.to(ProductDetailScreen(
+            return GestureDetector(
+              onTap: () {
+                controller.changePriceWithIndex(data.id);
+                controller.saveProductDetailslug(data.slug);
+                controller.getProductDetail(data.slug, 0);
+                Get.to(() => ProductDetailScreen(
                       productSlug: data.slug ?? "",
                       id: data.id ?? 0,
                     ));
-                  },
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              },
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Stack(
                         children: [
-                          Stack(
-                            children: [
-                              MyCacheNetworkImages(
-                                imageUrl: "$imageURL${data.image}",
-                                height: switch (layoutInfo) {
-                                  (ScreenSize.large || ScreenSize.extraLarge, _) => height * .25,
-                                  (_, Orientation.landscape) => width * .86,
-                                  _ => width * .43,
-                                },
-                                width: width,
-                                radius: 5,
-                                fit: BoxFit.cover,
-                              ),
-                              data.wishlistAvgUserId == "null"
-                                  ? Positioned(
-                                top: 5,
-                                right: 5,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    controller.addWishlistProduct(data.id, 1);
-                                  },
-                                  child: const Icon(Icons.favorite_border),
-                                ),
-                              )
-                                  : Positioned(
-                                top: 5,
-                                right: 5,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    controller.addWishlistProduct(data.id, 1);
-                                  },
-                                  child: const Icon(Icons.favorite),
-                                ),
-                              ),
-                              if (data.reviewsCount != 0)
-                                Positioned(
-                                  bottom: 8,
-                                  left: 10,
-                                  child: Container(
-                                    height: 22,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: AppColors.transparentColor,
+                          MyCacheNetworkImages(
+                            imageUrl: "$imageURL${data.image}",
+                            height: switch (layoutInfo) {
+                              (ScreenSize.large || ScreenSize.extraLarge, _) =>
+                                height * .25,
+                              (_, Orientation.landscape) => width * .86,
+                              _ => width * .43,
+                            },
+                            width: width,
+                            radius: 5,
+                            fit: BoxFit.cover,
+                          ),
+                          data.wishlistAvgUserId == "null"
+                              ? Positioned(
+                                  top: 5,
+                                  right: 5,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      controller.addWishlistProduct(
+                                          data.id,
+                                          1,
+                                          data.seller?.venderId.toString() ??
+                                              '');
+                                    },
+                                    child: const Icon(
+                                      Icons.favorite_border,
+                                      color: AppColors.yellowishColor,
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: IntrinsicHeight(
-                                        child: Row(
-                                          children: [
-                                            const SizedBox(width: 4),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  double.parse(data.reviewsAvgRating != "null"
-                                                      ? data.reviewsAvgRating ?? "0.0"
-                                                      : "0.0")
-                                                      .toStringAsFixed(1),
-                                                  style: Theme.of(context).textTheme.labelSmall,
-                                                ),
-                                                const Icon(
-                                                  Icons.star,
-                                                  size: 12,
-                                                  color: AppColors.green,
-                                                ),
-                                              ],
-                                            ),
-                                            const VerticalDivider(
-                                              color: AppColors.grey1,
-                                              thickness: 2,
-                                            ),
-                                            Text(
-                                              controller.formatValue(data.reviewsCount ?? 0),
-                                              style: Theme.of(context).textTheme.labelSmall?.copyWith(fontSize: 11),
-                                            ),
-                                            const SizedBox(width: 4),
-                                          ],
-                                        ),
-                                      ),
+                                  ),
+                                )
+                              : Positioned(
+                                  top: 5,
+                                  right: 5,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      controller.addWishlistProduct(
+                                          data.id,
+                                          1,
+                                          data.seller?.venderId.toString() ??
+                                              '');
+                                    },
+                                    child: const Icon(
+                                      Icons.favorite,
+                                      color: AppColors.yellowishColor,
                                     ),
                                   ),
                                 ),
-                              if (data.discountValue != "0" && data.discountValue != "null")
-                                Positioned(
-                                  top: 0,
-                                  left: 0,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.indigo,
-                                          Colors.purple.shade300,
-                                        ],
-                                      ),
-                                      borderRadius: const BorderRadius.only(
-                                        bottomRight: Radius.elliptical(15, 20),
-                                        topLeft: Radius.circular(10),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                        child: Text(
-                                          "${data.discountValue}% ",
+                          if (data.reviewsCount != 0)
+                            Positioned(
+                              bottom: 8,
+                              left: 10,
+                              child: Container(
+                                height: 22,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: AppColors.transparentColor,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: IntrinsicHeight(
+                                    child: Row(
+                                      children: [
+                                        const SizedBox(width: 4),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              double.parse(data
+                                                              .reviewsAvgRating !=
+                                                          "null"
+                                                      ? data.reviewsAvgRating ??
+                                                          "0.0"
+                                                      : "0.0")
+                                                  .toStringAsFixed(1),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelSmall,
+                                            ),
+                                            const Icon(
+                                              Icons.star,
+                                              size: 12,
+                                              color: AppColors.green,
+                                            ),
+                                          ],
+                                        ),
+                                        const VerticalDivider(
+                                          color: AppColors.grey1,
+                                          thickness: 2,
+                                        ),
+                                        Text(
+                                          controller.formatValue(
+                                              data.reviewsCount ?? 0),
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelSmall
-                                              ?.copyWith(color: AppColors.white, fontSize: 9),
+                                              ?.copyWith(fontSize: 11),
                                         ),
-                                      ),
+                                        const SizedBox(width: 4),
+                                      ],
                                     ),
                                   ),
                                 ),
-                            ],
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(left: 5),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  data.brands?.brandName ?? "",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.green),
+                              ),
+                            ),
+                          if (data.discountValue != "0" &&
+                              data.discountValue != "null")
+                            Positioned(
+                              top: 0,
+                              left: 0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.indigo,
+                                      Colors.purple.shade300,
+                                    ],
+                                  ),
+                                  borderRadius: const BorderRadius.only(
+                                    bottomRight: Radius.elliptical(15, 20),
+                                    topLeft: Radius.circular(10),
+                                  ),
                                 ),
-                                Text(
-                                  data.name ?? "",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.primaryBlack),
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 4),
+                                    child: Text(
+                                      "${data.discountValue}% ",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelSmall
+                                          ?.copyWith(
+                                              color: AppColors.white,
+                                              fontSize: 9),
+                                    ),
+                                  ),
                                 ),
-                                const SizedBox(height: 4),
-                                Consumer<CurrencyProvider>(
-                                  builder: (context, currencyProvider, child) => FutureBuilder<double>(
-                                    future: currencyProvider.selectedCurrency == Currency.usd
-                                        ? currencyProvider.convertToUSD(double.parse(data.salePrice ?? "0.0"))
-                                        : Future.value(double.parse(data.salePrice ?? "0.0")),
-                                    builder: (context, salePriceSnapshot) {
-                                      if (!salePriceSnapshot.hasData) {
-                                        return Text("loading");
+                              ),
+                            ),
+                        ],
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              data.brands?.brandName ?? "",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: AppColors.green),
+                            ),
+                            Text(
+                              data.name ?? "",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: AppColors.primaryBlack),
+                            ),
+                            const SizedBox(height: 2),
+                            Consumer<CurrencyProvider>(
+                              builder: (context, currencyProvider, child) =>
+                                  FutureBuilder<double>(
+                                future: currencyProvider.selectedCurrency ==
+                                        Currency.usd
+                                    ? currencyProvider.convertToUSD(
+                                        double.parse(data.salePrice ?? "0.0"))
+                                    : Future.value(
+                                        double.parse(data.salePrice ?? "0.0")),
+                                builder: (context, salePriceSnapshot) {
+                                  if (!salePriceSnapshot.hasData) {
+                                    return Text("loading");
+                                  }
+                                  double salePrice =
+                                      salePriceSnapshot.data ?? 0.0;
+                                  return FutureBuilder<double>(
+                                    future: currencyProvider.selectedCurrency ==
+                                            Currency.usd
+                                        ? currencyProvider.convertToUSD(
+                                            double.parse(
+                                                data.regularPrice ?? "0.0"))
+                                        : Future.value(double.parse(
+                                            data.regularPrice ?? "0.0")),
+                                    builder: (context, regularPriceSnapshot) {
+                                      if (!regularPriceSnapshot.hasData) {
+                                        return const CircularProgressIndicator();
                                       }
-                                      double salePrice = salePriceSnapshot.data ?? 0.0;
-                                      return FutureBuilder<double>(
-                                        future: currencyProvider.selectedCurrency == Currency.usd
-                                            ? currencyProvider.convertToUSD(double.parse(data.regularPrice ?? "0.0"))
-                                            : Future.value(double.parse(data.regularPrice ?? "0.0")),
-                                        builder: (context, regularPriceSnapshot) {
-                                          if (!regularPriceSnapshot.hasData) {
-                                            return const CircularProgressIndicator();
-                                          }
-                                          double regularPrice = regularPriceSnapshot.data ?? 0.0;
-                                          return Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
+                                      double regularPrice =
+                                          regularPriceSnapshot.data ?? 0.0;
+                                      return Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
                                             children: [
                                               Text(
-                                                currencyProvider.selectedCurrency == Currency.inr
-                                                    ? "₹${data.salePrice ?? " "}"
-                                                    : "\$${salePrice.toStringAsFixed(2)}",
+                                                "₹${double.tryParse((data.salePrice ?? " "))?.toStringAsFixed(2)}",
                                                 maxLines: 1,
-                                                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                                  fontSize: 9,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelSmall
+                                                    ?.copyWith(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
                                               ),
-                                              const SizedBox(width: 2),
-                                              if (salePrice != regularPrice)
+                                            ],
+                                          ),
+                                          if (salePrice != regularPrice)
+                                            Row(
+                                              children: [
                                                 Text(
-                                                  currencyProvider.selectedCurrency == Currency.inr
-                                                      ? "₹${data.regularPrice ?? " "}"
-                                                      : "\$${regularPrice.toStringAsFixed(2)}",
+                                                  "₹${double.tryParse(data.regularPrice ?? " ")?.toStringAsFixed(2)}",
                                                   maxLines: 1,
-                                                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                                    fontSize: 7,
-                                                    decoration: TextDecoration.lineThrough,
-                                                    color: AppColors.redColor,
-                                                  ),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelSmall
+                                                      ?.copyWith(
+                                                        fontSize: 7,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .lineThrough,
+                                                        color:
+                                                            AppColors.redColor,
+                                                      ),
                                                 ),
-                                              const SizedBox(width: 2),
-                                              if (salePrice != regularPrice)
+                                                SizedBox(
+                                                  width: 2,
+                                                ),
                                                 Text(
                                                   "${data.discountValue}% off",
                                                   maxLines: 1,
-                                                  style: Theme.of(context).textTheme.labelSmall,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelSmall,
                                                 ),
-                                            ],
-                                          );
-                                        },
+                                              ],
+                                            ),
+                                        ],
                                       );
                                     },
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  data.stockStatus == "instock" ? "In Stock" : "Out Of Stock",
-                                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                    fontSize: 10,
-                                    color: data.stockStatus == "instock" ? AppColors.green : AppColors.redColor,
-                                  ),
-                                ),
-                              ],
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 2),
+                            Text(
+                              data.stockStatus == "instock"
+                                  ? "In Stock"
+                                  : "Out Of Stock",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall
+                                  ?.copyWith(
+                                    fontSize: 10,
+                                    color: data.stockStatus == "instock"
+                                        ? AppColors.green
+                                        : AppColors.redColor,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                );
-              },
-            )),
+                ),
+              ),
+            );
+          },
+        )),
         const SizedBox(
           height: 15,
         ),
@@ -675,7 +785,7 @@ class HomeScreen extends StatelessWidget {
 
     double screenWidth = MediaQuery.of(context).size.width;
 
-    double childAspectRatio1 = screenHeight / screenWidth * .32;
+    double childAspectRatio1 = screenHeight / screenWidth * .28;
 
     return childAspectRatio1;
   }
@@ -742,7 +852,7 @@ class HomeScreen extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   controller.getShopProductData(0);
-                  Get.to(const AllFeatureProductScreen());
+                  Get.to(() => const AllFeatureProductScreen());
                 },
                 child: Card(
                   shape: RoundedRectangleBorder(

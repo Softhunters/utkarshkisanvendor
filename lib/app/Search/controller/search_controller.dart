@@ -1,5 +1,5 @@
-import 'package:e_commerce/app/Home/controller/home_controller.dart';
-import 'package:e_commerce/app/Search/search_screen.dart';
+import 'package:utkrashvendor/app/Home/controller/home_controller.dart';
+import 'package:utkrashvendor/app/Search/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 
@@ -43,7 +43,7 @@ class SearchScreenController extends ChangeNotifier {
 int isloader=0;
 
   Future<dynamic> addWishlistProduct1(id,ValueSetter<bool>onResponse) async {
-    print("click");
+
     productLoading = true;
     final data = await searchApi.addWishlistApi(id.toString());
     if (data != null) {
@@ -80,44 +80,60 @@ int isloader=0;
   String sortby = "";
   String discounts = "0";
 
-  Future<SearchModel?> searchedProduct(
 
+  Future<SearchModel?> searchedProduct(
       type, value, ApplyFilterModel? data, ValueSetter<bool> onResponse) async {
     searchType = type;
-    print("Again start");
-    if(type==0 && isloader==0) {
-      searchProduct.clear();
-    }
     searchProductLoading = true;
 
     if (searchController.text.isEmpty) {
       searchProduct.clear();
       searchProductLoading = false;
       notifyListeners();
-    } else {
-      int product = int.parse(perPage) * pageNo1;
-
-      final searchData = await searchApi.getSearchProductApi(
-          searchType, value, product.toString(), data!);
-      if (searchData != null) {
-        searchProduct = searchData.result?.products?.data ?? [];
-        perPage = searchData.result?.perPage ?? "10";
-        priceLow = searchData.result?.mip ?? "0";
-        priceHigh = searchData.result?.map ?? "1000000";
-        sortby = searchData.result?.sorting ?? "default";
-        totalShopProduct = searchData.result?.products?.total;
-        print(totalShopProduct);
-        onResponse(true);
-        isloader=0;
-        searchProductLoading = false;
-        notifyListeners();
-      } else {
-        onResponse(true);
-        searchProductLoading = false;
-        notifyListeners();
-      }
+      return null;
     }
+
+    final productCount = int.parse(perPage) * pageNo1;
+
+    final searchData = await searchApi.getSearchProductApi(
+      searchType,
+      value,
+      productCount.toString(),
+      data!,
+    );
+
+    if (searchData != null) {
+      final newProducts = searchData.result?.products?.data ?? [];
+
+      if (pageNo1 == 1) {
+        if (newProducts.isNotEmpty) {
+          searchProduct = newProducts;
+        } else {
+          // Keep previous data
+          print("No new data on page 1. Keeping old data.");
+        }
+      } else {
+        searchProduct.addAll(newProducts);
+      }
+
+      perPage = searchData.result?.perPage ?? "10";
+      priceLow = searchData.result?.mip ?? "0";
+      priceHigh = searchData.result?.map ?? "1000000";
+      sortby = searchData.result?.sorting ?? "default";
+      totalShopProduct = searchData.result?.products?.total ?? 0;
+
+      print("pageNo1: $pageNo1");
+      print("New products fetched: ${newProducts.length}");
+      print("Total current: ${searchProduct.length}");
+
+      onResponse(true);
+    }
+
+    searchProductLoading = false;
+    notifyListeners();
+    return null;
   }
+
 
   bool isFetching = false;
   bool pageLoader = false;

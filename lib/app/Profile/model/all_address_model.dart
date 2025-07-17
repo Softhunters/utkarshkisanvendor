@@ -1,4 +1,4 @@
-import 'package:e_commerce/app/Profile/model/country_model.dart';
+import 'package:utkrashvendor/app/Profile/model/country_model.dart';
 
 class AllAddressModel {
   bool? status;

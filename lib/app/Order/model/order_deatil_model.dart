@@ -10,7 +10,7 @@ class OrderDetailModel {
   OrderDetailModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     result =
-    json['result'] != null ? new Result.fromJson(json['result']) : null;
+        json['result'] != null ? new Result.fromJson(json['result']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -80,30 +80,30 @@ class Order {
 
   Order(
       {this.id,
-        this.userId,
-        this.subtotal,
-        this.discount,
-        this.tax,
-        this.shippingCharge,
-        this.total,
-        this.name,
-        this.mobile,
-        this.mobileOptional,
-        this.line1,
-        this.line2,
-        this.landmark,
-        this.countryId,
-        this.stateId,
-        this.cityId,
-        this.zipcode,
-        this.status,
-        this.createdAt,
-        this.updatedAt,
-        this.orderNumber,
-        this.deliveredDate,
-        this.canceledDate,
-        this.rewardpoint,
-        this.transaction});
+      this.userId,
+      this.subtotal,
+      this.discount,
+      this.tax,
+      this.shippingCharge,
+      this.total,
+      this.name,
+      this.mobile,
+      this.mobileOptional,
+      this.line1,
+      this.line2,
+      this.landmark,
+      this.countryId,
+      this.stateId,
+      this.cityId,
+      this.zipcode,
+      this.status,
+      this.createdAt,
+      this.updatedAt,
+      this.orderNumber,
+      this.deliveredDate,
+      this.canceledDate,
+      this.rewardpoint,
+      this.transaction});
 
   Order.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -168,7 +168,6 @@ class Order {
   }
 }
 
-
 class Orderitem {
   int? id;
   int? productId;
@@ -182,19 +181,21 @@ class Orderitem {
   String? canceledDate;
 
   Products? product;
+  SellerOrder? seller;
 
   Orderitem(
       {this.id,
-        this.productId,
-        this.orderId,
-        this.price,
-        this.quantity,
-        this.rstatus,
-        this.options,
-        this.createdAt,
-        this.updatedAt,
-        this.canceledDate,
-        this.product});
+      this.productId,
+      this.orderId,
+      this.price,
+      this.quantity,
+      this.rstatus,
+      this.options,
+      this.createdAt,
+      this.updatedAt,
+      this.canceledDate,
+      this.product,
+      this.seller});
 
   Orderitem.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -208,7 +209,11 @@ class Orderitem {
     updatedAt = json['updated_at'];
     canceledDate = json['canceled_date'];
     product =
-    json['product'] != null ? new Products.fromJson(json['product']) : null;
+        json['product'] != null ? new Products.fromJson(json['product']) : null;
+
+    seller = json['seller'] != null
+        ? new SellerOrder.fromJson(json['seller'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -226,7 +231,28 @@ class Orderitem {
     if (this.product != null) {
       data['product'] = this.product!.toJson();
     }
+    if (this.seller != null) {
+      data['seller'] = this.seller!.toJson();
+    }
     return data;
   }
 }
 
+class SellerOrder {
+  int? id;
+  String? name;
+
+  SellerOrder({this.id, this.name});
+
+  SellerOrder.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    return data;
+  }
+}

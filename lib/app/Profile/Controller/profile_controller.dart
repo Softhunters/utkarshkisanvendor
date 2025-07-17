@@ -1,6 +1,7 @@
-import 'package:e_commerce/common_widgets/urls.dart';
+import 'package:utkrashvendor/common_widgets/urls.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_share/flutter_share.dart';
+// import 'package:flutter_share/flutter_share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -47,8 +48,7 @@ class ProfileController extends ChangeNotifier {
   List<Addresss> defaultAddress = [];
 
   Future<AllAddressModel?> getAllAddress() async {
-    // print("call add");
-    // addressList.clear();
+
     var data = await profileApi.getAddress();
     if (data != null) {
       addressList = data.addresss ?? [];
@@ -85,11 +85,11 @@ class ProfileController extends ChangeNotifier {
     const String message = 'Check out my new app: $appLink';
 
     // Share the app link and message using the share dialog
-    await FlutterShare.share(title: 'Share App', text: message, linkUrl: appLink);
+    await Share.share('$message\n$appLink', subject: 'Share App');
   }
 
   Future<bool?> logoutApp() async {
-    // print("call add");
+
     // addressList.clear();
     var data = await profileApi.logout();
     if (data ==true) {
@@ -133,9 +133,9 @@ class ProfileController extends ChangeNotifier {
   }
 
   removeAddress(String id) async {
-    print(id);
+
     bool addressData = await profileApi.deleteAddress(id);
-    // print(addressData);
+
     if (addressData != false) {
       getAllAddress();
       notifyListeners();
@@ -146,7 +146,7 @@ class ProfileController extends ChangeNotifier {
 
   makeDefaultAddress(
       String id, String status, ValueSetter<bool> onResponse) async {
-    print(id);
+
     bool addressData = await profileApi.defaultAddress(id, status);
 
     if (addressData != false) {
@@ -236,7 +236,7 @@ class ProfileController extends ChangeNotifier {
 
     if (data != null) {
       cityList = data.cities ?? [];
-      print(cityList.length);
+
       notifyListeners();
     }
   }

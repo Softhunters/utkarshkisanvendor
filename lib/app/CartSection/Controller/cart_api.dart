@@ -1,7 +1,7 @@
 
 import 'dart:convert';
 
-import 'package:e_commerce/app/CartSection/Model/cart_model.dart';
+import 'package:utkrashvendor/app/CartSection/Model/cart_model.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:http/http.dart';
 
@@ -50,6 +50,8 @@ class CartApi{
 
       final parseData = jsonDecode(response.body);
 
+
+
       if (response.statusCode == 200) {
         var data = CheckOutModel.fromJson(parseData);
         return data;
@@ -62,29 +64,39 @@ class CartApi{
   }
 
 
-  Future<dynamic> addCart(product_id, quantity) async {
-    String  token =  SharedStorage.localStorage?.getString("token") ??"";
+  Future<dynamic> addCart(product_id, quantity, String sId) async {
+    String token = SharedStorage.localStorage?.getString("token") ?? "";
     var headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $token'
+      'Authorization': 'Bearer $token',
     };
-    try {
-      final response = await get(Uri.parse("$addCartURL$product_id/$quantity"),headers: headers);
 
+    try {
+      // ✅ Construct URL without sId in path
+      final url = Uri.parse("$addCartURL$product_id/$quantity")
+          .replace(queryParameters: {"sid": sId});
+
+
+
+      final response = await get(url, headers: headers);
       final parseData = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
 
-        showSnackBar(snackPosition: SnackPosition.TOP,
-            title: "Success",
-            description: parseData['msg'].toString());
-        // var data = CartModel.fromJson(parseData);
+
+      if (response.statusCode == 200) {
+        showSnackBar(
+          snackPosition: SnackPosition.TOP,
+          title: "Success",
+          description: parseData['msg'].toString(),
+        );
         return parseData;
       } else {
+
         return null;
       }
     } on Exception catch (e) {
-      // TODO
+
+      return null;
     }
   }
 
@@ -164,7 +176,7 @@ class CartApi{
             title: "Success",
             description: parseData['message'].toString());
           var data = ApplyCouponModel.fromJson(parseData);
-        print(data.result?.discount);
+
         return data ;
       } else {
         return  showSnackBar(snackPosition: SnackPosition.TOP,
@@ -192,21 +204,21 @@ class CartApi{
       'shipping_charge': data.shippingCharge,
       'total': data.total
     };
-    print(body);
+
     try {
       final response = await post(Uri.parse(makeOrderURL),headers: headers,body:body);
 
       final parseData = jsonDecode(response.body);
 
-      print(response.statusCode);
-      print(parseData);
+
+
       if (response.statusCode == 200) {
 
           showSnackBar(snackPosition: SnackPosition.TOP,
             title: "Success",
             description: parseData['message'].toString());
-          // var data = ApplyCouponModel.fromJson(parseData);
-        // print(data.result?.discount);
+
+
         return parseData ;
       } else {
         showSnackBar(snackPosition: SnackPosition.TOP,

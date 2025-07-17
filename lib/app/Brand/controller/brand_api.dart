@@ -33,26 +33,25 @@ class BrandApi {
 
 
 
-  Future<dynamic> addWishlistApi(String id) async {
-    print("id=$id");
+  Future<dynamic> addWishlistApi(String id,String sId) async {
     String  token =  SharedStorage.localStorage?.getString("token") ??"";
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    final url = Uri.parse(addWishlistURL + id);
-    print(url);
+    final url = Uri.parse('$addWishlistURL$id/$sId');
+
     try {
       final response = await get(url,headers: headers);
-      print(response.statusCode);
-      // print(response.body);
+
+
       final parseData =await jsonDecode(response.body);
 
-      print(parseData);
+
       if (response.statusCode == 200) {
         return parseData;
       } else {
-        print(parseData);
+
         return null;
       }
     } on Exception catch (e) {

@@ -1,4 +1,4 @@
-package com.softhunter.e_commerce
+package com.softhunter.utkarshvendor
 
 import io.flutter.embedding.android.FlutterActivity
 

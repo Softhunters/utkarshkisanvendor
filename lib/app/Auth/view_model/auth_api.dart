@@ -14,13 +14,16 @@ class AuthApi {
   Future<dynamic> userRegister(UserModel data) async {
     device_token = SharedStorage.localStorage?.getString("fcm_token") ?? "";
 
+
+
     try {
       final body = {
         'name': data.userName,
         'email': data.email,
         'phone': data.phone,
         'password': data.password,
-        'device_token': device_token
+        'device_token': device_token,
+        "utype":"VDR"
       };
       final response = await post(
           Uri.parse(
@@ -29,8 +32,6 @@ class AuthApi {
           body: body);
 
       final parseData = jsonDecode(response.body);
-      print(parseData);
-      print(response.statusCode);
       if (response.statusCode == 200) {
         showSnackBar(
             snackPosition: SnackPosition.TOP,
@@ -59,12 +60,11 @@ class AuthApi {
         'device_token': device_token
       };
 
-      print(body);
+
       final response = await post(Uri.parse(loginURL), body: body);
 
       final parseData = jsonDecode(response.body);
-      // print(response.statusCode);
-      // print(parseData);
+
       if (parseData["status"] != false) {
         return parseData;
       } else {
@@ -89,15 +89,11 @@ class AuthApi {
       final url = Uri.parse(
         getOtpURL,
       );
-      print(url);
+
 
       final response = await post(url,body: body);
 
       final parseData = jsonDecode(response.body);
-
-      print(response.statusCode);
-      print("login ===$parseData");
-
       if (parseData["status"] != false) {
         showSnackBar(
             snackPosition: SnackPosition.TOP,
@@ -124,7 +120,6 @@ class AuthApi {
         'otp': otp,
         'device_token': device_token,
       };
-print(otp);
       final response = await post(
           Uri.parse(
             verifyOtpURL,
@@ -132,7 +127,7 @@ print(otp);
           body: body);
 
       final parseData = jsonDecode(response.body);
-      print("verify ===$parseData");
+
       if (parseData["status"] != false) {
         showSnackBar(
             snackPosition: SnackPosition.TOP,

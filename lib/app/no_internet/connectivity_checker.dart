@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:e_commerce/app/no_internet/no_internet_screen.dart';
+import 'package:utkrashvendor/app/no_internet/no_internet_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -71,7 +71,7 @@ updateConnectivity(
   if (!hasConnection) {
     connectionStatus.hasShownNoInternet = true;
 
-    Get.to(const NoInternetScreen());
+    Get.to(()=>const NoInternetScreen());
     // context.push("/"+RoutesName.noInternet);
 
   } else {
@@ -97,7 +97,6 @@ initNoInternetListener(BuildContext context) async {
     updateConnectivity(context,false, connectionStatus);
   }
   connectionStatus.connectionChange.listen((event) {
-    print("initNoInternetListener $event");
     updateConnectivity(context,event, connectionStatus);
   });
 }

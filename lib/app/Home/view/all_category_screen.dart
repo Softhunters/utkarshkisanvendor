@@ -66,7 +66,7 @@ class AllCategoryListScreen extends StatelessWidget {
                     (_, Orientation.landscape) => 5,
                     _ => 4
                   },
-                  childAspectRatio: .78,
+                  childAspectRatio: .6,
                   crossAxisSpacing: 4,
                   mainAxisSpacing: 4),
               itemBuilder: (context, index) {
@@ -84,8 +84,8 @@ class AllCategoryListScreen extends StatelessWidget {
                       controller.getSubCategoryData(
                           controller.categorySlug, slug,0);
                     }
-                    Get.to(CategoryProduct(
-                      categoryName: data.name ?? "",
+                    Get.to(()=>CategoryProduct(
+                     // categoryName: data.name ?? "",
                       cateSlug: slug ??"",
                     ));
                   },
@@ -135,7 +135,7 @@ class AllCategoryListScreen extends StatelessWidget {
                                       flex: 3,
                                       child: Text(
                                         data.name ?? "",
-                                        maxLines: 1,
+                                        maxLines: 2,
                                         textAlign: TextAlign.center,
                                         overflow: TextOverflow.ellipsis,
                                         style: Theme.of(context)

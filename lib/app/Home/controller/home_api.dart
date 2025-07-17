@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:e_commerce/app/Auth/view/login_screen.dart';
-import 'package:e_commerce/app/CategoryProduct/model/cate_product_model.dart';
-import 'package:e_commerce/app/Profile/model/profile_model.dart';
-import 'package:e_commerce/common_widgets/snack_bar.dart';
+import 'package:utkrashvendor/app/Auth/view/login_screen.dart';
+import 'package:utkrashvendor/app/CategoryProduct/model/cate_product_model.dart';
+import 'package:utkrashvendor/app/Profile/model/profile_model.dart';
+import 'package:utkrashvendor/common_widgets/snack_bar.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 
@@ -19,35 +19,32 @@ class ApiService {
   var token;
 
   Future<dynamic> homeApi() async {
-
-    token =  SharedStorage.localStorage?.getString("token");
-   var headers = {
-     'Accept': 'application/json',
+    token = SharedStorage.localStorage?.getString("token");
+    var headers = {
+      'Accept': 'application/json',
       'Authorization': 'Bearer $token'
-   };
-   print(token);
+    };
+
 
     try {
-      final response = await get(Uri.parse(homeURL),headers: headers);
-      print(response.statusCode);
+      final response = await get(Uri.parse(homeURL), headers: headers);
+
 
       final parseData = jsonDecode(response.body);
 
-      print(parseData);
+
 
       if (response.statusCode == 200) {
-        var data= HomeModel.fromJson(parseData);
+        var data = HomeModel.fromJson(parseData);
         return data;
       } else if (response.statusCode == 401) {
-       showSnackBar(snackPosition: SnackPosition.TOP,
-         title: "Warning",
-         description: parseData["message"]
-
-       );
-       Get.offAll(LoginScreen());
+        showSnackBar(
+            snackPosition: SnackPosition.TOP,
+            title: "Warning",
+            description: parseData["message"]);
+        Get.offAll(LoginScreen());
         return parseData;
-      }
-      else {
+      } else {
         return null;
       }
     } on Exception catch (e) {
@@ -56,17 +53,15 @@ class ApiService {
     return null;
   }
 
-
   Future<AllShopProduct?> getShopProductApi(int page, int perPage) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
     final url = Uri.parse("$shopProductURL?per_page=${page * perPage}");
-    print(url);
-    try {
-      final response = await get(url,headers: headers);
 
+    try {
+      final response = await get(url, headers: headers);
 
       final parseData = jsonDecode(response.body);
 
@@ -81,22 +76,22 @@ class ApiService {
     }
   }
 
-
-  Future<CategoryProductModel?> getCategoriesApi(String slug,int page, int perPage) async {
+  Future<CategoryProductModel?> getCategoriesApi(
+      String slug, int page, int perPage) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    var url =Uri.parse("${cateURL + slug}?per_page=${page * perPage}");
-    print(page);
-    print(url);
+    var url = Uri.parse("${cateURL + slug}?per_page=${page * perPage}");
+
     try {
-      final response = await get(url,headers: headers);
+      final response = await get(url, headers: headers);
+
 
       final parseData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        print("Data aana chahiye ab to");
+
         var data = CategoryProductModel.fromJson(parseData);
         return data;
       } else {
@@ -107,23 +102,26 @@ class ApiService {
     }
   }
 
-  Future<CategoryProductModel?> getSubCategoriesApi(String cateSlug, String subCatSlug,) async {
-    print("start Api");
+  Future<CategoryProductModel?> getSubCategoriesApi(
+    String cateSlug,
+    String subCatSlug,
+  ) async {
+
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
     var url = Uri.parse("${cateURL + cateSlug}/$subCatSlug");
-    print(url);
+
     try {
-      final response = await get(url,headers: headers);
+      final response = await get(url, headers: headers);
 
       final parseData = jsonDecode(response.body);
 
-      print("=====${response.statusCode}");
+
       if (response.statusCode == 200) {
         var data = CategoryProductModel.fromJson(parseData);
-         print("given data");
+
         return data;
       } else {
         return null;
@@ -139,12 +137,13 @@ class ApiService {
       'Authorization': 'Bearer $token'
     };
     try {
-      final response = await get(Uri.parse(productDetailURL + id),headers: headers);
+      final response =
+          await get(Uri.parse(productDetailURL + id), headers: headers);
 
       final parseData = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
 
+      if (response.statusCode == 200) {
         final data = ProductDetailModel.fromJson(parseData);
         return data;
       } else {
@@ -156,27 +155,30 @@ class ApiService {
     return null;
   }
 
-  Future<dynamic> addWishlistApi(String id) async {
-    print("id=$id");
+  Future<dynamic> addWishlistApi(String id, String sID) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    final url = Uri.parse(addWishlistURL + id);
-    print(url);
-    try {
-      final response = await get(url,headers: headers);
-      print(response.statusCode);
-      // print(response.body);
-      final parseData =  jsonDecode(response.body);
 
-     print(response.body);
-     print(parseData);
+    final url = Uri.parse('$addWishlistURL$id?sid=$sID');
+
+    print("url ${Uri.parse('$addWishlistURL$id?sid=$sID')}");
+
+
+
+    try {
+      final response = await get(url, headers: headers);
+      print("status : ${response.statusCode}");
+
+      final parseData = jsonDecode(response.body);
+
+
       if (response.statusCode == 200) {
-        print(parseData);
+
         return parseData;
       } else {
-        print(parseData);
+
         return null;
       }
     } on Exception catch (e) {
@@ -184,26 +186,22 @@ class ApiService {
     }
   }
 
-
-
   Future<bool?> deleteWishlistApi() async {
-    print("yeeee");
+
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
     try {
-      final response = await get(Uri.parse(deleteAllWishlistURL),headers: headers);
-      print("there");
-      print(response.statusCode);
+      final response =
+          await get(Uri.parse(deleteAllWishlistURL), headers: headers);
+
 
       final parseData = jsonDecode(response.body);
 
-
       if (response.statusCode == 200) {
-
-        showSnackBar(snackPosition: SnackPosition.TOP,
-        description: parseData['msg']);
+        showSnackBar(
+            snackPosition: SnackPosition.TOP, description: parseData['msg']);
         return true;
       } else {
         return false;
@@ -218,9 +216,9 @@ class ApiService {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    print(token);
+
     try {
-      final response = await get(Uri.parse(getWishlistURL),headers: headers);
+      final response = await get(Uri.parse(getWishlistURL), headers: headers);
 
       final parseData = jsonDecode(response.body);
 
@@ -240,23 +238,27 @@ class ApiService {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    try {
-      final response = await get(Uri.parse(moveToCartURL+id),headers: headers);
 
+    try {
+      // Construct full URL with query parameter
+      final uri = Uri.parse("$moveToCartURL$id");
+
+      final response = await get(uri, headers: headers);
       final parseData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-
-          showSnackBar(snackPosition: SnackPosition.TOP,
-          title:"Success",
-          description: parseData["msg"]);
-
+        showSnackBar(
+          snackPosition: SnackPosition.TOP,
+          title: "Success",
+          description: parseData["msg"],
+        );
         return parseData;
       } else {
         return null;
       }
-    } on Exception catch (e) {
-      // TODO
+    } catch (e) {
+
+      return null;
     }
   }
 
@@ -265,49 +267,48 @@ class ApiService {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    try {
-      final response = await get(Uri.parse(moveToWishlistURL+id),headers: headers);
 
+    try {
+      final uri = Uri.parse("$moveToWishlistURL$id");
+      final response = await get(uri, headers: headers);
       final parseData = jsonDecode(response.body);
 
-      if (parseData["status"]==true) {
-
-          showSnackBar(snackPosition: SnackPosition.TOP,
-          title: "",
-          description: parseData["msg"]);
 
 
+      if (parseData["status"] == true) {
+        showSnackBar(
+          snackPosition: SnackPosition.TOP,
+          title: "Success",
+          description: parseData["msg"],
+        );
         return true;
       } else {
         return false;
       }
-    } on Exception catch (e) {
-      // TODO
+    } catch (e) {
+      // Handle error
+
+      return false;
     }
   }
 
-
-
   Future<ProfileModel?> getProfile() async {
-
-
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
     try {
-      final response = await get(Uri.parse(getProfileURL),headers: headers);
+      final response = await get(Uri.parse(getProfileURL), headers: headers);
 
       final parseData = jsonDecode(response.body);
       if (response.statusCode == 200) {
         final data = ProfileModel.fromJson(parseData);
         return data;
-      }else if (response.statusCode == 401) {
-        showSnackBar(snackPosition: SnackPosition.TOP,
+      } else if (response.statusCode == 401) {
+        showSnackBar(
+            snackPosition: SnackPosition.TOP,
             title: "Warning",
-            description: parseData["message"]
-
-        );
+            description: parseData["message"]);
         Get.offAll(LoginScreen());
         return parseData;
       } else {
@@ -319,29 +320,27 @@ class ApiService {
   }
 
   Future<bool?> applyReferralCodeApi(String referralCode) async {
-
-
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
     try {
-      final response = await get(Uri.parse(applyReferralURL + referralCode),headers: headers);
+      final response = await get(Uri.parse(applyReferralURL + referralCode),
+          headers: headers);
 
       final parseData = jsonDecode(response.body);
       if (response.statusCode == 200) {
         // final data = ProfileModel.fromJson(parseData);
-        showSnackBar(snackPosition: SnackPosition.TOP,
+        showSnackBar(
+            snackPosition: SnackPosition.TOP,
             title: "Success",
-            description: parseData["message"]
-
-        );
+            description: parseData["message"]);
         return true;
-      }else if (response.statusCode == 401) {
-        showSnackBar(snackPosition: SnackPosition.TOP,
+      } else if (response.statusCode == 401) {
+        showSnackBar(
+            snackPosition: SnackPosition.TOP,
             title: "Warning",
-            description: parseData["message"]
-        );
+            description: parseData["message"]);
         Get.offAll(LoginScreen());
         return false;
       } else {
@@ -351,5 +350,4 @@ class ApiService {
       // TODO
     }
   }
-
 }

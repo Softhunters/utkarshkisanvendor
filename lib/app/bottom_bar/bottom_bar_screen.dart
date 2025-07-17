@@ -1,8 +1,8 @@
 import 'package:currency_converter/currency.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:e_commerce/app/CartSection/Controller/cart_controller.dart';
-import 'package:e_commerce/app/Notification/notification_screen.dart';
-import 'package:e_commerce/app/Order/Controller/order_controller.dart';
+import 'package:utkrashvendor/app/CartSection/Controller/cart_controller.dart';
+import 'package:utkrashvendor/app/Notification/notification_screen.dart';
+import 'package:utkrashvendor/app/Order/Controller/order_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +14,7 @@ import '../CartSection/View/CheckOut/check_out_screen.dart';
 import '../CartSection/View/CheckOut/shipping_address.dart';
 import '../Home/controller/home_controller.dart';
 import '../Home/view/home_screen.dart';
+import '../Order/View/order_history.dart';
 import '../Profile/Controller/profile_controller.dart';
 import '../Profile/View/profile_screen.dart';
 import '../Wallet/Controller/wallets_controller.dart';
@@ -37,9 +38,9 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
   int _selectedIndex = 0;
 
   final List _widgets = [
-    const HomeScreen(),
+     HomeScreen(),
     const CartScreen(),
-    const WalletScreen(),
+    const OrderScreen(),
     const ProfileScreen(),
   ];
 
@@ -49,17 +50,20 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
     a();
     super.initState();
   }
+
   HomeController homeController = HomeController();
+
   a() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-       homeController = Provider.of<HomeController>(context, listen: false);
-      var wProvider = Provider.of<WalletsController>(context,listen: false);
-       var profileProvider = Provider.of<ProfileController>(context, listen: false);
+      homeController = Provider.of<HomeController>(context, listen: false);
+      var wProvider = Provider.of<WalletsController>(context, listen: false);
+      var profileProvider =
+          Provider.of<ProfileController>(context, listen: false);
 
       homeController.getHomeData(1);
       homeController.setApiType(widget.type);
       wProvider.getWalletData(0);
-       profileProvider.getContactDetail();
+      profileProvider.getContactDetail();
     });
   }
 
@@ -73,7 +77,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
 
   String _getGreeting() {
     var currentHour = DateTime.now().hour;
-    // print(currentHour);
+
     if (currentHour < 12) {
       return 'Good Morning';
     } else if (currentHour >= 12 && currentHour < 17) {
@@ -89,7 +93,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
     var provider = Provider.of<OrderController>(context, listen: false);
     var provider1 = Provider.of<CurrencyProvider>(context, listen: false);
     provider.getOrders();
-provider1.getCurrency();
+    provider1.getCurrency();
 
 // provider1.getExchangeRate();
     return Consumer<CartController>(
@@ -111,14 +115,15 @@ provider1.getCurrency();
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                            color: AppColors.primaryBlack,
+                            color: AppColors.white,
+                            border: Border.all(color: AppColors.primaryColor),
                             borderRadius: BorderRadius.circular(50)),
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(2.0),
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(50),
                               child: Image.asset(
-                                "assets/images/splash_icon.png",
+                                "assets/images/app_icon.png",
                                 width: 40,
                                 height: 40,
                                 fit: BoxFit.cover,
@@ -141,7 +146,7 @@ provider1.getCurrency();
                         ),
                         Consumer<HomeController>(
                           builder: (context, home, child) => Text(
-                            home.userName ?? "",
+                            home.userName.capitalize ?? "",
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge
@@ -154,110 +159,97 @@ provider1.getCurrency();
                 ),
                 centerTitle: false,
                 actions: [
-                // Consumer<HomeController>(builder: (context, hValue, child) =>  Text(hValue.selectedCurrency,style: Theme.of(context).textTheme.titleMedium,)),
+                  // Consumer<HomeController>(builder: (context, hValue, child) =>  Text(hValue.selectedCurrency,style: Theme.of(context).textTheme.titleMedium,)),
 
-                  Consumer<CurrencyProvider>(
-                     builder: (context, hValue, child) =>
-                         DropdownButtonHideUnderline(
-                           child: DropdownButton2<Currency>(
-                             value: hValue.selectedCurrency,
-                             style: const TextStyle(
-                                 fontSize: 14, fontWeight: FontWeight.normal),
-                             iconStyleData: const IconStyleData(
-                                 icon: Icon(
-                                   Icons.keyboard_arrow_down_outlined,
-                                 ),
-                                 iconSize: 30,
-                                 iconEnabledColor: AppColors.primaryBlack),
-                             isExpanded: true,
-                             // hint: const Text(
-                             //   "inr",
-                             //   style: TextStyle(
-                             //       fontSize: 14, fontWeight: FontWeight.normal),
-                             // ),
-                             items: [
-                               // DropdownMenuItem(
-                               //     alignment: Alignment.topLeft,
-                               //     value: Currency.values.first,
-                               //     child: SizedBox(
-                               //       width: MediaQuery.sizeOf(context).width * .72,
-                               //       child: Text(Currency.inr.name,
-                               //           style: TextStyle(
-                               //               fontSize: 14,
-                               //               fontWeight: FontWeight.w600,
-                               //               color: Theme.of(context).primaryColor)),
-                               //     )),
-                               ...hValue.currencyList
-                                   .map((e) => DropdownMenuItem(
-                                   value: e,
-                                   child: SizedBox(
-                                     height:
-                                     MediaQuery.sizeOf(context).width *
-                                         .05,
-                                     width:
-                                     MediaQuery.sizeOf(context).width *
-                                         .65,
-                                     child: Text(e.name,
-                                         style: TextStyle(
-                                             fontSize: 14,
-                                             fontWeight: FontWeight.w600,
-                                             color: Theme.of(context)
-                                                 .primaryColor)),
-                                   )))
-                                   .toList(),
-                             ],
-                             onChanged: (Currency? value) {
-
-                               hValue.updateCurrency(value!,(value) {
-                                 if(value==true){
-                                   setState(() {
-                                     homeController.getHomeData(0);
-                                   });
-                                 }
-                               },);
-                               },
-                             menuItemStyleData: const MenuItemStyleData(
-                               height: 45,
-                             ),
-                             buttonStyleData: ButtonStyleData(
-                               height: 40,
-                               width: 73,
-                               padding:
-                               const EdgeInsets.only(left: 4, right: 4),
-                               decoration: BoxDecoration(
-                                   borderRadius: BorderRadius.circular(14),
-                                  ),
-                               elevation: 0,
-                             ),
-                             dropdownStyleData: DropdownStyleData(
-                               maxHeight: MediaQuery.sizeOf(context).height * .8,
-                               width: MediaQuery.sizeOf(context).width * .6,
-                               decoration: BoxDecoration(
-                                 borderRadius: BorderRadius.circular(14),
-                                 color: Colors.white,
-                               ),
-                               offset: const Offset(-20, 0),
-                               scrollbarTheme: ScrollbarThemeData(
-                                 radius: const Radius.circular(40),
-                                 thickness: MaterialStateProperty.all(6),
-                                 thumbVisibility:
-                                 MaterialStateProperty.all(true),
-                               ),
-                             ),
-                           ),
-                         ),
-                  ),
+                  // Consumer<CurrencyProvider>(
+                  //   builder: (context, hValue, child) =>
+                  //       DropdownButtonHideUnderline(
+                  //     child: DropdownButton2<Currency>(
+                  //       value: hValue.selectedCurrency,
+                  //       style: const TextStyle(
+                  //           fontSize: 14, fontWeight: FontWeight.normal),
+                  //       iconStyleData: const IconStyleData(
+                  //           icon: Icon(
+                  //             Icons.keyboard_arrow_down_outlined,
+                  //           ),
+                  //           iconSize: 30,
+                  //           iconEnabledColor: AppColors.primaryColor),
+                  //       isExpanded: true,
+                  //       // hint: const Text(
+                  //       //   "inr",
+                  //       //   style: TextStyle(
+                  //       //       fontSize: 14, fontWeight: FontWeight.normal),
+                  //       // ),
+                  //       items: [
+                  //         ...hValue.currencyList
+                  //             .map((e) => DropdownMenuItem(
+                  //                 value: e,
+                  //                 child: SizedBox(
+                  //                   height:
+                  //                       MediaQuery.sizeOf(context).width * .05,
+                  //                   width:
+                  //                       MediaQuery.sizeOf(context).width * .65,
+                  //                   child: Text(e.name.capitalize ?? '',
+                  //                       style: TextStyle(
+                  //                           fontSize: 14,
+                  //                           fontWeight: FontWeight.w600,
+                  //                           color: Theme.of(context)
+                  //                               .primaryColor)),
+                  //                 )))
+                  //             .toList(),
+                  //       ],
+                  //       onChanged: (Currency? value) {
+                  //         hValue.updateCurrency(
+                  //           value!,
+                  //           (value) {
+                  //             if (value == true) {
+                  //               setState(() {
+                  //                 homeController.getHomeData(0);
+                  //               });
+                  //             }
+                  //           },
+                  //         );
+                  //       },
+                  //       menuItemStyleData: const MenuItemStyleData(
+                  //         height: 45,
+                  //       ),
+                  //       buttonStyleData: ButtonStyleData(
+                  //         height: 40,
+                  //         width: 73,
+                  //         padding: const EdgeInsets.only(left: 4, right: 4),
+                  //         decoration: BoxDecoration(
+                  //           borderRadius: BorderRadius.circular(14),
+                  //         ),
+                  //         elevation: 0,
+                  //       ),
+                  //       dropdownStyleData: DropdownStyleData(
+                  //         maxHeight: MediaQuery.sizeOf(context).height * .8,
+                  //         width: MediaQuery.sizeOf(context).width * .6,
+                  //         decoration: BoxDecoration(
+                  //           borderRadius: BorderRadius.circular(14),
+                  //           color: Colors.white,
+                  //         ),
+                  //         offset: const Offset(-20, 0),
+                  //         scrollbarTheme: ScrollbarThemeData(
+                  //           radius: const Radius.circular(40),
+                  //           thickness: MaterialStateProperty.all(6),
+                  //           thumbVisibility: MaterialStateProperty.all(true),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(
                     width: 10,
                   ),
                   Consumer<HomeController>(
                     builder: (context, provider, child) => GestureDetector(
                         onTap: () {
-                          Get.to(const WishlistScreen());
+                          Get.to(()=>const WishlistScreen());
                         },
                         child: badges.Badge(
                           onTap: () {
-                            Get.to(const WishlistScreen());
+                            Get.to(()=>const WishlistScreen());
                           },
                           badgeContent: Text(
                               provider.allWishListProducts.isNotEmpty
@@ -276,7 +268,7 @@ provider1.getCurrency();
                 title: Row(
                   children: [
                     Image.asset(
-                      "assets/images/appbar_con.png",
+                      "assets/images/app_icon.png",
                       height: 30,
                       width: 30,
                     ),
@@ -286,8 +278,8 @@ provider1.getCurrency();
                     Text(_selectedIndex == 1
                         ? "My Cart"
                         : _selectedIndex == 2
-                            ? "Wallet"
-                            : "Profile"),
+                            ? "Orders"
+                            : "Menu"),
                   ],
                 ),
                 centerTitle: false,
@@ -331,32 +323,41 @@ provider1.getCurrency();
                               width: 300,
                               height: 40,
                               onTap: () {
-                                var provider = Provider.of<ProfileController>(context, listen: false);
-                                if(provider.defaultAddress.isNotEmpty) {
+                                var provider = Provider.of<ProfileController>(
+                                    context,
+                                    listen: false);
+                                if (provider.defaultAddress.isNotEmpty) {
                                   controller.getCheckOutData();
-                                  Get.to(const CheckOutScreen());
-                                }else{
-                                  Get.to(const ShippingAddressScreen());
+                                  Get.to(()=>const CheckOutScreen());
+                                } else {
+                                  Get.to(()=>const ShippingAddressScreen());
                                 }
                               },
                             ),
                           ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                "Total Price",
-                                style: Theme.of(context).textTheme.titleMedium,
+                         Consumer<CartController>(builder: (context,cartController, _){
+                           return  Column(
+                             mainAxisSize: MainAxisSize.min,
+                             children: [
+                              GestureDetector(
+                                onTap:(){
+
+                                },
+                                child:  Text(
+                                  "Total Price",
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                ),
                               ),
-                              Text(
-                                "₹ ${controller.cartTotal} ",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          ),
+                               Text(
+                                 "₹ ${cartController.cartTotal} ",
+                                 style: Theme.of(context)
+                                     .textTheme
+                                     .titleMedium
+                                     ?.copyWith(fontWeight: FontWeight.w600),
+                               ),
+                             ],
+                           );
+                         }),
                         ],
                       ),
                     )
@@ -426,7 +427,7 @@ provider1.getCurrency();
                           : AppColors.divideColor,
                       width: _selectedIndex == 2 ? 25 : 20,
                     ),
-                    label: 'Wallet',
+                    label: 'Orders',
                   ),
                   BottomNavigationBarItem(
                     icon: Image.asset(
@@ -461,7 +462,7 @@ provider1.getCurrency();
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               content: Text(
-                "Are You Sure !, you want to clear product from cart.",
+                "Are You Sure, you want to clear product from cart.",
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               actions: [

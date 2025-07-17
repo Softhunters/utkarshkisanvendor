@@ -1,4 +1,5 @@
-import 'package:e_commerce/app/Auth/view/register_screen.dart';
+import 'package:utkrashvendor/app/Auth/view/register_screen.dart';
+import 'package:utkrashvendor/widgets/app_button_white_background_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +28,7 @@ class WelcomeScreen extends StatelessWidget {
               height: height * .06,
             ),
             Image.asset(
-              "assets/images/welcome.png",
+              "assets/images/auth_image.png",
               height: height * .35,
               width: width,
             ),
@@ -66,7 +67,7 @@ class WelcomeScreen extends StatelessWidget {
             SizedBox(
               height: height * .03,
             ),
-            AppButton(
+            AppButtonWhiteBackgroundWidget(
               height: 55,
                 title: "Sign Up",
                 textColor: AppColors.white,

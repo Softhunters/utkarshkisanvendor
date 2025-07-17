@@ -1,4 +1,4 @@
-import 'package:e_commerce/app/Home/controller/home_controller.dart';
+import 'package:utkrashvendor/app/Home/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -73,7 +73,7 @@ class ReferralScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           Container(
-                            width: width * .595,
+                            width: width * .590,
                             height: 50,
                             padding: EdgeInsets.symmetric(horizontal: 8),
                             decoration: BoxDecoration(
@@ -103,23 +103,23 @@ class ReferralScreen extends StatelessWidget {
                                   ],
                                 )),
                           ),
-                          GestureDetector(
+                          Expanded(child: GestureDetector(
                             onTap: () {
                               controller.shareApp(controller.myReferralCode);
                             },
                             child: Container(
-                              width: width * .3,
+                              // width: width * .3,
                               height: 50,
                               decoration: BoxDecoration(
-                                   borderRadius: BorderRadius.only(topRight: Radius.circular(10),bottomRight: Radius.circular(10)),
-                                  color: AppColors.primaryBlack),
+                                  borderRadius: BorderRadius.only(topRight: Radius.circular(10),bottomRight: Radius.circular(10)),
+                                  color: AppColors.primaryColor),
                               child: Center(
                                   child: Text(
-                                "Share",
-                                style: Theme.of(context).textTheme.titleSmall,
-                              )),
+                                    "Share",
+                                    style: Theme.of(context).textTheme.titleSmall,
+                                  )),
                             ),
-                          ),
+                          )),
                         ],
                       ),
                     ),

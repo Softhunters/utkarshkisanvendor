@@ -36,6 +36,25 @@ class AuthController extends ChangeNotifier {
   bool otpSent = false;
 
 
+  Timer? otpTimer;
+
+  void startOtpTimer() {
+    secondsRemaining = 60;
+    otpTimer?.cancel();
+    otpTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (secondsRemaining > 0) {
+        secondsRemaining--;
+      } else {
+        timer.cancel();
+      }
+      notifyListeners();
+    });
+  }
+
+  void cancelOtpTimer() {
+    otpTimer?.cancel();
+  }
+
   Country countrys = Country(
       geographic: true,
       phoneCode: "91",
@@ -69,7 +88,7 @@ class AuthController extends ChangeNotifier {
       // startTimer();
       notifyListeners();
     }else{
-      onResponse(true);
+      onResponse(false);
       notifyListeners();
     }
   }
@@ -199,20 +218,34 @@ class AuthController extends ChangeNotifier {
   }
 
   Future<void> forgotPassword(
-      String email, ValueSetter<bool> onResponse) async {
+      String email,
+      ValueSetter<Map<String, dynamic>> onResponse,
+      ) async {
     try {
-      final res = await authApi.forgotPassword(email);
+      final res = await authApi.forgotPassword(email); // this should return bool or a response
 
-      if (res != null) {
-        print("called");
-        onResponse(true);
-        notifyListeners();
+      if (res != null && res == true) {
+        onResponse({
+          "success": true,
+          "message": "Password reset link sent to your email",
+        });
       } else {
-        onResponse(false);
-        notifyListeners();
+        onResponse({
+          "success": false,
+          "message": "Failed to send reset link",
+        });
       }
-    } catch (e) {}
+
+      notifyListeners();
+    } catch (e) {
+      onResponse({
+        "success": false,
+        "message": "Something went wrong",
+      });
+    }
   }
+
+
 
   void someCleanupMethod() {
 

@@ -1,6 +1,6 @@
 import 'package:currency_converter/currency.dart';
-import 'package:e_commerce/app/Brand/controller/brand_controller.dart';
-import 'package:e_commerce/app/CategoryProduct/product_detail_screen.dart';
+import 'package:utkrashvendor/app/Brand/controller/brand_controller.dart';
+import 'package:utkrashvendor/app/CategoryProduct/product_detail_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -59,7 +59,7 @@ class BrandProductScreen extends StatelessWidget {
           actions:  [
             GestureDetector(
                 onTap: () {
-                  Get.to(const SearchScreen());
+                  Get.to(()=>const SearchScreen());
                 },
                 child: Icon(Icons.search)),
             SizedBox(
@@ -81,7 +81,7 @@ class BrandProductScreen extends StatelessWidget {
               visible: controller.products.isNotEmpty,
               replacement: Center(
                 child: Text(
-                  "Product Not available",
+                  "No product Added yet. Please check back later!",
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
@@ -104,7 +104,7 @@ class BrandProductScreen extends StatelessWidget {
                           Future.delayed(const Duration(seconds: 1)).then(
                                   (value) => controller.setValue(false, false));
 
-                          print("isLoading");
+
                         }
                       }
                       return false;
@@ -148,7 +148,7 @@ class BrandProductScreen extends StatelessWidget {
                           provider.changePriceWithIndex(data.id);
                           provider.saveProductDetailslug(data.slug);
                           provider.getProductDetail(data.slug, 0);
-                          Get.to(ProductDetailScreen(
+                          Get.to(()=>ProductDetailScreen(
                             productSlug: data.slug ?? "",
                             id: data.id??0,
                           ));
@@ -181,30 +181,32 @@ class BrandProductScreen extends StatelessWidget {
                                             right: 5,
                                             child: GestureDetector(
                                                 onTap: () {
+
                                                   // provider.addWishlistProduct(data.id);
                                                       controller.addWishlistProduct(data.id,
                                                                   controller.brand?.brandSlug ??"",(value) {
                                                                     if(value==true){
                                                                       provider.getWishlistProduct(0);
                                                                     }
-                                                                  },);
+                                                                  },(data?.seller?.venderId??'1').toString());
                                                 },
                                                 child: const Icon(
-                                                    Icons.favorite_border)))
+                                                    Icons.favorite_border,color: AppColors.yellowishColor,)))
                                         : Positioned(
                                             top: 5,
                                             right: 5,
                                             child: GestureDetector(
                                                 onTap: () {
+
                                                   controller.addWishlistProduct(data.id,
                                                     controller.brand?.brandSlug ??"",(value) {
                                                       if(value==true){
                                                         provider.getWishlistProduct(0);
                                                       }
-                                                    },);
+                                                    },(data?.seller?.venderId??'1').toString());
                                                 },
                                                 child: const Icon(
-                                                    Icons.favorite))),
+                                                    Icons.favorite,color: AppColors.yellowishColor,))),
                                     if(data.reviewsCount !=0)
                                       Positioned(
                                           bottom: 8,
@@ -304,7 +306,7 @@ class BrandProductScreen extends StatelessWidget {
                                       ),
                                       Text(
                                         data.name ?? "",
-                                        maxLines: 1,
+                                        maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: Theme.of(context)
                                             .textTheme
@@ -331,47 +333,56 @@ class BrandProductScreen extends StatelessWidget {
                                                   return const Text("Loading..");
                                                 }
                                                 double regularPrice = regularPriceSnapshot.data ?? 0.0;
-                                                return Row(
+                                                return Column(
+                                                  children: [
+                                                  Row(
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      currencyProvider.selectedCurrency == Currency.inr
-                                                          ? "₹${data.salePrice ?? " "}"
-                                                          : "\$${salePrice.toStringAsFixed(2)}",
+
+                                                   "₹${double.tryParse(data.salePrice ?? " ")?.toStringAsFixed(2)}",
+
                                                       maxLines: 1,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .labelSmall
                                                           ?.copyWith(
-                                                          fontSize: 9,
+                                                          fontSize: 12,
                                                           fontWeight: FontWeight.w600),
                                                     ),
                                                     const SizedBox(width: 2),
+                                                  ],
+                                                ),
                                                     if (salePrice != regularPrice)
-                                                      Text(
-                                                        currencyProvider.selectedCurrency == Currency.inr
-                                                            ? "₹${data.regularPrice ?? " "}"
-                                                            : "\$${regularPrice.toStringAsFixed(2)}",
-                                                        maxLines: 1,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .labelSmall
-                                                            ?.copyWith(
-                                                            fontSize: 7,
-                                                            decoration: TextDecoration.lineThrough,
-                                                            color: AppColors.redColor),
-                                                      ),
-                                                    const SizedBox(width: 2),
-                                                    if (salePrice != regularPrice)
-                                                      Text(
-                                                        "${data.discountValue}% off",
-                                                        maxLines: 1,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .labelSmall,
-                                                      ),
+                                                    Row(
+                                                      children: [
+                                                          Text(
+
+                                                            "₹${double.tryParse(data.regularPrice ?? " ")?.toStringAsFixed(2)}",
+
+                                                            maxLines: 1,
+                                                            style: Theme.of(context)
+                                                                .textTheme
+                                                                .labelSmall
+                                                                ?.copyWith(
+                                                                fontSize: 9,
+                                                                decoration: TextDecoration.lineThrough,
+                                                                color: AppColors.redColor),
+                                                          ),
+                                                        const SizedBox(width: 2),
+
+                                                          Text(
+                                                            "${data.discountValue}% Off",
+                                                            maxLines: 1,
+                                                            style: Theme.of(context)
+                                                                .textTheme
+                                                                .labelSmall,
+                                                          ),
+                                                      ],
+                                                    )
                                                   ],
                                                 );
+
                                               },
                                             );
                                           },
@@ -436,7 +447,7 @@ class BrandProductScreen extends StatelessWidget {
 
     double screenWidth = MediaQuery.of(context).size.width;
 
-    double childAspectRatio1 = screenHeight / screenWidth * .32;
+    double childAspectRatio1 = screenHeight / screenWidth * .26;
 
     return childAspectRatio1;
   }

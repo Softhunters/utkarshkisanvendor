@@ -1,7 +1,7 @@
 
 import 'dart:convert';
 
-import 'package:e_commerce/app/Wallet/Model/wallet_model.dart';
+import 'package:utkrashvendor/app/Wallet/Model/wallet_model.dart';
 import 'package:http/http.dart';
 
 import '../../../common_widgets/urls.dart';

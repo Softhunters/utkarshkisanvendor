@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:currency_converter/currency.dart';
-import 'package:e_commerce/app/CartSection/Controller/cart_api.dart';
-import 'package:e_commerce/app/Home/controller/home_api.dart';
+import 'package:utkrashvendor/app/CartSection/Controller/cart_api.dart';
+import 'package:utkrashvendor/app/Home/controller/home_api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_share/flutter_share.dart';
+
+// import 'package:flutter_share/flutter_share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:http/http.dart';
 import '../../../common_widgets/app_colors.dart';
@@ -43,6 +45,7 @@ class HomeController extends ChangeNotifier {
 
   List<Products> allShopProduct = [];
 
+  String categoryName = '';
   bool isLoading = false;
   bool shopProductLoading = false;
   String perPage = "20";
@@ -88,17 +91,18 @@ class HomeController extends ChangeNotifier {
       filterProducts.clear();
       featureProducts.clear();
     }
-    // print("start");
 
+    sliders.clear();
+    mixedList.clear();
     final homeData = await apiService.homeApi();
     if (homeData != null) {
       categoryList = homeData.result?.categorys ?? [];
       subCategories = homeData.result?.subcategorys ?? [];
 
       mixedList.addAll(categoryList);
-      mixedList.addAll(subCategories);
+      //  mixedList.addAll(subCategories);
 
-      // print(categoryList.length);
+
       featureProducts = homeData.result?.fproducts ?? [];
       allProducts = homeData.result?.products ?? [];
       brands = homeData.result?.brands ?? [];
@@ -107,7 +111,10 @@ class HomeController extends ChangeNotifier {
       isLoading = false;
 
       for (var i = 0; i < homeData.result!.sliders!.length; i++) {
-        sliders.add(homeData.result!.sliders![i].images ?? "");
+        String image = homeData.result!.sliders![i].images ?? "";
+        if (!sliders.contains(image)) {
+          sliders.add(image);
+        }
       }
       cate = homeData.result?.brands ?? [];
 
@@ -120,13 +127,16 @@ class HomeController extends ChangeNotifier {
   String userName = "";
   String myReferralCode = "";
   String referBy = "";
+  String? userId = "";
 
   /// Get User profile
   Future<ProfileModel?> getProfile() async {
     final data = await apiService.getProfile();
     if (data != null) {
+
       userName = data.result?.name ?? "";
       myReferralCode = data.result?.referralCode ?? "";
+      userId = (data.result?.id ?? '').toString();
       await SharedStorage.instance.userDetail(
           username: data.result?.name ?? "",
           email: data.result?.email ?? "",
@@ -180,11 +190,15 @@ class HomeController extends ChangeNotifier {
     subcateProduct.clear();
     final data =
         await apiService.getCategoriesApi(slug, pageNo2, int.parse(perPage1));
+
+
     if (data != null) {
       categorySlug = data.result!.category?.slug ?? "";
+      categoryName = data.result!.category?.name ?? "";
+
       subCategoryList = data.result?.subcategorys ?? [];
       cateProduct = data.result?.products?.data ?? [];
-      print(cateProduct.length);
+
       // perPage1 = data.result?.products?.perPage ?? '10';
       totalCategoryProduct = data.result?.products?.total;
 
@@ -194,18 +208,36 @@ class HomeController extends ChangeNotifier {
     }
   }
 
+  void setCategoryBySlug(String slug) async {
+    await getHomeData(1);
+    for (var p in categoryList) {
+
+    }
+    try {
+      // final matchedProduct = categorySlug.firstWhere(
+      //       (element) => (element.slug ?? '') == slug.trim().toLowerCase(),
+      // );
+      // categoryName = matchedProduct.cname??''; // or .slug or .id
+    } catch (e) {
+
+      return;
+    }
+
+    notifyListeners();
+  }
+
   Future<dynamic> getSubCategoryData(cateSlug, subCatId, type) async {
     if (type == 0) {
       isLoading = true;
       subCategoryList.clear();
-    }else {
+    } else {
       cateScrollLoading = true;
     }
 
     final data = await apiService.getSubCategoriesApi(
         cateSlug.toString(), subCatId.toString());
     if (data != null) {
-      print("data");
+
       subCategoryList = data.result?.subcategorys ?? [];
       subcateProduct = data.result?.products?.data ?? [];
       isLoading = false;
@@ -216,10 +248,20 @@ class HomeController extends ChangeNotifier {
   }
 
   Products? productDetail;
+  String editButtonYesOrNo = "";
+  List<SellerList> sellerList = [];
+  List<SellerCartList> sellerCartList = [];
+  List<int> sellerCartIds = [];
   List<dynamic> singleProductImages = [];
   List<Varaiants> variant = [];
 
   int? indexx;
+
+  void setSellerCartList(List<SellerCartList> list) {
+    sellerCartList = list;
+    sellerCartIds = list.map((e) => e.sellerId ?? 0).toList();
+    notifyListeners();
+  }
 
   changePriceWithIndex(value) {
     indexx = value;
@@ -243,10 +285,16 @@ class HomeController extends ChangeNotifier {
     if (value == 0) {
       productLoading = true;
     }
+
     final data = await apiService.getProductDetailApi(id.toString());
+
     if (data != null) {
+
       productDetail = data.result?.product!;
       variant = data.result?.varaiants ?? [];
+      sellerList = data?.result?.sellerList ?? [];
+      editButtonYesOrNo = data?.result?.edit ?? "";
+      setSellerCartList(data.result?.sellerCartList ?? []);
       reviews = data.result?.reviews ?? [];
       String? singleProductImages1 =
           "${data.result?.product?.image}${data.result?.product!.images}";
@@ -258,11 +306,7 @@ class HomeController extends ChangeNotifier {
 
   /// Share Product
   Future<void> shareProduct(String link, String message) async {
-    await FlutterShare.share(
-      title: 'Share App',
-      text: message,
-      linkUrl: link,
-    );
+    await Share.share('$message\n$link', subject: 'Share App');
   }
 
   Future<void> shareApp(String code) async {
@@ -270,16 +314,15 @@ class HomeController extends ChangeNotifier {
     // Set the app link and the message to be shared
     final String appLink = '${serverURL}uregisteor?rcode=$code';
     final String message = 'Check out my new app: $appLink';
-    print(appLink);
+
     // Share the app link and message using the share dialog
-    await FlutterShare.share(
-        title: 'Share App', text: message, linkUrl: appLink);
+    await Share.share('$message\n$appLink', subject: 'Share App');
   }
 
   /// Add wishlist Item
-  Future<dynamic> addWishlistProduct(id, screen) async {
+  Future<dynamic> addWishlistProduct(id, screen, String sID) async {
     // productLoading1 = true;
-    final data = await apiService.addWishlistApi(id.toString());
+    final data = await apiService.addWishlistApi(id.toString(), sID.toString());
     if (data != null) {
       var message = data['msg'];
 
@@ -305,9 +348,26 @@ class HomeController extends ChangeNotifier {
     }
   }
 
+  Future<dynamic> addWishlistProductForProductPage(
+      id, screen, String sID) async {
+    // productLoading1 = true;
+    final data = await apiService.addWishlistApi(id.toString(), sID.toString());
+    if (data != null) {
+      var message = data['msg'];
+      getProductDetail(dSlug, 1);
+      productLoading1 = false;
+      getWishlistProduct(1);
+      showSnackBar(
+          snackPosition: SnackPosition.TOP,
+          title: "Success",
+          description: message);
+      notifyListeners();
+    }
+  }
+
   /// Remove wishlist item
   Future<dynamic> deleteAllWishlistProduct() async {
-    print("stat");
+
     productLoading = true;
     final data = await apiService.deleteWishlistApi();
     if (data != false) {
@@ -343,27 +403,27 @@ class HomeController extends ChangeNotifier {
       getWishlistProduct(1);
       onResponse(true);
       // allWishListProducts = data.result?.wishlist ?? [];
-      // print(allWishListProducts.length);
+
       productLoading = false;
       notifyListeners();
     }
   }
 
   /// Move Cart to wishlist
-  Future<WishlistModel?> moveToWishlist(
-    String id,
-  ) async {
+  Future<WishlistModel?> moveToWishlist(String id) async {
     productLoading = true;
-    final data = await apiService.moveToWishlistApi(id);
-    if (data != false) {
+    final result = await apiService.moveToWishlistApi(id); // bool?
+
+    if (result != false) {
       getHomeData(0);
       getWishlistProduct(1);
-
-      // allWishListProducts = data.result?.wishlist ?? [];
-      // print(allWishListProducts.length);
-      productLoading = false;
-      notifyListeners();
     }
+
+    productLoading = false;
+    notifyListeners();
+
+    // Return something meaningful
+    return WishlistModel(); // Or null or a real model if available
   }
 
   int? favoriteIndex;
@@ -377,7 +437,7 @@ class HomeController extends ChangeNotifier {
     filterProducts = allShopProduct
         .where((element) => element.categoryId == "$value")
         .toList();
-    print(filterProducts.length);
+
     notifyListeners();
   }
 
@@ -441,47 +501,82 @@ class HomeController extends ChangeNotifier {
     count = value;
     notifyListeners();
   }
+
+  Map<int, int> sellerQuantities = {};
+
+  void initSellerQuantities(List<dynamic> sellers) {
+    for (var seller in sellers) {
+      int id = seller.vendorId ?? 0;
+      sellerQuantities[id] = 1;
+    }
+  }
+
+  void incrementQty(int vendorId) {
+    sellerQuantities[vendorId] = (sellerQuantities[vendorId] ?? 1) + 1;
+    notifyListeners();
+  }
+
+  void decrementQty(int vendorId) {
+    if ((sellerQuantities[vendorId] ?? 1) > 1) {
+      sellerQuantities[vendorId] = (sellerQuantities[vendorId] ?? 1) - 1;
+      notifyListeners();
+    }
+  }
+
+  int getQty(int vendorId) {
+    return sellerQuantities[vendorId] ?? 1;
+  }
 }
 
 class CurrencyProvider with ChangeNotifier {
   // final CurrencyService _currencyService = CurrencyService();
 
-  List<Currency> currencyList = [Currency.inr, Currency.usd];
+  // List<Currency> currencyList = [Currency.inr, Currency.usd];
+  List<Currency> currencyList = [Currency.inr];
   Currency? selectedCurrency;
-  getCurrency(){
-    selectedCurrency =  parseCurrency(SharedStorage.localStorage?.getString("currency"));
+
+  getCurrency() {
+    selectedCurrency =
+        parseCurrency(SharedStorage.localStorage?.getString("currency"));
   }
 
+  //
+  // Currency? parseCurrency(String? currencyString) {
+  //   if (currencyString == null) return null;
+  //   switch (currencyString) {
+  //     case 'Currency.inr':
+  //       return Currency.inr;
+  //     case 'Currency.usd':
+  //       return Currency.usd;
+  //     default:
+  //       return null; // Handle unknown currency case
+  //   }
+  // }
 
   Currency? parseCurrency(String? currencyString) {
     if (currencyString == null) return null;
     switch (currencyString) {
       case 'Currency.inr':
         return Currency.inr;
-      case 'Currency.usd':
-        return Currency.usd;
       default:
         return null; // Handle unknown currency case
     }
   }
 
-
-
   void updateCurrency(Currency value, ValueSetter<bool> onResponse) {
     selectedCurrency = value;
-    SharedStorage.localStorage?.setString("currency", selectedCurrency.toString());
+    SharedStorage.localStorage
+        ?.setString("currency", selectedCurrency.toString());
     onResponse(true);
     notifyListeners();
   }
 
   Future<double> convertToUSD(double salePriceInINR) async {
     // double exchangeRate = await getExchangeRate();
-    var result=  salePriceInINR / double.parse(dollarRate);
+    var result = salePriceInINR / double.parse(dollarRate);
     // notifyListeners();
     return result;
   }
-double? exchangeRate;
 
-
+  double? exchangeRate;
 }
-

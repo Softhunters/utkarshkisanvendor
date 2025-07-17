@@ -81,7 +81,7 @@ class AppGridWidget extends StatelessWidget {
                             flex: 3,
                             child: Text(productTitle,maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           ),
                           Expanded(
@@ -90,7 +90,7 @@ class AppGridWidget extends StatelessWidget {
                               regularPricw ??"",
                               maxLines: 1,
 
-                              style: Theme.of(context).textTheme.overline?.copyWith( decoration: TextDecoration.lineThrough,color: AppColors.redColor),
+                              style: Theme.of(context).textTheme.labelSmall?.copyWith( decoration: TextDecoration.lineThrough,color: AppColors.redColor),
                             ),
                           ),
                           Expanded(
@@ -98,7 +98,7 @@ class AppGridWidget extends StatelessWidget {
                             child: Text(
                               salePrice ??"",
                               maxLines: 1,
-                              style: Theme.of(context).textTheme.overline,
+                              style: Theme.of(context).textTheme.labelSmall,
                             ),
                           ),
                         ],

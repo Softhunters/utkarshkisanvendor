@@ -1,8 +1,9 @@
 
 
-import 'package:e_commerce/app/CartSection/Controller/cart_controller.dart';
-import 'package:e_commerce/app/Profile/Controller/profile_controller.dart';
-import 'package:e_commerce/widgets/app_button_widget.dart';
+import 'package:utkrashvendor/app/CartSection/Controller/cart_controller.dart';
+import 'package:utkrashvendor/app/Profile/Controller/profile_controller.dart';
+import 'package:utkrashvendor/widgets/app_button_white_background_widget.dart';
+import 'package:utkrashvendor/widgets/app_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -123,13 +124,13 @@ class ShippingAddressScreen extends StatelessWidget {
                       },),
                   ),
                   SizedBox(height: 25,),
-                  AppButton(
-                    bgColor: AppColors.gery1Color,
+                  AppButtonWhiteBackgroundWidget(
+
                     title: "Add New Address",
                     style: Theme.of(context).textTheme.titleLarge,
                     onTap: () {
                       controller.getCountry();
-                      Get.to(AddAddressScreen(id: 0,));
+                      Get.to(()=>AddAddressScreen(id: 0,));
                   },)
 
                 ],

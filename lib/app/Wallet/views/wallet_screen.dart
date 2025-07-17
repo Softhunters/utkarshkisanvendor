@@ -1,4 +1,4 @@
-import 'package:e_commerce/common_widgets/app_colors.dart';
+import 'package:utkrashvendor/common_widgets/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +55,7 @@ class WalletScreen extends StatelessWidget {
                     ),
                     child: CupertinoSlidingSegmentedControl<int>(
                         backgroundColor: Theme.of(context).highlightColor,
-                        thumbColor: Theme.of(context).primaryColor,
+                        thumbColor: AppColors.primaryColor,
                         padding: EdgeInsets.zero,
                         groupValue: controller.segmentedControlGroupValue,
                         onValueChanged: (value) {

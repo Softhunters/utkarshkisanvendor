@@ -1,5 +1,5 @@
-import 'package:e_commerce/app/Auth/view/login_screen.dart';
-import 'package:e_commerce/widgets/app_button_widget.dart';
+import 'package:utkrashvendor/app/Auth/view/login_screen.dart';
+import 'package:utkrashvendor/widgets/app_button_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -55,7 +55,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     SizedBox(
                       height: height * .02,
                     ),
-                    Center(child: Image.asset("assets/images/splash_icon.png",height: height*.1,)),
+                    Center(child: Image.asset("assets/images/app_logo_large.png",height: height*.1,)),
 
                     SizedBox(
                       height: height * .02,
@@ -65,10 +65,10 @@ class _SignupScreenState extends State<SignupScreen> {
                       style: Theme.of(context)
                           .textTheme
                           .headlineLarge
-                          ?.copyWith(fontSize: 40, fontWeight: FontWeight.w500),
+                          ?.copyWith(fontSize: 34, fontWeight: FontWeight.w500),
                     ),
                     SizedBox(
-                      height: height * .06,
+                      height: height * .04,
                     ),
                     TextFormField(
                       controller: authProvider.nameController,
@@ -272,7 +272,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       textAlign: TextAlign.start,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Please Enter your User Name";
+                          return "Please confirm your password";
                         } else if (value !=
                             authProvider.passwordController.text) {
                           return "Password not matched";

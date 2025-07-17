@@ -9,7 +9,7 @@ class CheckOutModel {
   CheckOutModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     result =
-    json['result'] != null ? new Result.fromJson(json['result']) : null;
+        json['result'] != null ? new Result.fromJson(json['result']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -32,11 +32,11 @@ class Result {
 
   Result(
       {this.cart,
-        this.taxvalue,
-        this.subtotal,
-        this.totalamount,
-        this.shippingcost,
-        this.addresss});
+      this.taxvalue,
+      this.subtotal,
+      this.totalamount,
+      this.shippingcost,
+      this.addresss});
 
   Result.fromJson(Map<String, dynamic> json) {
     if (json['cart'] != null) {
@@ -72,6 +72,78 @@ class Result {
 
 class Cart {
   int? id;
+  int? productId;
+  int? userId;
+  int? sellerId;
+  String? productName;
+  String? productImage;
+  String? price;
+  String? quantity;
+  String? createdAt;
+  String? updatedAt;
+  int? qty;
+  ProductForCheckout? product;
+  SellerForCheckout? sellerProduct;
+
+  Cart(
+      {this.id,
+      this.productId,
+      this.userId,
+      this.sellerId,
+      this.productName,
+      this.productImage,
+      this.price,
+      this.quantity,
+      this.createdAt,
+      this.updatedAt,
+      this.qty,
+      this.product,
+      this.sellerProduct});
+
+  Cart.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    productId = json['product_id'];
+    userId = json['user_id'];
+    sellerId = json['seller_id'];
+    productName = json['product_name'];
+    productImage = json['product_image'];
+    price = json['price'].toString();
+    quantity = json['quantity'].toString();
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    qty = json['qty'];
+    product =
+        json['product'] != null ? new ProductForCheckout.fromJson(json['product']) : null;
+    sellerProduct = json['seller_product'] != null
+        ? new SellerForCheckout.fromJson(json['seller_product'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['product_id'] = this.productId;
+    data['user_id'] = this.userId;
+    data['seller_id'] = this.sellerId;
+    data['product_name'] = this.productName;
+    data['product_image'] = this.productImage;
+    data['price'] = this.price;
+    data['quantity'] = this.quantity;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['qty'] = this.qty;
+    if (this.product != null) {
+      data['product'] = this.product!.toJson();
+    }
+    if (this.sellerProduct != null) {
+      data['seller_product'] = this.sellerProduct!.toJson();
+    }
+    return data;
+  }
+}
+
+class ProductForCheckout {
+  int? id;
   String? name;
   String? slug;
   String? shortDescription;
@@ -82,71 +154,67 @@ class Cart {
   String? sKU;
   String? stockStatus;
   int? featured;
-  String? quantity;
+  int? quantity;
   String? image;
   String? images;
   int? categoryId;
   int? subcategoryId;
   int? subsubcategoryId;
-  int? medtypeId;
-  int? parentId;
+  String? parentId;
   String? createdAt;
   String? updatedAt;
   int? brandId;
-  String? breedId;
-  int? isBaby;
-  int? isChild;
-  int? isYoung;
+  String? tags;
   int? status;
   int? addBy;
   int? taxId;
-  int? freecancellation;
+  String? freecancellation;
   String? discountValue;
-  String? varaintDetail;
-  String? flavourId;
-  String? veg;
-  String? qty;
+  String? variantDetail;
+  String? sizeLimit;
+  String? hsnCode;
+  String? metaTag;
+  String? metaDescription;
+  String? orderQty;
   Taxslab? taxslab;
 
-  Cart(
+  ProductForCheckout(
       {this.id,
-        this.name,
-        this.slug,
-        this.shortDescription,
-        this.description,
-        this.manufacturerDetails,
-        this.regularPrice,
-        this.salePrice,
-        this.sKU,
-        this.stockStatus,
-        this.featured,
-        this.quantity,
-        this.image,
-        this.images,
-        this.categoryId,
-        this.subcategoryId,
-        this.subsubcategoryId,
-        this.medtypeId,
-        this.parentId,
-        this.createdAt,
-        this.updatedAt,
-        this.brandId,
-        this.breedId,
-        this.isBaby,
-        this.isChild,
-        this.isYoung,
-        this.status,
-        this.addBy,
-        this.taxId,
-        this.freecancellation,
-        this.discountValue,
-        this.varaintDetail,
-        this.flavourId,
-        this.veg,
-        this.qty,
-        this.taxslab});
+      this.name,
+      this.slug,
+      this.shortDescription,
+      this.description,
+      this.manufacturerDetails,
+      this.regularPrice,
+      this.salePrice,
+      this.sKU,
+      this.stockStatus,
+      this.featured,
+      this.quantity,
+      this.image,
+      this.images,
+      this.categoryId,
+      this.subcategoryId,
+      this.subsubcategoryId,
+      this.parentId,
+      this.createdAt,
+      this.updatedAt,
+      this.brandId,
+      this.tags,
+      this.status,
+      this.addBy,
+      this.taxId,
+      this.freecancellation,
+      this.discountValue,
+      this.variantDetail,
+      this.sizeLimit,
+      this.hsnCode,
+      this.metaTag,
+      this.metaDescription,
+      this.orderQty,
+      this.taxslab});
 
-  Cart.fromJson(Map<String, dynamic> json) {
+  ProductForCheckout.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     slug = json['slug'];
@@ -158,32 +226,30 @@ class Cart {
     sKU = json['SKU'];
     stockStatus = json['stock_status'];
     featured = json['featured'];
-    quantity = json['quantity'].toString();
+    quantity = json['quantity'];
     image = json['image'];
     images = json['images'];
     categoryId = json['category_id'];
     subcategoryId = json['subcategory_id'];
     subsubcategoryId = json['subsubcategory_id'];
-    medtypeId = json['medtype_id'];
-    parentId = json['parent_id'];
+    parentId = json['parent_id'].toString();
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     brandId = json['brand_id'];
-    breedId = json['breed_id'];
-    isBaby = json['is_baby'];
-    isChild = json['is_child'];
-    isYoung = json['is_young'];
+    tags = json['tags'];
     status = json['status'];
     addBy = json['add_by'];
     taxId = json['tax_id'];
     freecancellation = json['freecancellation'];
     discountValue = json['discount_value'];
-    varaintDetail = json['varaint_detail'].toString();
-    flavourId = json['flavour_id'].toString();
-    veg = json['veg'].toString();
-    qty = json['qty'].toString();
+    variantDetail = json['variant_detail'];
+    sizeLimit = json['size_limit'].toString();
+    hsnCode = json['hsn_code'];
+    metaTag = json['meta_tag'];
+    metaDescription = json['meta_description'];
+    orderQty = json['order_qty'].toString();
     taxslab =
-    json['taxslab'] != null ? new Taxslab.fromJson(json['taxslab']) : null;
+        json['taxslab'] != null ? new Taxslab.fromJson(json['taxslab']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -205,27 +271,82 @@ class Cart {
     data['category_id'] = this.categoryId;
     data['subcategory_id'] = this.subcategoryId;
     data['subsubcategory_id'] = this.subsubcategoryId;
-    data['medtype_id'] = this.medtypeId;
     data['parent_id'] = this.parentId;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['brand_id'] = this.brandId;
-    data['breed_id'] = this.breedId;
-    data['is_baby'] = this.isBaby;
-    data['is_child'] = this.isChild;
-    data['is_young'] = this.isYoung;
+    data['tags'] = this.tags;
     data['status'] = this.status;
     data['add_by'] = this.addBy;
     data['tax_id'] = this.taxId;
     data['freecancellation'] = this.freecancellation;
     data['discount_value'] = this.discountValue;
-    data['varaint_detail'] = this.varaintDetail;
-    data['flavour_id'] = this.flavourId;
-    data['veg'] = this.veg;
-    data['qty'] = this.qty;
+    data['variant_detail'] = this.variantDetail;
+    data['size_limit'] = this.sizeLimit;
+    data['hsn_code'] = this.hsnCode;
+    data['meta_tag'] = this.metaTag;
+    data['meta_description'] = this.metaDescription;
+    data['order_qty'] = this.orderQty;
     if (this.taxslab != null) {
       data['taxslab'] = this.taxslab!.toJson();
     }
+    return data;
+  }
+}
+
+class SellerForCheckout {
+  int? id;
+  int? productId;
+  int? vendorId;
+  int? price;
+  int? quantity;
+  String? additionalInfo;
+  String? stockStatus;
+  int? status;
+  String? createdAt;
+  String? updatedAt;
+  Null? deletedAt;
+
+  SellerForCheckout(
+      {this.id,
+      this.productId,
+      this.vendorId,
+      this.price,
+      this.quantity,
+      this.additionalInfo,
+      this.stockStatus,
+      this.status,
+      this.createdAt,
+      this.updatedAt,
+      this.deletedAt});
+
+  SellerForCheckout.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    productId = json['product_id'];
+    vendorId = json['vendor_id'];
+    price = json['price'];
+    quantity = json['quantity'];
+    additionalInfo = json['additional_info'];
+    stockStatus = json['stock_status'];
+    status = json['status'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    deletedAt = json['deleted_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['product_id'] = this.productId;
+    data['vendor_id'] = this.vendorId;
+    data['price'] = this.price;
+    data['quantity'] = this.quantity;
+    data['additional_info'] = this.additionalInfo;
+    data['stock_status'] = this.stockStatus;
+    data['status'] = this.status;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['deleted_at'] = this.deletedAt;
     return data;
   }
 }
@@ -241,12 +362,12 @@ class Taxslab {
 
   Taxslab(
       {this.id,
-        this.taxName,
-        this.type,
-        this.value,
-        this.status,
-        this.createdAt,
-        this.updatedAt});
+      this.taxName,
+      this.type,
+      this.value,
+      this.status,
+      this.createdAt,
+      this.updatedAt});
 
   Taxslab.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -294,24 +415,24 @@ class Addresss {
 
   Addresss(
       {this.id,
-        this.userId,
-        this.name,
-        this.mobile,
-        this.mobileOptional,
-        this.line1,
-        this.line2,
-        this.landmark,
-        this.countryId,
-        this.stateId,
-        this.cityId,
-        this.zipcode,
-        this.addressType,
-        this.defaultAddress,
-        this.createdAt,
-        this.updatedAt,
-        this.country,
-        this.city,
-        this.state});
+      this.userId,
+      this.name,
+      this.mobile,
+      this.mobileOptional,
+      this.line1,
+      this.line2,
+      this.landmark,
+      this.countryId,
+      this.stateId,
+      this.cityId,
+      this.zipcode,
+      this.addressType,
+      this.defaultAddress,
+      this.createdAt,
+      this.updatedAt,
+      this.country,
+      this.city,
+      this.state});
 
   Addresss.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -330,8 +451,9 @@ class Addresss {
     defaultAddress = json['default_address'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    country =
-    json['country'] != null ? new Countries.fromJson(json['country']) : null;
+    country = json['country'] != null
+        ? new Countries.fromJson(json['country'])
+        : null;
     city = json['city'] != null ? new City.fromJson(json['city']) : null;
     state = json['state'] != null ? new State.fromJson(json['state']) : null;
   }
@@ -398,32 +520,32 @@ class Countries {
 
   Countries(
       {this.id,
-        this.name,
-        this.iso3,
-        this.numericCode,
-        this.iso2,
-        this.phonecode,
-        this.capital,
-        this.currency,
-        this.currencyName,
-        this.currencySymbol,
-        this.tld,
-        this.native,
-        this.region,
-        this.regionId,
-        this.subregion,
-        this.subregionId,
-        this.nationality,
-        this.timezones,
-        this.translations,
-        this.latitude,
-        this.longitude,
-        this.emoji,
-        this.emojiU,
-        this.createdAt,
-        this.updatedAt,
-        this.flag,
-        this.wikiDataId});
+      this.name,
+      this.iso3,
+      this.numericCode,
+      this.iso2,
+      this.phonecode,
+      this.capital,
+      this.currency,
+      this.currencyName,
+      this.currencySymbol,
+      this.tld,
+      this.native,
+      this.region,
+      this.regionId,
+      this.subregion,
+      this.subregionId,
+      this.nationality,
+      this.timezones,
+      this.translations,
+      this.latitude,
+      this.longitude,
+      this.emoji,
+      this.emojiU,
+      this.createdAt,
+      this.updatedAt,
+      this.flag,
+      this.wikiDataId});
 
   Countries.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -504,17 +626,17 @@ class City {
 
   City(
       {this.id,
-        this.name,
-        this.stateId,
-        this.stateCode,
-        this.countryId,
-        this.countryCode,
-        this.latitude,
-        this.longitude,
-        this.createdAt,
-        this.updatedAt,
-        this.flag,
-        this.wikiDataId});
+      this.name,
+      this.stateId,
+      this.stateCode,
+      this.countryId,
+      this.countryCode,
+      this.latitude,
+      this.longitude,
+      this.createdAt,
+      this.updatedAt,
+      this.flag,
+      this.wikiDataId});
 
   City.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -566,18 +688,18 @@ class State {
 
   State(
       {this.id,
-        this.name,
-        this.countryId,
-        this.countryCode,
-        this.fipsCode,
-        this.iso2,
-        this.type,
-        this.latitude,
-        this.longitude,
-        this.createdAt,
-        this.updatedAt,
-        this.flag,
-        this.wikiDataId});
+      this.name,
+      this.countryId,
+      this.countryCode,
+      this.fipsCode,
+      this.iso2,
+      this.type,
+      this.latitude,
+      this.longitude,
+      this.createdAt,
+      this.updatedAt,
+      this.flag,
+      this.wikiDataId});
 
   State.fromJson(Map<String, dynamic> json) {
     id = json['id'];

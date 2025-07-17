@@ -1,4 +1,4 @@
-import 'package:e_commerce/widgets/cache_network_image.dart';
+import 'package:utkrashvendor/widgets/cache_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -12,6 +12,15 @@ import '../Controller/profile_controller.dart';
 
 class ContactScreen extends StatelessWidget {
   const ContactScreen({super.key});
+
+  Future<void> launchURL(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +44,7 @@ class ContactScreen extends StatelessWidget {
           actions: [
             GestureDetector(
                 onTap: () {
-                  Get.to(const SearchScreen());
+                  Get.to(()=>const SearchScreen());
                 },
                 child: const Icon(Icons.search)),
             const SizedBox(
@@ -64,42 +73,27 @@ class ContactScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      MyCacheNetworkImages(
-                        imageUrl:
-                            "$adminLogoURL${controller.contactData?.mobileLogo ?? " "}",
-                        radius: 10,
-                        fit: BoxFit.cover,
-                        width: width * .15,
-                        height: width * .16,
-                      ),
-                      const SizedBox(
-                        width: 30,
-                      ),
-                      Text(
-                        "${controller.contactData?.siteName}",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall
-                            ?.copyWith(color: AppColors.primaryBlack),
-                      ),
+                      Center(
+                        child: Image.asset("assets/images/app_logo_small.png",width: 100,height: 100,),
+                      )
 
-                      // SizedBox(height: 15,),
                     ],
                   ),
 
-                  Image.asset( "assets/images/contact.jpeg", fit: BoxFit.cover,
+                 /* Image.asset( "assets/images/contact.jpeg", fit: BoxFit.cover,
                     width: width *.88,
-                    height: width * .32,),
+                    height: width * .32,),*/
 
                   const SizedBox(
-                    height: 15,
+                    height: 30,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      GestureDetector(
+                      Expanded(child: GestureDetector(
                         onTap: () {
                           final Uri launchUri = Uri(
                             scheme: 'tel',
@@ -109,92 +103,63 @@ class ContactScreen extends StatelessWidget {
                         },
                         child: Card(
                           child: Container(
-                            width: 110,
+                            // width: 110,
                             height: 60,
                             decoration: BoxDecoration(
                                 border: Border.all(),
                                 borderRadius: BorderRadius.circular(10)),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Column(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   const Icon(Icons.phone,color: AppColors.green,),
+                                  SizedBox(width: 12,),
                                   Text(
                                     "Call Us",
                                     style:
-                                        Theme.of(context).textTheme.bodySmall,
+                                    Theme.of(context).textTheme.bodySmall,
                                   )
                                 ],
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      GestureDetector(
+                      )),
+                      Expanded(child: GestureDetector(
                         onTap: () {
                           final Uri launchUri = Uri(
                               scheme: 'mailto',
-                              path: controller.contactData?.phone,
+                              path: controller.contactData?.email,
                               query: 'subject= &body=');
                           controller.makePhoneCall(launchUri);
                         },
                         child: Card(
                           child: Container(
-                            width: 110,
+                            // width: 110,
                             height: 60,
                             decoration: BoxDecoration(
                                 border: Border.all(),
                                 borderRadius: BorderRadius.circular(10)),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Column(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   const Icon(Icons.mail,color: AppColors.blue,),
+                                  SizedBox(width: 12,),
                                   Text(
                                     "Email Us",
                                     style:
-                                        Theme.of(context).textTheme.bodySmall,
+                                    Theme.of(context).textTheme.bodySmall,
                                   )
                                 ],
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          final Uri launchUri = Uri(
-                            // scheme: 'mailto',
-                            path: controller.contactData?.map,
-                            // query: 'subject= &body='
-                          );
-                          controller.makePhoneCall(launchUri);
+                      )),
 
-                          // controller.launchInstagramURL(controller.contactData?.map ??"");
-                        },
-                        child: Card(
-                          child: Container(
-                            width: 110,
-                            height: 60,
-                            decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  const Icon(Icons.map),
-                                  Text(
-                                    "Direction",
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                   /*  Card(
@@ -295,19 +260,41 @@ class ContactScreen extends StatelessWidget {
                   const SizedBox(
                     height: 15,
                   ),
-                  Text(
-                    "Address",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+
                   SizedBox(
-                    width: 220,
+                    width: width,
                     // height: 60,
                     // decoration: BoxDecoration(border: Border.all(),borderRadius: BorderRadius.circular(10)),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "${controller.contactData?.address}  \n\n${controller.contactData?.email}\n${controller.contactData?.phone}, \n${controller.contactData?.phone2} ",
-                        style: Theme.of(context).textTheme.bodySmall,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.phone),
+                              SizedBox(width: 12,),
+                              Text("${controller.contactData?.phone}",style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.primaryBlack,fontSize: 16),)
+                            ],
+                          ),
+                          SizedBox(height: 12,),
+                          Row(
+                            children: [
+                              Icon(Icons.email),
+                              SizedBox(width: 12,),
+                              Text("${controller.contactData?.email}",style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.primaryBlack,fontSize: 16),)
+                            ],
+                          ),
+                          SizedBox(height: 12,),
+                          Row(
+                            children: [
+                              Icon(Icons.location_on),
+                              SizedBox(width: 12,),
+                              Expanded(child: Text("${controller.contactData?.address}",style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.primaryBlack,fontSize: 16),)
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 12,),
+                        ],
                       ),
                     ),
                   ),
@@ -316,6 +303,62 @@ class ContactScreen extends StatelessWidget {
                     height: 25,
                   ),
                   const Spacer(),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+
+                      GestureDetector(
+                        onTap:(){
+                          launchURL("https://utkarshkisan.com/privacy-policy");
+                        },child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Privacy Policies",style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.primaryDarkColor,fontSize: 16),),
+                        ],
+                      ),
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      GestureDetector(
+                        onTap: (){
+                          launchURL("https://utkarshkisan.com/return-refund-policy");
+                        },
+                        child:             Text("Return & Refund Policy",style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.primaryDarkColor,fontSize: 16),),
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      GestureDetector(
+                        onTap: (){
+                          launchURL("https://utkarshkisan.com/terms-conditions");
+                        },
+                        child:   Text("Terms & Conditions",style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.primaryDarkColor,fontSize: 16),),
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      GestureDetector(
+                        onTap: (){
+                          launchURL("https://utkarshkisan.com/shipping-policy");
+                        },
+                        child:    Text("Shipping & Delivery Policy",style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.primaryDarkColor,fontSize: 16),),
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      GestureDetector(
+                        onTap: (){
+                          launchURL("https://utkarshkisan.com/vendor-terms-conditions");
+                        },
+                        child:    Text("Vendor Terms & Conditions",style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.primaryDarkColor,fontSize: 16),),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 60,
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18.0),
                     child: Row(
@@ -329,7 +372,7 @@ class ContactScreen extends StatelessWidget {
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(100.0),
                               child: Image.asset(
-                                "assets/images/fb.webp",
+                                "assets/images/fba.png",
                                 width: 35,
                                 height: 35,
                                 fit: BoxFit.cover,
@@ -346,7 +389,7 @@ class ContactScreen extends StatelessWidget {
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(100.0),
                               child: Image.asset(
-                                "assets/images/insta.png",
+                                "assets/images/instaa.png",
                                 width: 32,
                                 height: 32,
                               )),
@@ -362,30 +405,31 @@ class ContactScreen extends StatelessWidget {
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(100.0),
                               child: Image.asset(
-                                "assets/images/twitter.webp",
-                                width: 45,
-                                height: 45,
-                              )),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            controller.makePhoneCall(Uri.parse(
-                                controller.contactData?.pinterest ?? ""));
-                          },
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100.0),
-                              child: Image.asset(
-                                "assets/images/pint.png",
+                                "assets/images/xa.png",
                                 width: 32,
                                 height: 32,
                               )),
                         ),
+
                         const SizedBox(
-                          width: 15,
+                          width: 20,
                         ),
+                        // GestureDetector(
+                        //   onTap: () {
+                        //     controller.makePhoneCall(Uri.parse(
+                        //         controller.contactData?.pinterest ?? ""));
+                        //   },
+                        //   child: ClipRRect(
+                        //       borderRadius: BorderRadius.circular(100.0),
+                        //       child: Image.asset(
+                        //         "assets/images/pinta.png",
+                        //         width: 32,
+                        //         height: 32,
+                        //       )),
+                        // ),
+                        // const SizedBox(
+                        //   width: 15,
+                        // ),
                         GestureDetector(
                           onTap: () {
                             controller.makePhoneCall(
@@ -394,7 +438,7 @@ class ContactScreen extends StatelessWidget {
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(100.0),
                               child: Image.asset(
-                                "assets/images/youtube.png",
+                                "assets/images/youtubea.png",
                                 width: 30,
                                 height: 30,
                               )),

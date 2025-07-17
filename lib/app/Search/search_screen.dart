@@ -1,5 +1,5 @@
-import 'package:e_commerce/common_widgets/urls.dart';
-import 'package:e_commerce/widgets/app_button_widget.dart';
+import 'package:utkrashvendor/common_widgets/urls.dart';
+import 'package:utkrashvendor/widgets/app_button_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -39,7 +39,6 @@ class _SearchScreenState extends State<SearchScreen> {
           surfaceTintColor: AppColors.white,
           leading: GestureDetector(
               onTap: () {
-
                 Navigator.pop(context);
                 controller.back();
               },
@@ -73,26 +72,24 @@ class _SearchScreenState extends State<SearchScreen> {
                     fontWeight: FontWeight.w400,
                     color: AppColors.divideColor,
                   ),
-                  sufixIcon: GestureDetector(
-                      onTap: () {
-                        _modalBottomSheetMenu(context, controller);
-                      },
-                      child: const Icon(FontAwesomeIcons.sliders)),
-                  onChanged: (value) {
-                    final data = ApplyFilterModel(
+                  // sufixIcon: GestureDetector(
+                  //     onTap: () {
+                  //       _modalBottomSheetMenu(context, controller);
+                  //     },
+                  //     child: const Icon(FontAwesomeIcons.sliders)),
+                    onChanged: (value) {
+                      controller.pageNo1 = 1; // 🔥 REQUIRED for new search
+                      final data = ApplyFilterModel(
                         filterBrand: [],
                         filterMinPrice: "",
                         filterMaxPrice: "",
                         filterSortBy: "",
-                        filterDiscount: "");
-                    controller.saveController(value);
-                    controller.searchedProduct(
-                      searchType,
-                      value,
-                      data,
-                      (values) {},
-                    );
-                  },
+                        filterDiscount: "",
+                      );
+                      controller.saveController(value);
+                      controller.searchedProduct(searchType, value, data, (values) {});
+                    },
+
                 ),
                 const SizedBox(
                   height: 10,
@@ -108,10 +105,8 @@ class _SearchScreenState extends State<SearchScreen> {
                             : 'Result "${controller.searchController.text}"',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge
-                            ?.copyWith(fontWeight: FontWeight.w700, fontSize: 16),
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w700, fontSize: 16),
                       ),
                     ),
                     // Text("See All",
@@ -151,7 +146,6 @@ class _SearchScreenState extends State<SearchScreen> {
         isScrollControlled: true,
         context: context,
         builder: (builder) {
-
           return StatefulBuilder(
             builder: (context, setState) => SizedBox(
               // height: 550.0,
@@ -205,16 +199,17 @@ class _SearchScreenState extends State<SearchScreen> {
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
                               var data = cate[index];
-                              bool isSelected = controller.favoriteIndex.contains(index);
+                              bool isSelected =
+                                  controller.favoriteIndex.contains(index);
                               return Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: GestureDetector(
                                   onTap: () {
                                     setState(() {
                                       if (isSelected) {
-
                                         controller.favoriteIndex.remove(index);
-                                        controller.selectedBrands.remove(data.id);
+                                        controller.selectedBrands
+                                            .remove(data.id);
                                       } else {
                                         controller.favoriteIndex.add(index);
                                         controller.selectedBrands.add(data.id!);
@@ -225,21 +220,28 @@ class _SearchScreenState extends State<SearchScreen> {
                                     height: 20,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(30),
-                                      border: Border.all(color: AppColors.primaryColor),
+                                      border: Border.all(
+                                          color: AppColors.primaryColor),
                                       color: isSelected
                                           ? AppColors.primaryColor
                                           : AppColors.white,
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15.0),
                                       child: Center(
                                         child: Text(
                                           data.brandName ?? "",
                                           style: isSelected
-                                              ? Theme.of(context).textTheme.labelSmall?.copyWith(
-                                            color: AppColors.white,
-                                          )
-                                              : Theme.of(context).textTheme.labelSmall,
+                                              ? Theme.of(context)
+                                                  .textTheme
+                                                  .labelSmall
+                                                  ?.copyWith(
+                                                    color: AppColors.white,
+                                                  )
+                                              : Theme.of(context)
+                                                  .textTheme
+                                                  .labelSmall,
                                         ),
                                       ),
                                     ),
@@ -249,7 +251,6 @@ class _SearchScreenState extends State<SearchScreen> {
                             },
                           ),
                         ),
-
                         const SizedBox(
                           height: 10,
                         ),
@@ -276,8 +277,10 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                           onChanged: (RangeValues values) {
                             setState(() {
-                              controller.priceLow = values.start.round().toString();
-                              controller.priceHigh = values.end.round().toString();
+                              controller.priceLow =
+                                  values.start.round().toString();
+                              controller.priceHigh =
+                                  values.end.round().toString();
 
                               if (values.end - values.start >= 20) {
                                 controller.values = values;
@@ -298,7 +301,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                      /*  Text(
+                        /*  Text(
                           "Sort By",
                           style: Theme.of(context)
                               .textTheme
@@ -472,7 +475,6 @@ class _SearchScreenState extends State<SearchScreen> {
                                   controller.priceHigh = "5000";
                                   controller.sortby = "";
                                   controller.discounts = "";
-
                                 },
                               ),
                             ),
@@ -485,17 +487,14 @@ class _SearchScreenState extends State<SearchScreen> {
                                 width: 200,
                                 title: "Apply",
                                 onTap: () {
-
-
                                   searchType = 1;
                                   final data = ApplyFilterModel(
                                       filterBrand: controller.selectedBrands,
                                       filterMinPrice: controller.priceLow,
                                       filterMaxPrice: controller.priceHigh,
-                                      filterSortBy: controller.sortby ,
-                                      filterDiscount: controller.discounts );
+                                      filterSortBy: controller.sortby,
+                                      filterDiscount: controller.discounts);
 
-                                  print(data);
                                   Navigator.pop(context);
                                   controller.searchedProduct(
                                     searchType,
@@ -554,16 +553,16 @@ class _SearchScreenState extends State<SearchScreen> {
             notification.metrics.maxScrollExtent) {
           if (!controller.isFetching) {
             controller.setValue(true, true);
-            if (controller.totalShopProduct! > controller.searchProduct.length) {
-              print("increase page");
+            if (controller.totalShopProduct! >
+                controller.searchProduct.length) {
               controller.setPage();
             }
             final data = ApplyFilterModel(
                 filterBrand: controller.selectedBrands,
                 filterMinPrice: controller.priceLow,
                 filterMaxPrice: controller.priceHigh,
-                filterSortBy: controller.sortby ,
-                filterDiscount: controller.discounts );
+                filterSortBy: controller.sortby,
+                filterDiscount: controller.discounts);
 
             controller.searchedProduct(
               1,
@@ -573,8 +572,6 @@ class _SearchScreenState extends State<SearchScreen> {
             );
             Future.delayed(const Duration(seconds: 1))
                 .then((value) => controller.setValue(false, false));
-
-            print("isLoading");
           }
         }
         return false;
@@ -590,7 +587,7 @@ class _SearchScreenState extends State<SearchScreen> {
               height: 35,
             ),
             Image.asset(
-              "assets/images/not_found.png",
+              "assets/images/search1.png",
               width: width * .6,
             ),
             const SizedBox(
@@ -604,7 +601,7 @@ class _SearchScreenState extends State<SearchScreen> {
               height: 15,
             ),
             Text(
-              "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type",
+              "Start typing to explore thousands of quality agricultural products tailored to your needs.",
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
@@ -626,19 +623,17 @@ class _SearchScreenState extends State<SearchScreen> {
               mainAxisSpacing: 0),
           itemBuilder: (context, index) {
             var data = controller.searchProduct[index];
-            return Consumer
-              <HomeController>(
-              builder: (context, homeController, child) =>  GestureDetector(
+            return Consumer<HomeController>(
+              builder: (context, homeController, child) => GestureDetector(
                 onTap: () {
-
                   homeController.changePriceWithIndex(data.id);
                   homeController.saveProductDetailslug(data.slug);
                   homeController.getProductDetail(data.slug, 0);
 
-                  Get.to(ProductDetailScreen(
-                    productSlug: data.slug!,
-                    id: data.id ??0,
-                  ));
+                  Get.to(() => ProductDetailScreen(
+                        productSlug: data.slug!,
+                        id: data.id ?? 0,
+                      ));
                 },
                 child: Card(
                   child: Padding(
@@ -652,7 +647,10 @@ class _SearchScreenState extends State<SearchScreen> {
                               imageUrl: "$imageURL${data.image}",
                               // imageUrl: "https://5.imimg.com/data5/SELLER/Default/2022/4/CR/WD/AE/47199006/pedigree-normal-500x500.jpg",
                               height: switch (layoutInfo) {
-                                (ScreenSize.large || ScreenSize.extraLarge, _) =>
+                                (
+                                  ScreenSize.large || ScreenSize.extraLarge,
+                                  _
+                                ) =>
                                   height * .25,
                                 (_, Orientation.landscape) => width * .86,
                                 _ => width * .43
@@ -664,31 +662,43 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                             data.wishlistAvgUserId == "null"
                                 ? Positioned(
-                                top: 5,
-                                right: 5,
-                                child: GestureDetector(
-                                    onTap: () {
-                                      controller.addWishlistProduct1(data.id,(value) {
-                                       if(value==true) {
+                                    top: 5,
+                                    right: 5,
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          controller.addWishlistProduct1(
+                                            data.id,
+                                            (value) {
+                                              if (value == true) {
                                                 homeController
                                                     .getWishlistProduct(0);
                                               }
-                                            },);
-                                    },
-                                    child: const Icon(Icons.favorite_border)))
+                                            },
+                                          );
+                                        },
+                                        child: const Icon(
+                                          Icons.favorite_border,
+                                          color: AppColors.yellowishColor,
+                                        )))
                                 : Positioned(
-                                top: 5,
-                                right: 5,
-                                child: GestureDetector(
-                                    onTap: () {
-                                      controller.addWishlistProduct1(data.id,(value) {
-                                        if(value==true) {
-                                          homeController
-                                              .getWishlistProduct(0);
-                                        }
-                                      },);
-                                    },
-                                    child: const Icon(Icons.favorite))),
+                                    top: 5,
+                                    right: 5,
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          controller.addWishlistProduct1(
+                                            data.id,
+                                            (value) {
+                                              if (value == true) {
+                                                homeController
+                                                    .getWishlistProduct(0);
+                                              }
+                                            },
+                                          );
+                                        },
+                                        child: const Icon(
+                                          Icons.favorite,
+                                          color: AppColors.yellowishColor,
+                                        ))),
                             Positioned(
                                 bottom: 8,
                                 left: 10,
@@ -697,7 +707,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                     child: Container(
                                       height: 22,
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
                                           color: AppColors.transparentColor),
                                       child: Padding(
                                         padding: const EdgeInsets.all(4.0),
@@ -786,9 +797,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                             fontSize: 10,
                                             fontWeight: FontWeight.w600),
                                   ),
-                                  const SizedBox(
-                                    width: 2,
-                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
                                   Text(
                                     "₹${data.regularPrice ?? " "}",
                                     maxLines: 1,
@@ -807,7 +819,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                   Text(
                                     "${data.discountValue}% off",
                                     maxLines: 1,
-                                    style: Theme.of(context).textTheme.labelSmall,
+                                    style:
+                                        Theme.of(context).textTheme.labelSmall,
                                   ),
                                 ],
                               ),
@@ -847,7 +860,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     double screenWidth = MediaQuery.of(context).size.width;
 
-    double childAspectRatio1 = screenHeight / screenWidth * .32;
+    double childAspectRatio1 = screenHeight / screenWidth * .27;
 
     return childAspectRatio1;
   }

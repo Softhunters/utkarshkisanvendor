@@ -1,12 +1,12 @@
-import 'package:e_commerce/app/Auth/view/phone_login.dart';
+import 'package:utkrashvendor/app/Auth/view/phone_login.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../view_model/auth_controller.dart';
-import 'package:e_commerce/app/Auth/view/forgot_password.dart';
-import 'package:e_commerce/app/Auth/view/register_screen.dart';
-import 'package:e_commerce/common_widgets/app_strings.dart';
-import 'package:e_commerce/config/shared_prif.dart';
-import 'package:e_commerce/widgets/app_button_widget.dart';
+import 'package:utkrashvendor/app/Auth/view/forgot_password.dart';
+import 'package:utkrashvendor/app/Auth/view/register_screen.dart';
+import 'package:utkrashvendor/common_widgets/app_strings.dart';
+import 'package:utkrashvendor/config/shared_prif.dart';
+import 'package:utkrashvendor/widgets/app_button_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -43,10 +43,10 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         var fcmToken = token;
         SharedStorage.localStorage?.setString("fcm_token", fcmToken ?? "");
-        // print("fcm Token=======$fcmToken");
+
       }
     }).catchError((error) {
-      print(error.toString());
+
     });
     super.initState();
   }
@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Center(
                         child: Image.asset(
-                      "assets/images/splash_icon.png",
+                      "assets/images/app_logo_large.png",
                       height: height * .15,
                     )),
                     SizedBox(
@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: Theme.of(context)
                           .textTheme
                           .headlineLarge
-                          ?.copyWith(fontSize: 40, fontWeight: FontWeight.w500),
+                          ?.copyWith(fontSize: 32, fontWeight: FontWeight.w500),
                     ),
                     SizedBox(
                       height: height * .06,
@@ -188,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               authProvider.checkValue(value);
                             },
                             activeColor: authProvider.isChecked
-                                ? AppColors.primaryBlack
+                                ? AppColors.primaryColor
                                 : AppColors.primaryWhite,
                           ),
                           const Text(
@@ -220,10 +220,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         alignment: Alignment.center,
                         child: GestureDetector(
                           onTap: () {
-                            Get.to(ForgotPasswordScreen());
+                            Get.to(()=>ForgotPasswordScreen());
                           },
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.only(top: 8.0,right: 8.0,left: 8.0),
                             child: Text("Forgot Password ?",
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme.bodyLarge),
@@ -233,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         alignment: Alignment.center,
                         child: GestureDetector(
                           onTap: () {
-                            Get.to(PhoneLogin());
+                            Get.to(()=>PhoneLogin());
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -242,9 +242,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 style: Theme.of(context).textTheme.bodyLarge),
                           ),
                         )),
-                    SizedBox(
-                      height: height * .05,
-                    ),
                     Spacer(),
                     Center(
                       child: RichText(

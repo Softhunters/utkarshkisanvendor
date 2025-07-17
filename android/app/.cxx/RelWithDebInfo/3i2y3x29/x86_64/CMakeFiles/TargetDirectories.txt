@@ -1,0 +1,2 @@
+/Users/apple/Desktop/e_Commerce/android/app/.cxx/RelWithDebInfo/3i2y3x29/x86_64/CMakeFiles/edit_cache.dir
+/Users/apple/Desktop/e_Commerce/android/app/.cxx/RelWithDebInfo/3i2y3x29/x86_64/CMakeFiles/rebuild_cache.dir

@@ -1,7 +1,7 @@
 
 
-import 'package:e_commerce/common_widgets/snack_bar.dart';
-import 'package:e_commerce/widgets/app_button_widget.dart';
+import 'package:utkrashvendor/common_widgets/snack_bar.dart';
+import 'package:utkrashvendor/widgets/app_button_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

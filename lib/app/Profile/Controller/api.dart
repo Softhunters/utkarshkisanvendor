@@ -1,8 +1,8 @@
 
 import 'dart:convert';
 
-import 'package:e_commerce/common_widgets/snack_bar.dart';
-import 'package:e_commerce/config/shared_prif.dart';
+import 'package:utkrashvendor/common_widgets/snack_bar.dart';
+import 'package:utkrashvendor/config/shared_prif.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 
@@ -22,13 +22,13 @@ class ProfileApi{
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
-print(token);
+
 
     try {
       final response = await get(Uri.parse(getAddressURL),headers: headers);
 
       final parseData = jsonDecode(response.body);
-   print(response.statusCode);
+
       if (response.statusCode == 200) {
         var data = AllAddressModel.fromJson(parseData);
         return data;
@@ -48,13 +48,13 @@ print(token);
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    print(token);
+
 
     try {
       final response = await get(Uri.parse(getContactURL),headers: headers);
 
       final parseData = jsonDecode(response.body);
-   print(response.statusCode);
+
       if (response.statusCode == 200) {
         var data = ContactUsModel.fromJson(parseData);
         return data;
@@ -122,10 +122,10 @@ print(token);
     try {
       final response = await post(Uri.parse(saveAddressURL),body: body,headers: headers,);
 
-      print(response.statusCode);
+
       final parseData = jsonDecode(response.body);
 
-      print(parseData);
+
       if (parseData["status"] !=false ) {
         showSnackBar(snackPosition: SnackPosition.TOP,
             title: "Success",
@@ -154,7 +154,6 @@ print(token);
     try {
       final response = await get(Uri.parse(deleteAddressURL+id),headers: headers,);
 
-      print(response.statusCode);
 
       final parseData = jsonDecode(response.body);
 
@@ -184,7 +183,6 @@ print(token);
     try {
       final response = await get(Uri.parse("${defaultAddressURL+id}/$status"),headers: headers,);
 
-      print(response.statusCode);
 
       final parseData = jsonDecode(response.body);
 

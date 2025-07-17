@@ -5,15 +5,19 @@ import '../common_widgets/app_colors.dart';
 
 class AppTheme {
   static final light = ThemeData(
+      useMaterial3: false,
       brightness: Brightness.light,
       primaryColor: Colors.black,
       shadowColor: Colors.black,
       canvasColor: Colors.black,
-      backgroundColor: Colors.black,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.black,
+        background: Colors.black,
+        error: const Color(0xfff71921),
+      ),
 
 
       // highlightColor: Color(0xff2a319c),
-      errorColor: const Color(0xfff71921),
       scaffoldBackgroundColor: const Color(0xFFFFFFFF),
       fontFamily: GoogleFonts.openSans().fontFamily,
       // colorScheme: ColorScheme.fromSwatch().copyWith(secondary: const Color(0xffffffff)),
@@ -38,6 +42,7 @@ class AppTheme {
         tileColor: MaterialStateColor.resolveWith((states) => Colors.white),
         textColor: MaterialStateColor.resolveWith((states) => Colors.black),
       ),
+       cardColor: const Color(0xFFF6FAF2),
 
       checkboxTheme: CheckboxThemeData(
 

@@ -1,6 +1,6 @@
-import 'package:e_commerce/app/CartSection/Controller/cart_controller.dart';
-import 'package:e_commerce/app/Wallet/Controller/wallets_controller.dart';
-import 'package:e_commerce/app/bottom_bar/bottom_bar_screen.dart';
+import 'package:utkrashvendor/app/CartSection/Controller/cart_controller.dart';
+import 'package:utkrashvendor/app/Wallet/Controller/wallets_controller.dart';
+import 'package:utkrashvendor/app/bottom_bar/bottom_bar_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
@@ -57,7 +57,7 @@ class PaymentOptionScreen extends StatelessWidget {
           surfaceTintColor: AppColors.white,
         ),
 
-        bottomNavigationBar: Card(
+        bottomNavigationBar: SafeArea(child: Card(
           surfaceTintColor: AppColors.white,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -68,55 +68,55 @@ class PaymentOptionScreen extends StatelessWidget {
                 // padding: const EdgeInsets.symmetric(horizontal:  10.0,vertical: 20),
                 padding: switch (layoutInfo){
                   (_,Orientation.landscape)=>  const EdgeInsets.symmetric(horizontal: 40.0,vertical: 10) ,_=>
-                      const EdgeInsets.only(left: 10.0,right: 10,top: 5,bottom: 20)},
+                  const EdgeInsets.only(left: 10.0,right: 10,top: 5,bottom: 10)},
 
                 child: AppButton(title: "Confirm Payment", onTap: () {
 
                   final data = PaymentModel(
-                    paymentType: "cod",
-                    addressId: controller.checkOutAddress?.id.toString(),
-                    subtotal: controller.totalCheckOutValue.toString(),
-                    discount: controller.appliedCouponValue,
-                    tax: controller.taxvalue,
-                    shippingCharge: controller.shippingcost,
-                    total: controller.subtotal
+                      paymentType: "cod",
+                      addressId: controller.checkOutAddress?.id.toString(),
+                      subtotal: controller.totalCheckOutValue.toString(),
+                      discount: controller.appliedCouponValue,
+                      tax: controller.taxvalue,
+                      shippingCharge: controller.shippingcost,
+                      total: controller.subtotal
                   );
 
 
-                  if(int.parse(controller.subtotal) < walletProvider.totalWallet || controller.checkIndex !=0 ) {
-                      if (controller.selectedPaymentMethod != null) {
-                        for (int i = 0;
-                            i < controller.paymentMethod.length;
-                            i++) {
-                          controller.paymentMethod[i]["isSelected"] = false;
-                        }
-                        // openDialog(context, controller, layoutInfo);
-                        if (controller.loadingPayment == false) {
-                          controller.makePayment(data, (value) {
-                            if (value) {
-                              openDialog(context, controller, layoutInfo);
-                            }
-                          });
-                        } else {}
-                        //
-                      } else {
-                        showSnackBar(
-                            snackPosition: SnackPosition.TOP,
-                            title: "Warning",
-                            description: "Please select a payment option");
+                  // if(num.parse(controller.subtotal) < walletProvider.totalWallet || controller.checkIndex !=0 ) {
+                  if(controller.selectedPaymentMethod !=null ) {
+                    if (controller.selectedPaymentMethod != null) {
+                      for (int i = 0;
+                      i < controller.paymentMethod.length;
+                      i++) {
+                        controller.paymentMethod[i]["isSelected"] = false;
                       }
-                    }else{
+                      // openDialog(context, controller, layoutInfo);
+                      if (controller.loadingPayment == false) {
+                        controller.makePayment(data, (value) {
+                          if (value) {
+                            openDialog(context, controller, layoutInfo);
+                          }
+                        });
+                      } else {}
+                      //
+                    } else {
+                      showSnackBar(
+                          snackPosition: SnackPosition.TOP,
+                          title: "Warning",
+                          description: "Please select a payment option");
+                    }
+                  }else{
                     showSnackBar(
                         snackPosition: SnackPosition.TOP,
                         title: "Warning",
-                        description: "Your wallet don't have enough balance");
+                        description: "Please choose a payment method.");
                   }
-                  },),
+                },),
               ),
-              SizedBox(height: 20)
             ],
           ),
-        ),
+        )),
         body: SafeArea(child: Padding(
           padding: switch (layoutInfo){
             (_,Orientation.landscape)=>  const EdgeInsets.symmetric(horizontal: 40.0) ,_=>
@@ -163,6 +163,7 @@ class PaymentOptionScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+
                         title: Text(
                           controller.paymentMethod[index]["name"],
                           style: Theme.of(context).textTheme.titleLarge,
@@ -173,8 +174,8 @@ class PaymentOptionScreen extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              if(index==0)
-                                Consumer<WalletsController>(builder: (context, wController, child) => Text("${wController.totalWallet}",style: Theme.of(context).textTheme.bodyLarge,)),
+                         //     if(index==0)
+                                // Consumer<WalletsController>(builder: (context, wController, child) => Text("${wController.totalWallet}",style: Theme.of(context).textTheme.bodyLarge,)),
                               Container(
                                 width: 50,
                                 child:  GestureDetector(
@@ -199,7 +200,7 @@ class PaymentOptionScreen extends StatelessWidget {
                                         ? Icons.circle_outlined
                                         : Icons.circle,
                                     color: AppColors.primaryColor,
-                                    size: 18,
+                                    size: 30,
                                   ),
                                 )
                               ),
@@ -241,7 +242,7 @@ class PaymentOptionScreen extends StatelessWidget {
                     Container(
                       height: 150,
                       width: 150,
-                      child: Image.asset("assets/images/cart_icon.png",fit: BoxFit.cover,),
+                      child: Image.asset("assets/images/order_sucess.png",fit: BoxFit.cover,),
                     ),
                     const SizedBox(height: 10,),
                     Text(
@@ -250,11 +251,11 @@ class PaymentOptionScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 10,),
                     Text(
-                      "Your order has been successfully placed order. ",
+                      "Your order has been successfully placed. ",
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     Text(
-                      "Your order id number id ${controller.orderNumber}",
+                      "Your order id number ${controller.orderNumber}",
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     SizedBox(height: MediaQuery.sizeOf(context).height*.08,),

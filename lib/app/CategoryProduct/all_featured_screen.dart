@@ -1,5 +1,5 @@
 import 'package:currency_converter/currency.dart';
-import 'package:e_commerce/app/CategoryProduct/product_detail_screen.dart';
+import 'package:utkrashvendor/app/CategoryProduct/product_detail_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -30,12 +30,6 @@ class AllFeatureProductScreen extends StatelessWidget {
       });
     }
     var provider = Provider.of<HomeController>(context, listen: false);
-    // var currencyProvider = Provider.of<CurrencyProvider>(context,listen: false);
-
-
-    // if(type == 0) {
-    //   provider.getWishlistProduct();
-    // }
     return Consumer<HomeController>(
       builder: (context, controller, child) => Scaffold(
         appBar: AppBar(
@@ -55,7 +49,7 @@ class AllFeatureProductScreen extends StatelessWidget {
           actions:  [
             GestureDetector(
                 onTap: () {
-                  Get.to(const SearchScreen());
+                  Get.to(()=>const SearchScreen());
                 },
                 child: Icon(Icons.search)),
             SizedBox(
@@ -73,7 +67,7 @@ class AllFeatureProductScreen extends StatelessWidget {
                 replacement: const Center(child: CupertinoActivityIndicator.partiallyRevealed(),),
                 child: Visibility(
                   visible:controller.allProducts.isNotEmpty,
-                  replacement: Center(child: Text( "Product Not available",style: Theme.of(context).textTheme.bodyLarge,),),
+                  replacement: Center(child: Text( "No product Added yet. Please check back later!",style: Theme.of(context).textTheme.bodyLarge,),),
                   child: Column(
                     children: [
 
@@ -90,7 +84,7 @@ class AllFeatureProductScreen extends StatelessWidget {
                               Future.delayed(const Duration(seconds: 1)).then(
                                       (value) => controller.setValue(false, false));
 
-                              print("isLoading");
+
                             }
                           }
                           return false;
@@ -124,8 +118,8 @@ class AllFeatureProductScreen extends StatelessWidget {
                                     controller.changePriceWithIndex(data.id);
                                     controller.saveProductDetailslug(data.slug);
                                     controller.getProductDetail(data.slug, 0);
-                                    // print(data['id']);
-                                    Get.to( ProductDetailScreen(productSlug:  data.slug ??"", id: data.id??0,));
+
+                                    Get.to(()=> ProductDetailScreen(productSlug:  data.slug ??"", id: data.id??0,));
                                   },
                                   child:Card(
                                     child: Padding(
@@ -155,17 +149,17 @@ class AllFeatureProductScreen extends StatelessWidget {
                                                   right: 5,
                                                   child: GestureDetector(
                                                       onTap: () {
-                                                        controller.addWishlistProduct(data.id,3);
+                                                        controller.addWishlistProduct(data.id,3,(data.seller?.venderId??"1").toString());
                                                       },
-                                                      child: const Icon(Icons.favorite_border)))
+                                                      child: const Icon(Icons.favorite_border,color: AppColors.yellowishColor,)))
                                                   : Positioned(
                                                   top: 5,
                                                   right: 5,
                                                   child: GestureDetector(
                                                       onTap: () {
-                                                        controller.addWishlistProduct(data.id,3);
+                                                        controller.addWishlistProduct(data.id,3,(data.seller?.venderId??"1").toString());
                                                       },
-                                                      child: const Icon(Icons.favorite))),
+                                                      child: const Icon(Icons.favorite,color: AppColors.yellowishColor,))),
                                               if(data.reviewsCount !=0)
                                                 Positioned(
                                                     bottom: 8,
@@ -276,46 +270,6 @@ class AllFeatureProductScreen extends StatelessWidget {
                                                       .bodyMedium
                                                       ?.copyWith(color: AppColors.primaryBlack),
                                                 ),
-                                                // Row(
-                                                //   mainAxisAlignment: MainAxisAlignment.start,
-                                                //   children: [
-                                                //     Text(
-                                                //       "₹${data.salePrice ?? ""}",
-                                                //       maxLines: 1,
-                                                //       style: Theme.of(context)
-                                                //           .textTheme
-                                                //           .labelSmall
-                                                //           ?.copyWith(
-                                                //           fontSize: 10,
-                                                //           fontWeight: FontWeight.w600),
-                                                //     ),
-                                                //     const SizedBox(
-                                                //       width: 2,
-                                                //     ),
-                                                //     if(data.salePrice != data.regularPrice)
-                                                //       Text(
-                                                //         "₹${data.regularPrice ?? " "}",
-                                                //         maxLines: 1,
-                                                //         style: Theme.of(context)
-                                                //             .textTheme
-                                                //             .labelSmall
-                                                //             ?.copyWith(
-                                                //             fontSize: 8,
-                                                //             decoration:
-                                                //             TextDecoration.lineThrough,
-                                                //             color: AppColors.redColor),
-                                                //       ),
-                                                //     const SizedBox(
-                                                //       width: 2,
-                                                //     ),
-                                                //     if(data.salePrice != data.regularPrice)
-                                                //       Text(
-                                                //         "${data.discountValue}% off",
-                                                //         maxLines: 1,
-                                                //         style: Theme.of(context).textTheme.labelSmall,
-                                                //       ),
-                                                //   ],
-                                                // ),
                                                 Consumer<CurrencyProvider>(
                                                   builder: (context, currencyProvider, child) =>  FutureBuilder<double>(
                                                     future: currencyProvider.selectedCurrency == Currency.usd
@@ -335,47 +289,56 @@ class AllFeatureProductScreen extends StatelessWidget {
                                                             return const Text("Loading..");
                                                           }
                                                           double regularPrice = regularPriceSnapshot.data ?? 0.0;
-                                                          return Row(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                          return Column(
                                                             children: [
-                                                              Text(
-                                                                currencyProvider.selectedCurrency == Currency.inr
-                                                                    ? "₹${data.salePrice ?? " "}"
-                                                                    : "\$${salePrice.toStringAsFixed(2)}",
-                                                                maxLines: 1,
-                                                                style: Theme.of(context)
-                                                                    .textTheme
-                                                                    .labelSmall
-                                                                    ?.copyWith(
-                                                                    fontSize: 9,
-                                                                    fontWeight: FontWeight.w600),
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                children: [
+                                                                  Text(
+                                                                         "₹${double.tryParse(data.salePrice ?? " ")?.toStringAsFixed(2)}",
+
+                                                                    maxLines: 1,
+                                                                    style: Theme.of(context)
+                                                                        .textTheme
+                                                                        .labelSmall
+                                                                        ?.copyWith(
+                                                                        fontSize: 12,
+                                                                        fontWeight: FontWeight.w600),
+                                                                  ),
+
+                                                                ],
                                                               ),
-                                                              const SizedBox(width: 2),
                                                               if (salePrice != regularPrice)
-                                                                Text(
-                                                                  currencyProvider.selectedCurrency == Currency.inr
-                                                                      ? "₹${data.regularPrice ?? " "}"
-                                                                      : "\$${regularPrice.toStringAsFixed(2)}",
-                                                                  maxLines: 1,
-                                                                  style: Theme.of(context)
-                                                                      .textTheme
-                                                                      .labelSmall
-                                                                      ?.copyWith(
-                                                                      fontSize: 7,
-                                                                      decoration: TextDecoration.lineThrough,
-                                                                      color: AppColors.redColor),
-                                                                ),
-                                                              const SizedBox(width: 2),
-                                                              if (salePrice != regularPrice)
-                                                                Text(
-                                                                  "${data.discountValue}% off",
-                                                                  maxLines: 1,
-                                                                  style: Theme.of(context)
-                                                                      .textTheme
-                                                                      .labelSmall,
-                                                                ),
+                                                              Row(
+                                                                children: [
+                                                                  const SizedBox(width: 2),
+                                                                    Text(
+
+                                                                          "₹${double.tryParse(data.regularPrice ?? " ")?.toStringAsFixed(2)}",
+
+                                                                      maxLines: 1,
+                                                                      style: Theme.of(context)
+                                                                          .textTheme
+                                                                          .labelSmall
+                                                                          ?.copyWith(
+                                                                          fontSize: 9,
+                                                                          decoration: TextDecoration.lineThrough,
+                                                                          color: AppColors.redColor),
+                                                                    ),
+                                                                  const SizedBox(width: 2),
+
+                                                                    Text(
+                                                                      "${data.discountValue}% off",
+                                                                      maxLines: 1,
+                                                                      style: Theme.of(context)
+                                                                          .textTheme
+                                                                          .labelSmall,
+                                                                    ),
+                                                                ],
+                                                              )
                                                             ],
                                                           );
+
                                                         },
                                                       );
                                                     },
@@ -420,7 +383,7 @@ class AllFeatureProductScreen extends StatelessWidget {
 
     double screenWidth = MediaQuery.of(context).size.width;
 
-    double childAspectRatio1 = screenHeight / screenWidth * .32;
+    double childAspectRatio1 = screenHeight / screenWidth * .27;
 
     return childAspectRatio1;
   }

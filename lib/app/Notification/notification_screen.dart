@@ -1,5 +1,5 @@
-import 'package:e_commerce/common_widgets/app_colors.dart';
-import 'package:e_commerce/widgets/cache_network_image.dart';
+import 'package:utkrashvendor/common_widgets/app_colors.dart';
+import 'package:utkrashvendor/widgets/cache_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

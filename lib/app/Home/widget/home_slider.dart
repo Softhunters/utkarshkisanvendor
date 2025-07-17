@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_options.dart' as csoption;
+import 'package:carousel_slider/carousel_slider.dart' as csslider;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../../common_widgets/app_colors.dart';
 import '../../../common_widgets/urls.dart';
 
@@ -24,7 +24,7 @@ class _HomeSliderState extends State<HomeSlider> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CarouselSlider(
+        csslider.CarouselSlider(
           items: widget.banner.map(
                 (e) {
 
@@ -34,10 +34,10 @@ class _HomeSliderState extends State<HomeSlider> {
                   margin: const EdgeInsets.symmetric(horizontal: 2),
                   decoration: BoxDecoration(
                     //  color: Colors.grey.shade100,
-                    border: Border.all(),
+                   //   border: Border.all(),
                       image: DecorationImage(
                         image: imageProvider,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                         // colorFilter: const ColorFilter.mode(Colors.red, BlendMode.colorBurn),
                       ),
                       borderRadius: BorderRadius.circular(20)),
@@ -49,7 +49,7 @@ class _HomeSliderState extends State<HomeSlider> {
               );
             },
           ).toList(),
-          options: CarouselOptions(
+          options:csoption.CarouselOptions(
               aspectRatio: 1,
               height: widget.height ?? 190,
               viewportFraction: 1,

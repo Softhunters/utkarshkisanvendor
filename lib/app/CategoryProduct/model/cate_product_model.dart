@@ -1,5 +1,5 @@
-import 'package:e_commerce/app/CategoryProduct/model/product_detail_model.dart';
-import 'package:e_commerce/app/CategoryProduct/model/product_detail_model.dart';
+import 'package:utkrashvendor/app/CategoryProduct/model/product_detail_model.dart';
+import 'package:utkrashvendor/app/CategoryProduct/model/product_detail_model.dart';
 
 import '../../Brand/model/brand_model.dart';
 import '../../Home/model/home_model.dart';

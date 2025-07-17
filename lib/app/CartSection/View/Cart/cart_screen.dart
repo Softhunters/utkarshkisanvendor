@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:currency_converter/currency.dart';
-import 'package:e_commerce/common_widgets/urls.dart';
+import 'package:utkrashvendor/common_widgets/urls.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +52,6 @@ class _CartScreenState extends State<CartScreen> {
       });
     }
 
-
     final homeController = Provider.of<HomeController>(context, listen: false);
     final provider = Provider.of<CartController>(context, listen: false);
     provider.getCartDAta();
@@ -70,41 +69,42 @@ class _CartScreenState extends State<CartScreen> {
                   e = value.defaultAddress.first;
                 }
                 return RichText(
-
-                  text: TextSpan(
-                      text: "Address:  ",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(color: AppColors.primaryBlack),
-                      children: [
-                    profileProvider.defaultAddress.isNotEmpty
-                        ? TextSpan(
-                      recognizer:
-                      TapGestureRecognizer() // GestureDetector or InkWell can be used here
-                        ..onTap = () {
-                          Get.to(const ShippingAddressScreen());
-                        },
-                            text:
-                                "${e.line1}, ${e.line2},\n${e.city?.name}, ${e.state?.name},${e.country?.name},${e.zipcode}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(color: AppColors.indigo),
-                          )
-                        : TextSpan(
-                            recognizer:
-                                TapGestureRecognizer() // GestureDetector or InkWell can be used here
-                                  ..onTap = () {
-                                    Get.to(const ShippingAddressScreen());
-                                  },
-                            text: "Select Address",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(color: AppColors.indigo),
-                          )
-                  ]));
+                    text: TextSpan(
+                        text: "Address:  ",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(color: AppColors.primaryBlack),
+                        children: [
+                      profileProvider.defaultAddress.isNotEmpty
+                          ? TextSpan(
+                              recognizer:
+                                  TapGestureRecognizer() // GestureDetector or InkWell can be used here
+                                    ..onTap = () {
+                                      Get.to(
+                                          () => const ShippingAddressScreen());
+                                    },
+                              text:
+                                  "${e.line1}, ${e.line2},\n${e.city?.name}, ${e.state?.name},${e.country?.name},${e.zipcode}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(color: AppColors.indigo),
+                            )
+                          : TextSpan(
+                              recognizer:
+                                  TapGestureRecognizer() // GestureDetector or InkWell can be used here
+                                    ..onTap = () {
+                                      Get.to(
+                                          () => const ShippingAddressScreen());
+                                    },
+                              text: "Select Address",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(color: AppColors.indigo),
+                            )
+                    ]));
               },
             ),
             const SizedBox(
@@ -121,17 +121,20 @@ class _CartScreenState extends State<CartScreen> {
                 ),
                 child: Visibility(
                   visible: controller.cartData.isNotEmpty,
-                  replacement: Center(child: Text("Cart is Empty",style: Theme.of(context).textTheme.bodyLarge,),),
+                  replacement: Center(
+                    child: Text(
+                      "Your Cart is empty.",
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ),
                   child: ListView.builder(
                     itemCount: controller.cartData.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       final data = controller.cartData[index];
                       return Card(
-                        surfaceTintColor: AppColors.white,
-
                         child: Container(
-                          decoration: BoxDecoration(border: Border.all(color: AppColors.grey),borderRadius: BorderRadius.circular(10)),
+                          // decoration: BoxDecoration(border: Border.all(color: AppColors.grey),borderRadius: BorderRadius.circular(10)),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 4.0, vertical: 10),
@@ -140,13 +143,16 @@ class _CartScreenState extends State<CartScreen> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    homeController.changePriceWithIndex(data.id);
-                                    homeController.saveProductDetailslug(data.slug);
-                                    homeController.getProductDetail(data.slug, 0);
-                                    Get.to(ProductDetailScreen(
-                                      productSlug: data.slug ?? "",
-                                      id: data.id??0,
-                                    ));
+                                    homeController
+                                        .changePriceWithIndex(data.id);
+                                    homeController
+                                        .saveProductDetailslug(data.slug);
+                                    homeController.getProductDetail(
+                                        data.slug, 0);
+                                    Get.to(() => ProductDetailScreen(
+                                          productSlug: data.slug ?? "",
+                                          id: data.id ?? 0,
+                                        ));
                                   },
                                   child: Container(
                                     width: width * .2,
@@ -163,7 +169,11 @@ class _CartScreenState extends State<CartScreen> {
                                   width: 5,
                                 ),
                                 Container(
-                                  width: width * switch (layoutInfo) { (_, Orientation.landscape) => .6, _ => .68 },
+                                  width: width *
+                                      switch (layoutInfo) {
+                                        (_, Orientation.landscape) => .6,
+                                        _ => .68
+                                      },
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -176,13 +186,19 @@ class _CartScreenState extends State<CartScreen> {
                                         children: [
                                           GestureDetector(
                                             onTap: () {
-                                              homeController.changePriceWithIndex(data.id);
-                                              homeController.saveProductDetailslug(data.slug);
-                                              homeController.getProductDetail(data.slug, 0);
-                                              Get.to(ProductDetailScreen(
-                                                productSlug: data.slug ?? "",
-                                                id: data.id??0,
-                                              ));
+                                              homeController
+                                                  .changePriceWithIndex(
+                                                      data.id);
+                                              homeController
+                                                  .saveProductDetailslug(
+                                                      data.slug);
+                                              homeController.getProductDetail(
+                                                  data.slug, 0);
+                                              Get.to(() => ProductDetailScreen(
+                                                    productSlug:
+                                                        data.slug ?? "",
+                                                    id: data.id ?? 0,
+                                                  ));
                                             },
                                             child: Container(
                                               width: width * .5,
@@ -202,7 +218,10 @@ class _CartScreenState extends State<CartScreen> {
                                           GestureDetector(
                                               onTap: () {
                                                 openDialog(
-                                                    controller, data.productId);
+                                                    controller,
+                                                    data.productId,
+                                                    (data.sellerId ?? '')
+                                                        .toString());
                                               },
                                               child: const Icon(
                                                 Icons.delete,
@@ -213,82 +232,109 @@ class _CartScreenState extends State<CartScreen> {
                                       const SizedBox(
                                         height: 5,
                                       ),
+                                      Text(
+                                        (data.sellerName == null ||
+                                                data.sellerName == "null")
+                                            ? ""
+                                            : data.sellerName ?? '',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.primaryColor),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
                                       Consumer<CurrencyProvider>(
-                                        builder: (context, currencyProvider, child) =>
+                                        builder: (context, currencyProvider,
+                                                child) =>
                                             FutureBuilder<double>(
-                                              future: currencyProvider.selectedCurrency == Currency.usd
-                                                  ? currencyProvider.convertToUSD(double.parse(data.price ?? "0.0"))
-                                                  : Future.value(double.parse(data.price ?? "0.0")),
-                                              builder: (context, salePriceSnapshot) {
-                                                if (!salePriceSnapshot.hasData) {
-                                                  return Text("loading");
-                                                }
-                                                double salePrice =
-                                                    salePriceSnapshot.data ?? 0.0;
-                                                return FutureBuilder<double>(
-                                                  future: currencyProvider.selectedCurrency ==
+                                          future: currencyProvider
+                                                      .selectedCurrency ==
+                                                  Currency.usd
+                                              ? currencyProvider.convertToUSD(
+                                                  double.parse(
+                                                      data.price ?? "0.0"))
+                                              : Future.value(double.parse(
+                                                  data.price ?? "0.0")),
+                                          builder:
+                                              (context, salePriceSnapshot) {
+                                            if (!salePriceSnapshot.hasData) {
+                                              return Text("loading");
+                                            }
+                                            double salePrice =
+                                                salePriceSnapshot.data ?? 0.0;
+                                            return FutureBuilder<double>(
+                                              future: currencyProvider
+                                                          .selectedCurrency ==
                                                       Currency.usd
-                                                      ? currencyProvider.convertToUSD(
-                                                      double.parse(
-                                                          data.regularPrice ?? "0.0"))
-                                                      : Future.value(double.parse(
-                                                      data.regularPrice ?? "0.0")),
-                                                  builder: (context, regularPriceSnapshot) {
-                                                    if (!regularPriceSnapshot.hasData) {
-                                                      return const CircularProgressIndicator();
-                                                    }
-                                                    double regularPrice =
-                                                        regularPriceSnapshot.data ?? 0.0;
-                                                    return Row(
-                                                      mainAxisAlignment:
+                                                  ? currencyProvider
+                                                      .convertToUSD(double.parse(
+                                                          data.regularPrice ??
+                                                              "0.0"))
+                                                  : Future.value(double.parse(
+                                                      data.regularPrice ??
+                                                          "0.0")),
+                                              builder: (context,
+                                                  regularPriceSnapshot) {
+                                                if (!regularPriceSnapshot
+                                                    .hasData) {
+                                                  return const CircularProgressIndicator();
+                                                }
+                                                double regularPrice =
+                                                    regularPriceSnapshot.data ??
+                                                        0.0;
+                                                return Row(
+                                                  mainAxisAlignment:
                                                       MainAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                          currencyProvider.selectedCurrency ==
-                                                              Currency.inr
-                                                              ? "₹${data.price ?? " "}"
-                                                              : "\$${salePrice.toStringAsFixed(2)}",
-                                                          maxLines: 1,
-                                                          style: Theme.of(context)
-                                                              .textTheme
-                                                              .bodyLarge
-                                                              ?.copyWith(
+                                                  children: [
+                                                    Text(
+                                                      "₹${double.tryParse(data.price ?? " ")?.toStringAsFixed(2)}",
+                                                      maxLines: 1,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyLarge
+                                                          ?.copyWith(
                                                               fontWeight:
-                                                              FontWeight.w600),
-                                                        ),
-                                                        const SizedBox(width: 2),
-                                                        if (salePrice != regularPrice)
-                                                          Text(
-                                                            currencyProvider
-                                                                .selectedCurrency ==
-                                                                Currency.inr
-                                                                ? "₹${data.regularPrice ?? " "}"
-                                                                : "\$${regularPrice.toStringAsFixed(2)}",
-                                                            maxLines: 1,
-                                                            style: Theme.of(context)
-                                                                .textTheme
-                                                                .bodySmall
-                                                                ?.copyWith(
-
-                                                                decoration: TextDecoration.lineThrough,
-                                                                color:
-                                                                AppColors.redColor),
-                                                          ),
-                                                        const SizedBox(width: 2),
-                                                        if (salePrice != regularPrice)
-                                                          Text(
-                                                            "${data.discountValue}% off",
-                                                            maxLines: 1,
-                                                            style: Theme.of(context)
-                                                                .textTheme
-                                                                .labelSmall,
-                                                          ),
-                                                      ],
-                                                    );
-                                                  },
+                                                                  FontWeight
+                                                                      .w600),
+                                                    ),
+                                                    const SizedBox(width: 2),
+                                                    if (salePrice !=
+                                                        regularPrice)
+                                                      Text(
+                                                        "₹${double.tryParse(data.regularPrice ?? " ")?.toStringAsFixed(2)}",
+                                                        maxLines: 1,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodySmall
+                                                            ?.copyWith(
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .lineThrough,
+                                                                color: AppColors
+                                                                    .redColor),
+                                                      ),
+                                                    const SizedBox(width: 2),
+                                                    if (salePrice !=
+                                                        regularPrice)
+                                                      Text(
+                                                        "${data.discountValue}% off",
+                                                        maxLines: 1,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .labelSmall,
+                                                      ),
+                                                  ],
                                                 );
                                               },
-                                            ),
+                                            );
+                                          },
+                                        ),
                                       ),
                                       const SizedBox(
                                         height: 15,
@@ -304,7 +350,7 @@ class _CartScreenState extends State<CartScreen> {
                                                 .bodySmall,
                                           ),
                                           Text(
-                                            "${double.parse(data.price ?? "0") * int.parse(data.quantity ?? "0")}",
+                                            "₹${double.parse(data.price ?? "0") * int.parse(data.quantity ?? "0")}",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall
@@ -323,7 +369,11 @@ class _CartScreenState extends State<CartScreen> {
                                         children: [
                                           GestureDetector(
                                             onTap: () {
-                                              homeController.moveToWishlist(data.productId ?? "").whenComplete(() =>
+                                              homeController
+                                                  .moveToWishlist(
+                                                      (data.id ?? "")
+                                                          .toString())
+                                                  .whenComplete(() =>
                                                       controller.getCartDAta());
                                             },
                                             child: Container(
@@ -371,57 +421,79 @@ class _CartScreenState extends State<CartScreen> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceAround,
                                               children: [
-                                                int.parse(data.quantity ??"0") > 1?
+                                                int.parse(data.quantity ??
+                                                            "0") >
+                                                        1
+                                                    ? GestureDetector(
+                                                        onTap: () async {
+                                                          if (int.parse(
+                                                                  data.quantity ??
+                                                                      "1") ==
+                                                              1) {
+                                                            await controller.addCartDAta(
+                                                                data.productId,
+                                                                0,
+                                                                (value) {},
+                                                                (data.sellerId ??
+                                                                        '1')
+                                                                    .toString());
+                                                            await controller
+                                                                .getCartDAta();
+                                                          } else {
+                                                            await controller.addCartDAta(
+                                                                data.productId,
+                                                                int.parse(data
+                                                                            .quantity ??
+                                                                        "0") -
+                                                                    1,
+                                                                (value) {},
+                                                                (data.sellerId ??
+                                                                        '1')
+                                                                    .toString());
+                                                            await controller
+                                                                .getCartDAta();
+                                                          }
+                                                        },
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: const Icon(
+                                                            Icons.remove,
+                                                            size: 15,
+                                                          ),
+                                                        ))
+                                                    : SizedBox(
+                                                        width: 30,
+                                                      ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Text(data.quantity ?? "",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
                                                 GestureDetector(
-                                                    onTap: () {
-                                                      if (int.parse(
-                                                              data.quantity ??
-                                                                  "1") ==
-                                                          1) {
-                                                        controller.addCartDAta(
-                                                          data.productId,
-                                                          0,
-                                                          (value) {},
-                                                        );
-                                                      } else {
-                                                        controller.addCartDAta(
+                                                    onTap: () async {
+                                                      await controller.addCartDAta(
                                                           data.productId,
                                                           int.parse(
                                                                   data.quantity ??
-                                                                      "0") -
+                                                                      "0") +
                                                               1,
                                                           (value) {},
-                                                        );
-                                                      }
+                                                          (data.sellerId ?? '1')
+                                                              .toString());
+                                                      await controller
+                                                          .getCartDAta();
                                                     },
                                                     child: Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: const Icon(
-                                                        Icons.remove,
-                                                        size: 15,
-                                                      ),
-                                                    )) : SizedBox(width: 30,),
-                                                SizedBox(width: 5,),
-                                                Text(
-                                                  data.quantity ?? "",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyLarge
-                                               ),
-                                                SizedBox(width: 5,),
-                                                GestureDetector(
-                                                    onTap: () {
-                                                      controller.addCartDAta(
-                                                        data.productId,
-                                                        int.parse(
-                                                                data.quantity ??
-                                                                    "0") +
-                                                            1,
-                                                        (value) {},
-                                                      );
-                                                    },
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(8.0),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
                                                       child: const Icon(
                                                         Icons.add,
                                                         size: 15,
@@ -452,7 +524,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  openDialog(CartController controller, productId) {
+  openDialog(CartController controller, productId, sellerId) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -466,7 +538,7 @@ class _CartScreenState extends State<CartScreen> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               content: Text(
-                "Are You Sure !, remove this item from cart.",
+                "Are You Sure , remove this item from cart.",
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               actions: [
@@ -482,13 +554,12 @@ class _CartScreenState extends State<CartScreen> {
                     )),
                 ElevatedButton(
                     onPressed: () async {
+
                       setState(() {
                         Navigator.pop(context);
-                        controller.addCartDAta(
-                          productId,
-                          0,
-                          (value) {},
-                        );
+                        controller.addCartDAta(productId, 0, (value) {
+
+                        }, sellerId);
                       });
                     },
                     child: Text(

@@ -1,4 +1,4 @@
-import 'package:e_commerce/app/Brand/controller/brand_api.dart';
+import 'package:utkrashvendor/app/Brand/controller/brand_api.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 
@@ -61,8 +61,8 @@ class BrandController extends ChangeNotifier {
   }
 
   Future<dynamic> addWishlistProduct(
-      id, slug, ValueSetter<bool> onResponse) async {
-    final data = await brandApi.addWishlistApi(id.toString());
+      id, slug, ValueSetter<bool> onResponse,String sId) async {
+    final data = await brandApi.addWishlistApi(id.toString(),sId);
     if (data != null) {
       var message = data['msg'];
       getBrandDAta(slug);
