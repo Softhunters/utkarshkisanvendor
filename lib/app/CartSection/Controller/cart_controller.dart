@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:utkrashvendor/app/CartSection/Controller/cart_api.dart';
 import 'package:flutter/material.dart';
 
@@ -5,6 +9,7 @@ import '../../Payment/View/payment_screen.dart';
 import '../Model/cart_model.dart';
 import '../Model/check_out_model.dart';
 import '../Model/coupon_model.dart';
+import '../View/CheckOut/check_out_screen.dart';
 
 class CartController extends ChangeNotifier {
   CartApi cartApi = CartApi();
@@ -63,7 +68,7 @@ class CartController extends ChangeNotifier {
     // cartTotal = 0;
     final result = await cartApi.getCheckOut();
 
-    if (result != null) {
+    if (result != null && result.status==true) {
       checkOutProduct = result.result?.cart ?? [];
       checkOutAddress = result.result?.addresss;
       taxvalue = result.result?.taxvalue ?? "0.0";
@@ -75,7 +80,11 @@ class CartController extends ChangeNotifier {
       //   notifyListeners();
       // }
       cartLoading = false;
+      Get.to(()=>const CheckOutScreen());
       notifyListeners();
+    }
+    else{
+
     }
   }
 
@@ -297,12 +306,12 @@ class CartController extends ChangeNotifier {
     //   "type": 0,
     //   "image": "assets/images/apple.png"
     // },
-    // {
-    //   "name": ".... .... .... 1234",
-    //   "isSelected": false,
-    //   "type": 0,
-    //   "image": "assets/images/card.png"
-    // },
+    {
+      "name": "Pay now",
+      "isSelected": false,
+      "type": 1,
+      "image": "assets/images/razorpay.png"
+    },
     {
       "name": "Cash on delivery",
       "isSelected": false,
@@ -312,6 +321,7 @@ class CartController extends ChangeNotifier {
   ];
 
   String? orderNumber;
+  String? orderID;
   bool loadingPayment = false;
 
   int? checkIndex;
@@ -324,7 +334,9 @@ class CartController extends ChangeNotifier {
   makePayment(PaymentModel data, ValueSetter<bool> onResponse) async {
     loadingPayment = true;
     final result = await cartApi.makePaymentApi(data);
+
     if (result != null) {
+      orderID = result['result']['id'].toString();
       orderNumber = result["result"]["order_number"].toString();
       searchController.clear();
       appliedCouponValue = "0.0";
@@ -337,4 +349,21 @@ class CartController extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+
+  paymentComplete(PaymentCompleteModel data, ValueSetter<bool> onResponse) async {
+    loadingPayment = true;
+    final result = await cartApi.paymentCompleteApi(data);
+    if (result != null) {
+      loadingPayment = false;
+      onResponse(true);
+      notifyListeners();
+    } else {
+      loadingPayment = false;
+      onResponse(false);
+      notifyListeners();
+    }
+  }
+
+
 }

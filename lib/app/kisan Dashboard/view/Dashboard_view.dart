@@ -34,7 +34,9 @@ class _DashboardViewState extends State<DashboardView> {
   void initState() {
     super.initState();
     final controller = Provider.of<DashboardController>(context, listen: false);
-    controller.getHomeData(); // Fetch dashboard data
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getHomeData();
+    }); // Fetch dashboard data
   }
 
   String _getGreeting() {

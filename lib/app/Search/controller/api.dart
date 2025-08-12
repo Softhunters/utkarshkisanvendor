@@ -41,14 +41,14 @@ class SearchApi {
   }
 
 
-  Future<dynamic> addWishlistApi(String id) async {
+  Future<dynamic> addWishlistApi(String id,String sid) async {
 
     String token = SharedStorage.localStorage?.getString("token") ?? "";
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    final url = Uri.parse(addWishlistURL + id);
+    final url = Uri.parse('$addWishlistURL$id?sid=$sid');
 
     try {
       final response = await get(url,headers: headers);

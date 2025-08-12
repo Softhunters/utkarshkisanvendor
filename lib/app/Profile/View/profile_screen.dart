@@ -1,4 +1,5 @@
 import 'package:utkrashvendor/app/Auth/view/login_screen.dart';
+import 'package:utkrashvendor/app/Auth/view_model/auth_controller.dart';
 import 'package:utkrashvendor/app/Order/Controller/order_controller.dart';
 import 'package:utkrashvendor/app/Order/View/order_history.dart';
 import 'package:utkrashvendor/app/Profile/View/contact_screen.dart';
@@ -6,6 +7,7 @@ import 'package:utkrashvendor/app/Profile/View/referral_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:utkrashvendor/app/Profile/View/subscription_pakage_view.dart';
 import 'package:utkrashvendor/app/kisan%20Dashboard/controller/dashboard_controller.dart';
 import 'package:utkrashvendor/common_widgets/urls.dart';
 
@@ -121,6 +123,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                            );
                          }),
                      //   ),
+
+                         Consumer<AuthController>(builder: (context,authController,_){
+                           return  ListTile(
+                             onTap: () async{
+                               await authController.myPakageModalDetails();
+                               Get.to(()=>SubscriptionPakageView());
+                             },
+                             contentPadding: EdgeInsets.fromLTRB(20, 10, 10, 10),
+
+                             title: const Text("My Package"),
+                             trailing: Icon(Icons.arrow_forward_ios), );
+                         }),
+
+
+
+
                      Consumer<DashboardController>(
                      builder: (context, controller, child) =>   ListTile(
                           onTap: () async{
@@ -159,15 +177,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       title: Text("Contact Us"),
                       // subtitle: Text("Visa **34",style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppColors.divideColor),),
                       trailing: Icon(Icons.arrow_forward_ios), ),
-                      //   ListTile(
-                      // onTap: () {
-                      //   Get.to(()=>ReferralScreen());
-                      // },
-                      // contentPadding: EdgeInsets.fromLTRB(20, 10, 10, 10),
-                      //
-                      // title: const Text("Refer"),
-                      // // subtitle: Text("Visa **34",style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppColors.divideColor),),
-                      // trailing: Icon(Icons.arrow_forward_ios), ),
+
                         ListTile(
                       onTap: () {
                         openDialog(context, controller);

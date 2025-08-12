@@ -25,7 +25,6 @@ class ApiService {
       'Authorization': 'Bearer $token'
     };
 
-
     try {
       final response = await get(Uri.parse(homeURL), headers: headers);
 
@@ -64,6 +63,8 @@ class ApiService {
       final response = await get(url, headers: headers);
 
       final parseData = jsonDecode(response.body);
+
+      print("zxzxzxzxzxzxzxzx ${parseData}");
 
       if (response.statusCode == 200) {
         var data = AllShopProduct.fromJson(parseData);
@@ -142,6 +143,9 @@ class ApiService {
 
       final parseData = jsonDecode(response.body);
 
+      print("zzzzzzzzzz ${response.statusCode}");
+      print("xxxxxxxxxx ${parseData}");
+
 
       if (response.statusCode == 200) {
         final data = ProductDetailModel.fromJson(parseData);
@@ -201,9 +205,13 @@ class ApiService {
 
       if (response.statusCode == 200) {
         showSnackBar(
+          title: "Success",
             snackPosition: SnackPosition.TOP, description: parseData['msg']);
         return true;
       } else {
+        showSnackBar(
+            title: "Oops!",
+            snackPosition: SnackPosition.TOP, description: parseData['msg']);
         return false;
       }
     } on Exception catch (e) {

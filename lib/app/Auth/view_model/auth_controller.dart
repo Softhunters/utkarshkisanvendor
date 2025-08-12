@@ -8,6 +8,8 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../../config/shared_prif.dart';
 import '../../CartSection/Model/check_out_model.dart';
 import '../../Home/controller/home_api.dart';
+import '../modal/my_package_response.dart';
+import '../modal/subscription_pakage_response.dart';
 import '../view/register_screen.dart';
 import 'auth_api.dart';
 
@@ -34,6 +36,19 @@ class AuthController extends ChangeNotifier {
   Timer? _timer;
   int secondsRemaining = 60;
   bool otpSent = false;
+  List<PackageList> subscriptionPakageList = [];
+
+ var mypackage = MyPakckgeResponse();
+
+  String? selectedPname;
+  int? selectedId;
+
+
+  void selectPackage(String pname, int id) {
+    selectedPname = pname;
+    selectedId = id;
+    notifyListeners();
+  }
 
 
   Timer? otpTimer;
@@ -113,6 +128,8 @@ class AuthController extends ChangeNotifier {
     final result = await authApi.otpVerifyApi(mobileNumberController.text,currentText);
     if(result!=null){
       SharedStorage.localStorage?.setString("token", result['token']);
+      SharedStorage.localStorage?.setBool("isBuySubscription", result['isSubscriptionBuy']);
+      print("mnmnmnmnmmn ${result['isSubscriptionBuy']}");
       otpSent = false;
       mobileNumberController.clear();
       // otpController.clear();
@@ -150,9 +167,11 @@ class AuthController extends ChangeNotifier {
   bool regisObscureText = true;
   bool regisConObscureText = true;
 
+
   Future<dynamic> registerUser(
       UserModel data1, ValueSetter<bool> onResponse) async {
     final data = await authApi.userRegister(data1);
+    print("iiiiii ${data}");
     if (data != null) {
       SharedStorage.localStorage?.setString("token", data['token']);
       onResponse(true);
@@ -171,7 +190,7 @@ class AuthController extends ChangeNotifier {
     final data = await authApi.userLogin(data1);
     if (data != null) {
       SharedStorage.localStorage?.setString("token", data['token']);
-
+      SharedStorage.localStorage?.setBool("isBuySubscription", data['isSubscriptionBuy']);
       onResponse(true);
       notifyListeners();
     } else {
@@ -179,6 +198,37 @@ class AuthController extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+
+
+  Future<void> subscriptionPakageModalDetails(
+       ) async {
+    final data = await authApi.getSubscriptionPakageList();
+    if (data != null) {
+      subscriptionPakageList = data.result?.packageList??[];
+      notifyListeners();
+    } else {
+      notifyListeners();
+    }
+  }
+
+
+  Future<void> myPakageModalDetails(
+      ) async {
+    final data = await authApi.getMyPackageList();
+    print("uuuuu ${data?.result?.upToDate}");
+    if (data != null) {
+      mypackage = data;
+      notifyListeners();
+    } else {
+      notifyListeners();
+    }
+  }
+
+
+
+
+
 
   bool isChecked = false;
   final storage = const FlutterSecureStorage();

@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:utkrashvendor/app/Auth/view/register_screen.dart';
 import 'package:utkrashvendor/widgets/app_button_white_background_widget.dart';
 import 'package:flutter/gestures.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../../../common_widgets/app_colors.dart';
 import '../../../widgets/app_button_widget.dart';
+import '../view_model/auth_controller.dart';
 import 'login_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -67,15 +70,17 @@ class WelcomeScreen extends StatelessWidget {
             SizedBox(
               height: height * .03,
             ),
+            Consumer<AuthController>(
+              builder: (context, controller, child) =>
             AppButtonWhiteBackgroundWidget(
               height: 55,
-                title: "Sign Up",
-                textColor: AppColors.white,
-                onTap: () {
-
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen(),));
-                },
-              ),
+              title: "Sign Up",
+              textColor: AppColors.white,
+              onTap: () async{
+                await controller.subscriptionPakageModalDetails();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen(),));
+              },
+            )),
             SizedBox(
               height: height * .04,
             ),

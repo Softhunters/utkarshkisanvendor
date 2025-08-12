@@ -26,6 +26,9 @@ class OrderApi {
 
       final parseData = jsonDecode(response.body);
 
+      print("getOrder  ${parseData}");
+      print("getOrder status ${response.statusCode}");
+
       if (response.statusCode == 200) {
         var data = OrderHistoryModel.fromJson(parseData);
         return data;

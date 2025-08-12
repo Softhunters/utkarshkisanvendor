@@ -287,7 +287,7 @@ class DashboardController extends ChangeNotifier {
       VariantAddModel data1, ValueSetter<bool> onResponse) async {
     final data = await apiService.addVariantData(data1);
 
-    if (data != null) {
+    if (data != null && data['status'] != false) {
       onResponse(true);
       notifyListeners();
     } else {

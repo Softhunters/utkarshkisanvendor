@@ -28,8 +28,7 @@ class _ProductInventoryViewState extends State<ProductInventoryView> {
           title: Text("Product Inventory"),
           centerTitle: false,
         ),
-        body: Expanded(
-            child: ListView.builder(
+        body: ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: controller.orderHistoryByProduct?.length ?? 0,
           itemBuilder: (context, index) {
@@ -37,7 +36,7 @@ class _ProductInventoryViewState extends State<ProductInventoryView> {
             return Card(
               child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 4.0, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 4.0, vertical: 10),
                   child: Column(
                     children: [
                       Row(
@@ -92,16 +91,15 @@ class _ProductInventoryViewState extends State<ProductInventoryView> {
                                       onTap: () async {
                                         await controller
                                             .getProductInventoryHistoryDetails(
-                                                data?.productId.toString());
-                                        Get.to(() =>
-                                            ProductInventoryHistoryView(data));
+                                            data?.productId.toString());
+                                        Get.to(() => ProductInventoryHistoryView(data));
                                       },
                                       child: Container(
                                         width: width * 0.2,
                                         decoration: BoxDecoration(
                                           color: AppColors.primaryColor,
                                           borderRadius:
-                                              BorderRadius.circular(5),
+                                          BorderRadius.circular(5),
                                           border: Border.all(
                                               color: AppColors.primaryColor),
                                         ),
@@ -117,10 +115,10 @@ class _ProductInventoryViewState extends State<ProductInventoryView> {
                                                   .textTheme
                                                   .labelLarge
                                                   ?.copyWith(
-                                                    color: AppColors.white,
-                                                    fontWeight: FontWeight.w700,
-                                                    letterSpacing: 1.5,
-                                                  ),
+                                                color: AppColors.white,
+                                                fontWeight: FontWeight.w700,
+                                                letterSpacing: 1.5,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -282,8 +280,8 @@ class _ProductInventoryViewState extends State<ProductInventoryView> {
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 13),
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 13),
                                 ),
                                 Text(
                                   data.totalMinus.toString(),
@@ -291,8 +289,8 @@ class _ProductInventoryViewState extends State<ProductInventoryView> {
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 13),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13),
                                 )
                               ],
                             ),
@@ -306,8 +304,8 @@ class _ProductInventoryViewState extends State<ProductInventoryView> {
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 13),
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 13),
                                 ),
                                 Text(
                                   data.totalAdd.toString(),
@@ -315,42 +313,42 @@ class _ProductInventoryViewState extends State<ProductInventoryView> {
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 13),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13),
                                 )
                               ],
                             ),
                           ),
                           Expanded(
                               child: Column(
-                            children: [
-                              Text(
-                                "Remaining Qty.",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
+                                children: [
+                                  Text(
+                                    "Remaining Qty.",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
                                         fontWeight: FontWeight.w300,
                                         fontSize: 13),
-                              ),
-                              Text(
-                                data.quantity.toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
+                                  ),
+                                  Text(
+                                    data.quantity.toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 13),
-                              )
-                            ],
-                          ))
+                                  )
+                                ],
+                              ))
                         ],
                       )
                     ],
                   )),
             );
           },
-        )),
+        )
       );
     });
   }

@@ -71,6 +71,7 @@ class HomeController extends ChangeNotifier {
         await apiService.getShopProductApi(pageNo1, int.parse(perPage));
     if (data != null) {
       allShopProduct = data.result!.products?.data ?? [];
+
       perPage = data.result?.perPage ?? "";
       totalShopProduct = data.result?.products?.total;
       catLoading = false;

@@ -105,13 +105,14 @@ class _ProductInventoryHistoryViewState
           title: Text("Inventory History"),
           centerTitle: false,
         ),
-        body: SingleChildScrollView(
+        body: Padding(padding: EdgeInsets.all(16),
+        child: SingleChildScrollView(
           child: Column(
             children: [
               Card(
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 4.0, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 4.0, vertical: 10),
                   child: Column(
                     children: [
                       Row(
@@ -121,7 +122,7 @@ class _ProductInventoryHistoryViewState
                             width: width * 0.2,
                             child: MyCacheNetworkImages(
                               imageUrl:
-                                  "$imageURL${widget.data?.productApi?.image}",
+                              "$imageURL${widget.data?.productApi?.image}",
                               width: 100,
                               height: 110,
                               radius: 10,
@@ -142,8 +143,8 @@ class _ProductInventoryHistoryViewState
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
@@ -152,8 +153,8 @@ class _ProductInventoryHistoryViewState
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                                 Text(
                                   "Your Selling Price: ₹${widget.data?.price ?? ''}",
@@ -161,8 +162,8 @@ class _ProductInventoryHistoryViewState
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                                 const SizedBox(height: 15),
                               ],
@@ -183,9 +184,9 @@ class _ProductInventoryHistoryViewState
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 14,
-                                      ),
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 14,
+                                  ),
                                 ),
                                 Text(
                                   (widget.data?.totalMinus).toString(),
@@ -193,9 +194,9 @@ class _ProductInventoryHistoryViewState
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                      ),
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
                                 )
                               ],
                             ),
@@ -209,9 +210,9 @@ class _ProductInventoryHistoryViewState
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 14,
-                                      ),
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 14,
+                                  ),
                                 ),
                                 Text(
                                   (widget.data?.totalAdd).toString(),
@@ -219,9 +220,9 @@ class _ProductInventoryHistoryViewState
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                      ),
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
                                 )
                               ],
                             ),
@@ -235,9 +236,9 @@ class _ProductInventoryHistoryViewState
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 14,
-                                      ),
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 14,
+                                  ),
                                 ),
                                 Text(
                                   (widget.data?.quantity).toString(),
@@ -245,9 +246,9 @@ class _ProductInventoryHistoryViewState
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                      ),
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
                                 )
                               ],
                             ),
@@ -270,18 +271,18 @@ class _ProductInventoryHistoryViewState
                         Text(
                           "Inventory History",
                           style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.primaryBlack,
-                                  ),
+                          Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryBlack,
+                          ),
                         ),
                         ElevatedButton.icon(
                           onPressed: downloadExcelSheet,
-                          icon: Icon(Icons.download),
-                          label: Text("Download Excel"),
+                          label: Text("Download",style: TextStyle(fontSize: 12),),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primaryColor,
                             foregroundColor: Colors.white,
+
                           ),
                         ),
                       ],
@@ -291,121 +292,121 @@ class _ProductInventoryHistoryViewState
                       scrollDirection: Axis.horizontal,
                       child: controller.productInventoryHistory?.length != 0
                           ? DataTable(
-                              headingRowColor: MaterialStateProperty.all(
-                                AppColors.primaryColor.withOpacity(0.1),
-                              ),
-                              headingTextStyle:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                              columns: [
-                                DataColumn(
-                                  label: Text('S No.',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColors.primaryBlack,
-                                          )),
-                                ),
-                                DataColumn(
-                                  label: Text('Order No',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColors.primaryBlack,
-                                          )),
-                                ),
-                                DataColumn(
-                                  label: Text('Quantity',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColors.primaryBlack,
-                                          )),
-                                ),
-                                DataColumn(
-                                  label: Text('Date',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColors.primaryBlack,
-                                          )),
-                                ),
-                              ],
-                              rows: List.generate(
-                                controller.productInventoryHistory!.length,
-                                (index) {
-                                  final item = controller
-                                      .productInventoryHistory![index];
-                                  final dateTime =
-                                      DateTime.tryParse(item.createdAt ?? '');
-                                  final formattedDate = dateTime != null
-                                      ? DateFormat('dd-MM-yyyy')
-                                          .format(dateTime)
-                                      : '-';
-
-                                  return DataRow(cells: [
-                                    DataCell(Text('${index + 1}',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.primaryBlack,
-                                            ))),
-                                    DataCell(Text(item.orderNo ?? '-',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.primaryBlack,
-                                            ))),
-                                    DataCell(Text(
-                                        item.type == "add"
-                                            ? "+${item.quantity}"
-                                            : "-${item.quantity}",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: item.type == "add"
-                                                  ? AppColors.primaryColor
-                                                  : AppColors.redColor,
-                                            ))),
-                                    DataCell(Text(formattedDate,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.primaryBlack,
-                                            ))),
-                                  ]);
-                                },
-                              ))
-                          : Text('No data available',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(
+                          headingRowColor: MaterialStateProperty.all(
+                            AppColors.primaryColor.withOpacity(0.1),
+                          ),
+                          headingTextStyle:
+                          const TextStyle(fontWeight: FontWeight.bold),
+                          columns: [
+                            DataColumn(
+                              label: Text('S No.',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.primaryBlack,
                                   )),
+                            ),
+                            DataColumn(
+                              label: Text('Order No',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primaryBlack,
+                                  )),
+                            ),
+                            DataColumn(
+                              label: Text('Quantity',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primaryBlack,
+                                  )),
+                            ),
+                            DataColumn(
+                              label: Text('Date',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primaryBlack,
+                                  )),
+                            ),
+                          ],
+                          rows: List.generate(
+                            controller.productInventoryHistory!.length,
+                                (index) {
+                              final item = controller
+                                  .productInventoryHistory![index];
+                              final dateTime =
+                              DateTime.tryParse(item.createdAt ?? '');
+                              final formattedDate = dateTime != null
+                                  ? DateFormat('dd-MM-yyyy')
+                                  .format(dateTime)
+                                  : '-';
+
+                              return DataRow(cells: [
+                                DataCell(Text('${index + 1}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primaryBlack,
+                                    ))),
+                                DataCell(Text(item.orderNo ?? '-',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primaryBlack,
+                                    ))),
+                                DataCell(Text(
+                                    item.type == "add"
+                                        ? "+${item.quantity}"
+                                        : "-${item.quantity}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: item.type == "add"
+                                          ? AppColors.primaryColor
+                                          : AppColors.redColor,
+                                    ))),
+                                DataCell(Text(formattedDate,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primaryBlack,
+                                    ))),
+                              ]);
+                            },
+                          ))
+                          : Text('No data available',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryBlack,
+                          )),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-        ),
+        ),)
       );
     });
   }

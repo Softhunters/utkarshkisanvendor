@@ -11,6 +11,7 @@ import '../../../common_widgets/snack_bar.dart';
 import '../../../config/shared_prif.dart';
 import '../../Auth/view/login_screen.dart';
 import '../View/add_address_screen.dart';
+import '../View/subscription_pakage_view.dart';
 import '../model/all_address_model.dart';
 import '../model/contact_us_model.dart';
 import '../model/country_model.dart';
@@ -25,6 +26,7 @@ class ProfileController extends ChangeNotifier {
   TextEditingController streetController = TextEditingController();
   TextEditingController street2Controller = TextEditingController();
   TextEditingController landmarkController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
   TextEditingController pinController = TextEditingController();
 
 
@@ -97,6 +99,7 @@ class ProfileController extends ChangeNotifier {
       await SharedStorage.localStorage?.clear();
       SharedStorage.localStorage?.setString("fcm_token", deviceToken ?? "");
       SharedStorage.localStorage?.setBool(AppStrings.isLogin, false);
+      await SharedStorage.localStorage?.remove("isBuySubscription");
       Get.offAll(LoginScreen());
      // onResonse(true);
       notifyListeners();
@@ -104,6 +107,12 @@ class ProfileController extends ChangeNotifier {
       // onResonse(false);
       notifyListeners();
     }
+  }
+
+
+  void selectedCountry(){
+    selectedCountryId = "101";
+    getState("101");
   }
 
   saveAddress(AddressModel data, ValueSetter<bool> onResponse) async {
@@ -143,6 +152,28 @@ class ProfileController extends ChangeNotifier {
 
     return null;
   }
+
+
+
+bool loadingPaymentForplan = false;
+
+  paymentCompleteForSubscriptionPlan(PaymentCompleteModelForpackageSubscription data, ValueSetter<bool> onResponse) async {
+    loadingPaymentForplan = true;
+    final result = await profileApi.paymentCompleteApiForPackageSubscription(data);
+    if (result != null) {
+      loadingPaymentForplan = false;
+      onResponse(true);
+      notifyListeners();
+    } else {
+      loadingPaymentForplan = false;
+      onResponse(false);
+      notifyListeners();
+    }
+  }
+
+
+
+
 
   makeDefaultAddress(
       String id, String status, ValueSetter<bool> onResponse) async {

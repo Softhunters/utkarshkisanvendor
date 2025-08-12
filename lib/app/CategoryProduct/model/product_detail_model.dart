@@ -214,7 +214,7 @@ class Products {
     description = json['description'];
     manufacturerDetails = json['manufacturer_details'];
     regularPrice = json['regular_price'];
-    salePrice = json['sale_price'];
+    salePrice = json['sale_price'].toString();
     sKU = json['SKU'];
     stockStatus = json['stock_status'];
     featured = json['featured'].toString();

@@ -441,7 +441,8 @@ class HomeScreen extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                controller.getShopProductData(0);
+                controller.getShopProductData(1);
+                // controller.getShopProductData(0);
                 Get.to(() => const LatestProductScreen());
               },
               child: Text("See All",
@@ -482,6 +483,7 @@ class HomeScreen extends StatelessWidget {
                 controller.changePriceWithIndex(data.id);
                 controller.saveProductDetailslug(data.slug);
                 controller.getProductDetail(data.slug, 0);
+                print("aaaaaaa ${data.slug}");
                 Get.to(() => ProductDetailScreen(
                       productSlug: data.slug ?? "",
                       id: data.id ?? 0,
@@ -510,41 +512,42 @@ class HomeScreen extends StatelessWidget {
                             radius: 5,
                             fit: BoxFit.cover,
                           ),
+                        if(data.seller!=null)
                           data.wishlistAvgUserId == "null"
                               ? Positioned(
-                                  top: 5,
-                                  right: 5,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      controller.addWishlistProduct(
-                                          data.id,
-                                          1,
-                                          data.seller?.venderId.toString() ??
-                                              '');
-                                    },
-                                    child: const Icon(
-                                      Icons.favorite_border,
-                                      color: AppColors.yellowishColor,
-                                    ),
-                                  ),
-                                )
+                            top: 5,
+                            right: 5,
+                            child: GestureDetector(
+                              onTap: () {
+                                controller.addWishlistProduct(
+                                    data.id,
+                                    1,
+                                    data.seller?.venderId.toString() ??
+                                        '1');
+                              },
+                              child: const Icon(
+                                Icons.favorite_border,
+                                color: AppColors.yellowishColor,
+                              ),
+                            ),
+                          )
                               : Positioned(
-                                  top: 5,
-                                  right: 5,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      controller.addWishlistProduct(
-                                          data.id,
-                                          1,
-                                          data.seller?.venderId.toString() ??
-                                              '');
-                                    },
-                                    child: const Icon(
-                                      Icons.favorite,
-                                      color: AppColors.yellowishColor,
-                                    ),
-                                  ),
-                                ),
+                            top: 5,
+                            right: 5,
+                            child: GestureDetector(
+                              onTap: () {
+                                controller.addWishlistProduct(
+                                    data.id,
+                                    1,
+                                    data.seller?.venderId.toString() ??
+                                        '');
+                              },
+                              child: const Icon(
+                                Icons.favorite,
+                                color: AppColors.yellowishColor,
+                              ),
+                            ),
+                          ),
                           if (data.reviewsCount != 0)
                             Positioned(
                               bottom: 8,
@@ -851,7 +854,7 @@ class HomeScreen extends StatelessWidget {
               final data = controller.featureProducts[index];
               return GestureDetector(
                 onTap: () {
-                  controller.getShopProductData(0);
+                  controller.getShopProductData(1);
                   Get.to(() => const AllFeatureProductScreen());
                 },
                 child: Card(

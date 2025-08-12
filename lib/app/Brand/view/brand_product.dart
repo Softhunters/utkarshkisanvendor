@@ -175,38 +175,39 @@ class BrandProductScreen extends StatelessWidget {
                                       fit: BoxFit.cover,
                                       // color: AppColors.primaryColor,
                                     ),
+                                  if(data.seller!=null)
                                     data.wishlistAvgUserId == "null"
                                         ? Positioned(
-                                            top: 5,
-                                            right: 5,
-                                            child: GestureDetector(
-                                                onTap: () {
+                                        top: 5,
+                                        right: 5,
+                                        child: GestureDetector(
+                                            onTap: () {
 
-                                                  // provider.addWishlistProduct(data.id);
-                                                      controller.addWishlistProduct(data.id,
-                                                                  controller.brand?.brandSlug ??"",(value) {
-                                                                    if(value==true){
-                                                                      provider.getWishlistProduct(0);
-                                                                    }
-                                                                  },(data?.seller?.venderId??'1').toString());
-                                                },
-                                                child: const Icon(
-                                                    Icons.favorite_border,color: AppColors.yellowishColor,)))
+                                              // provider.addWishlistProduct(data.id);
+                                              controller.addWishlistProduct(data.id,
+                                                  controller.brand?.brandSlug ??"",(value) {
+                                                    if(value==true){
+                                                      provider.getWishlistProduct(0);
+                                                    }
+                                                  },(data?.seller?.venderId??'1').toString());
+                                            },
+                                            child: const Icon(
+                                              Icons.favorite_border,color: AppColors.yellowishColor,)))
                                         : Positioned(
-                                            top: 5,
-                                            right: 5,
-                                            child: GestureDetector(
-                                                onTap: () {
+                                        top: 5,
+                                        right: 5,
+                                        child: GestureDetector(
+                                            onTap: () {
 
-                                                  controller.addWishlistProduct(data.id,
-                                                    controller.brand?.brandSlug ??"",(value) {
-                                                      if(value==true){
-                                                        provider.getWishlistProduct(0);
-                                                      }
-                                                    },(data?.seller?.venderId??'1').toString());
-                                                },
-                                                child: const Icon(
-                                                    Icons.favorite,color: AppColors.yellowishColor,))),
+                                              controller.addWishlistProduct(data.id,
+                                                  controller.brand?.brandSlug ??"",(value) {
+                                                    if(value==true){
+                                                      provider.getWishlistProduct(0);
+                                                    }
+                                                  },(data?.seller?.venderId??'1').toString());
+                                            },
+                                            child: const Icon(
+                                              Icons.favorite,color: AppColors.yellowishColor,))),
                                     if(data.reviewsCount !=0)
                                       Positioned(
                                           bottom: 8,
@@ -316,18 +317,16 @@ class BrandProductScreen extends StatelessWidget {
                                       ),
                                       Consumer<CurrencyProvider>(
                                         builder: (context, currencyProvider, child) =>  FutureBuilder<double>(
-                                          future: currencyProvider.selectedCurrency == Currency.usd
-                                              ? currencyProvider.convertToUSD(double.parse(data.salePrice ?? "0.0"))
-                                              : Future.value(double.parse(data.salePrice ?? "0.0")),
+                                          future:Future.value(double.parse(data.salePrice?.replaceAll(
+                                              ",", "") ?? "0.0")),
                                           builder: (context, salePriceSnapshot) {
                                             if (!salePriceSnapshot.hasData) {
                                               return const Text("Loading..");
                                             }
                                             double salePrice = salePriceSnapshot.data ?? 0.0;
                                             return FutureBuilder<double>(
-                                              future: currencyProvider.selectedCurrency == Currency.usd
-                                                  ? currencyProvider.convertToUSD(double.parse(data.regularPrice ?? "0.0"))
-                                                  : Future.value(double.parse(data.regularPrice ?? "0.0")),
+                                              future:Future.value(double.parse(data.regularPrice?.replaceAll(
+                                                  ",", "") ?? "0.0")),
                                               builder: (context, regularPriceSnapshot) {
                                                 if (!regularPriceSnapshot.hasData) {
                                                   return const Text("Loading..");
@@ -340,7 +339,8 @@ class BrandProductScreen extends StatelessWidget {
                                                   children: [
                                                     Text(
 
-                                                   "₹${double.tryParse(data.salePrice ?? " ")?.toStringAsFixed(2)}",
+                                                   "₹${double.tryParse(data.salePrice?.replaceAll(
+                                                       ",", "") ?? " ")?.toStringAsFixed(2)}",
 
                                                       maxLines: 1,
                                                       style: Theme.of(context)
@@ -358,7 +358,8 @@ class BrandProductScreen extends StatelessWidget {
                                                       children: [
                                                           Text(
 
-                                                            "₹${double.tryParse(data.regularPrice ?? " ")?.toStringAsFixed(2)}",
+                                                            "₹${double.tryParse(data.regularPrice?.replaceAll(
+                                                                ",", "") ?? " ")?.toStringAsFixed(2)}",
 
                                                             maxLines: 1,
                                                             style: Theme.of(context)

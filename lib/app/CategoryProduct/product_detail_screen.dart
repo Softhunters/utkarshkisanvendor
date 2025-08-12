@@ -1,8 +1,10 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:currency_converter/currency.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:utkrashvendor/app/CartSection/Controller/cart_controller.dart';
 import 'package:utkrashvendor/app/kisan%20Dashboard/view/edit_product_view.dart';
+import 'package:utkrashvendor/common_widgets/snack_bar.dart';
 import 'package:utkrashvendor/common_widgets/urls.dart';
 import 'package:utkrashvendor/widgets/app_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -14,9 +16,12 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
 
 import '../../common_widgets/app_colors.dart';
+import '../../config/shared_prif.dart';
 import '../../widgets/cache_network_image.dart';
 import '../../widgets/read_more_html.dart';
+import '../Auth/view_model/auth_controller.dart';
 import '../Home/controller/home_controller.dart';
+import '../Profile/View/subscription_pakage_view.dart';
 import '../Review/rating_screen.dart';
 import '../bottom_bar/bottom_bar_screen.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -122,7 +127,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 child: Visibility(
                   visible: !controller.productLoading,
                   replacement: const Center(
-                    child: CircularProgressIndicator.adaptive(),
+                    child:CupertinoActivityIndicator(),
                   ),
                   child: Visibility(
                     visible: controller.productDetail != null,
@@ -275,67 +280,68 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                         FontWeight.w600),
                                           ),
                                         ),
-                                        Consumer<CartController>(
-                                          builder: (context, cartController,
-                                                  child) =>
-                                              Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: controller.productDetail
-                                                        ?.wishlistAvgUserId ==
-                                                    "null"
-                                                ? GestureDetector(
-                                                    onTap: () {
-                                                      controller.addWishlistProductForProductPage(
-                                                          controller
-                                                              .productDetail
-                                                              ?.id,
-                                                          4,
-                                                          (controller
-                                                                      .productDetail
-                                                                      ?.seller
-                                                                      ?.venderId ??
-                                                                  '1')
-                                                              .toString());
+                                        if(controller.productDetail?.seller!=null)
+                                          Consumer<CartController>(
+                                            builder: (context, cartController,
+                                                child) =>
+                                                Padding(
+                                                  padding: const EdgeInsets.all(4.0),
+                                                  child: controller.productDetail
+                                                      ?.wishlistAvgUserId ==
+                                                      "null"
+                                                      ? GestureDetector(
+                                                      onTap: () {
+                                                        controller.addWishlistProductForProductPage(
+                                                            controller
+                                                                .productDetail
+                                                                ?.id,
+                                                            4,
+                                                            (controller
+                                                                .productDetail
+                                                                ?.seller
+                                                                ?.venderId ??
+                                                                '1')
+                                                                .toString());
 
-                                                      controller
-                                                          .getProductDetail(
-                                                              controller.dSlug,
-                                                              1);
-                                                      setState(() {});
-                                                    },
-                                                    child: const Icon(
-                                                      Icons.favorite_border,
-                                                      color: AppColors
-                                                          .yellowishColor,
-                                                      size: 22,
-                                                    ))
-                                                : GestureDetector(
-                                                    onTap: () {
-                                                      controller.addWishlistProductForProductPage(
-                                                          controller
-                                                              .productDetail
-                                                              ?.id,
-                                                          4,
-                                                          (controller
-                                                                      .productDetail
-                                                                      ?.seller
-                                                                      ?.venderId ??
-                                                                  '1')
-                                                              .toString());
-                                                      controller
-                                                          .getProductDetail(
-                                                              controller.dSlug,
-                                                              1);
-                                                      setState(() {});
-                                                    },
-                                                    child: const Icon(
-                                                      Icons.favorite,
-                                                      color: AppColors
-                                                          .yellowishColor,
-                                                      size: 22,
-                                                    )),
+                                                        controller
+                                                            .getProductDetail(
+                                                            controller.dSlug,
+                                                            1);
+                                                        setState(() {});
+                                                      },
+                                                      child: const Icon(
+                                                        Icons.favorite_border,
+                                                        color: AppColors
+                                                            .yellowishColor,
+                                                        size: 22,
+                                                      ))
+                                                      : GestureDetector(
+                                                      onTap: () {
+                                                        controller.addWishlistProductForProductPage(
+                                                            controller
+                                                                .productDetail
+                                                                ?.id,
+                                                            4,
+                                                            (controller
+                                                                .productDetail
+                                                                ?.seller
+                                                                ?.venderId ??
+                                                                '1')
+                                                                .toString());
+                                                        controller
+                                                            .getProductDetail(
+                                                            controller.dSlug,
+                                                            1);
+                                                        setState(() {});
+                                                      },
+                                                      child: const Icon(
+                                                        Icons.favorite,
+                                                        color: AppColors
+                                                            .yellowishColor,
+                                                        size: 22,
+                                                      )),
+                                                ),
                                           ),
-                                        ),
                                         Padding(
                                             padding: const EdgeInsets.all(4.0),
                                             child: GestureDetector(
@@ -572,9 +578,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                 AppButton(
                                                     title: "Add Seller",
                                                     onTap: () async {
-                                                      Get.to(() => AddProductView(
-                                                          controller
-                                                              .productDetail));
+                                                      final isBuy = SharedStorage.localStorage?.getBool("isBuySubscription");
+                                                      if(isBuy==true){
+                                                        Get.to(() => AddProductView(
+                                                            controller
+                                                                .productDetail));
+                                                      }else{
+                                                        final authcontroller = Provider.of<AuthController>(context, listen: false);
+                                                        await authcontroller.myPakageModalDetails();
+                                                        Get.to(() => SubscriptionPakageView());
+                                                      }
+
                                                     }))
                                     : Consumer<DashboardController>(
                                         builder:
@@ -605,9 +619,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             const SizedBox(height: 4),
 
                             /// Variant Details
+                            if (controller.variant.length > 1 ||controller.productDetail?.seller!=null)
                             Container(
                               decoration:
-                                  const BoxDecoration(color: AppColors.white),
+                              const BoxDecoration(color: AppColors.white),
                               child: Card(
                                 color: AppColors.white,
                                 surfaceTintColor: AppColors.white,
@@ -623,7 +638,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                               Size(width, 71)),
                                           child: Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 "Size",
@@ -631,17 +646,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                     .textTheme
                                                     .bodyLarge
                                                     ?.copyWith(
-                                                        color: AppColors
-                                                            .primaryColor),
+                                                    color: AppColors
+                                                        .primaryColor),
                                               ),
                                               Container(
                                                 height: 50,
                                                 child: ListView.builder(
                                                   itemCount:
-                                                      controller.variant.length,
+                                                  controller.variant.length,
                                                   shrinkWrap: true,
                                                   scrollDirection:
-                                                      Axis.horizontal,
+                                                  Axis.horizontal,
                                                   itemBuilder:
                                                       (context, index) {
                                                     var data = controller
@@ -655,83 +670,83 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                                         setState(() {
                                                           controller
                                                               .changePriceWithIndex(
-                                                                  data.id);
+                                                              data.id);
                                                           controller
                                                               .saveProductDetailslug(
-                                                                  data.slug);
+                                                              data.slug);
                                                           controller
                                                               .getProductDetail(
-                                                                  controller
-                                                                      .dSlug,
-                                                                  1);
+                                                              controller
+                                                                  .dSlug,
+                                                              1);
                                                         });
                                                       },
                                                       child: Padding(
                                                         padding:
-                                                            const EdgeInsets
-                                                                .all(2.0),
+                                                        const EdgeInsets
+                                                            .all(2.0),
                                                         child: Container(
-                                                            // width: 21,
-                                                            // height: 55,
+                                                          // width: 21,
+                                                          // height: 55,
                                                             decoration:
-                                                                BoxDecoration(
+                                                            BoxDecoration(
                                                               border: Border.all(
                                                                   color: AppColors
                                                                       .primaryBlack),
                                                               color: selectedColor
                                                                   ? AppColors
-                                                                      .primaryBlack
+                                                                  .primaryBlack
                                                                   : AppColors
-                                                                      .white,
+                                                                  .white,
                                                               borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
+                                                              BorderRadius
+                                                                  .circular(
+                                                                  10),
                                                             ),
                                                             child: Padding(
                                                               padding:
-                                                                  const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          12.0,
-                                                                      vertical:
-                                                                          2),
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                  12.0,
+                                                                  vertical:
+                                                                  2),
                                                               child: Center(
                                                                   child: Column(
-                                                                mainAxisSize:
+                                                                    mainAxisSize:
                                                                     MainAxisSize
                                                                         .min,
-                                                                children: [
-                                                                  Text(
-                                                                    data.varaintDetail ??
-                                                                        "",
-                                                                    style: Theme.of(
+                                                                    children: [
+                                                                      Text(
+                                                                        data.varaintDetail ??
+                                                                            "",
+                                                                        style: Theme.of(
                                                                             context)
-                                                                        .textTheme
-                                                                        .labelMedium
-                                                                        ?.copyWith(
+                                                                            .textTheme
+                                                                            .labelMedium
+                                                                            ?.copyWith(
                                                                             color: selectedColor
                                                                                 ? AppColors.white
                                                                                 : AppColors.primaryBlack,
                                                                             fontSize: selectedColor ? 12 : 10),
-                                                                  ),
-                                                                  const SizedBox(
-                                                                    height: 2,
-                                                                  ),
-                                                                  Text(
-                                                                    "₹${data.salePrice}",
-                                                                    style: Theme.of(
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 2,
+                                                                      ),
+                                                                      Text(
+                                                                        "₹${data.salePrice}",
+                                                                        style: Theme.of(
                                                                             context)
-                                                                        .textTheme
-                                                                        .labelSmall
-                                                                        ?.copyWith(
+                                                                            .textTheme
+                                                                            .labelSmall
+                                                                            ?.copyWith(
                                                                             color: selectedColor
                                                                                 ? AppColors.white
                                                                                 : AppColors.primaryBlack,
                                                                             fontSize: selectedColor ? 12 : 10),
-                                                                  ),
-                                                                ],
-                                                              )),
+                                                                      ),
+                                                                    ],
+                                                                  )),
                                                             )),
                                                       ),
                                                     );
@@ -742,209 +757,210 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                           ),
                                         ),
                                       const SizedBox(height: 10),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Container(
-                                            width: width * .45,
-                                            child: !controller.sellerCartIds
-                                                    .contains(controller
-                                                        .productDetail
-                                                        ?.seller
-                                                        ?.venderId)
-                                                ? Row(
-                                                    children: [
-                                                      Text(
-                                                        "Qty. :",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyLarge
-                                                            ?.copyWith(
-                                                                color: AppColors
-                                                                    .primaryColor),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Container(
-                                                        // width: 100,
-                                                        height: 30,
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        25),
-                                                            color: AppColors
-                                                                .textFieldColor),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceAround,
-                                                          children: [
-                                                            const SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            controller.count > 1
-                                                                ? GestureDetector(
-                                                                    onTap: () {
-                                                                      controller.updateCount(controller.count == 1
-                                                                          ? controller.count -
-                                                                              0
-                                                                          : controller.count -
-                                                                              1);
-                                                                    },
-                                                                    child:
-                                                                        const Icon(
-                                                                      Icons
-                                                                          .remove,
-                                                                      size: 18,
-                                                                    ))
-                                                                : SizedBox(),
-                                                            const SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            Text(
-                                                              controller.count
-                                                                  .toString(),
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodySmall
-                                                                  ?.copyWith(
-                                                                      color: AppColors
-                                                                          .primaryColor),
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            GestureDetector(
-                                                                onTap: () {
-                                                                  controller.updateCount(
-                                                                      controller
-                                                                              .count +
-                                                                          1);
-                                                                },
-                                                                child:
-                                                                    const Icon(
-                                                                  Icons.add,
-                                                                  size: 18,
-                                                                )),
-                                                            const SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )
-                                                : Text(
-                                                    "This product is already in your cart.",
+                                      if(controller.productDetail?.seller!=null)
+                                        Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              width: width * .45,
+                                              child: !controller.sellerCartIds
+                                                  .contains(controller
+                                                  .productDetail
+                                                  ?.seller
+                                                  ?.venderId)
+                                                  ? Row(
+                                                children: [
+                                                  Text(
+                                                    "Qty. :",
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .titleSmall
+                                                        .bodyLarge
                                                         ?.copyWith(
-                                                            color: AppColors
-                                                                .primaryBlack)),
-                                          ),
-                                          if (controller
-                                                  .productDetail?.stockStatus ==
-                                              "instock")
-                                            Consumer<CartController>(
-                                              builder: (context, value,
-                                                      child) =>
-                                                  !controller.sellerCartIds
-                                                          .contains(controller
-                                                                  .productDetail
-                                                                  ?.seller
-                                                                  ?.venderId ??
-                                                              1)
-                                                      ? GestureDetector(
-                                                          onTap: () {
-                                                            setState(() {
-                                                              value.addCartDAta(
-                                                                controller
-                                                                    .productDetail
-                                                                    ?.id,
-                                                                controller
-                                                                    .count,
-                                                                (value) {
-                                                                  if (value) {
-                                                                    controller
-                                                                        .count = 1;
-                                                                    controller.getProductDetail(
-                                                                        controller
-                                                                            .dSlug,
-                                                                        1);
-                                                                  }
-                                                                },
-                                                                (controller
-                                                                            .productDetail
-                                                                            ?.seller
-                                                                            ?.venderId ??
-                                                                        '1')
-                                                                    .toString(),
-                                                              );
-                                                            });
-                                                          },
-                                                          child: Container(
-                                                            height: 30,
-                                                            decoration: BoxDecoration(
-                                                                color: AppColors
-                                                                    .primaryColor,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20)),
-                                                            child:
-                                                                const Padding(
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          20),
-                                                              child: Center(
-                                                                  child: Text(
-                                                                      "Add to Cart")),
-                                                            ),
-                                                          ),
-                                                        )
-                                                      : GestureDetector(
-                                                          onTap: () {
-                                                            Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          const BottomBarScreen(
-                                                                    index: 1,
-                                                                    type: 1,
-                                                                  ),
-                                                                ));
-                                                          },
-                                                          child: Container(
-                                                            height: 40,
-                                                            decoration: BoxDecoration(
-                                                                color: AppColors
-                                                                    .primaryColor,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20)),
-                                                            child:
-                                                                const Padding(
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          14.0),
-                                                              child: Center(
-                                                                  child: Text(
-                                                                      "View Cart")),
-                                                            ),
-                                                          ),
+                                                        color: AppColors
+                                                            .primaryColor),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Container(
+                                                    // width: 100,
+                                                    height: 30,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(
+                                                            25),
+                                                        color: AppColors
+                                                            .textFieldColor),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                      children: [
+                                                        const SizedBox(
+                                                          width: 10,
                                                         ),
-                                            )
-                                        ],
-                                      ),
+                                                        controller.count > 1
+                                                            ? GestureDetector(
+                                                            onTap: () {
+                                                              controller.updateCount(controller.count == 1
+                                                                  ? controller.count -
+                                                                  0
+                                                                  : controller.count -
+                                                                  1);
+                                                            },
+                                                            child:
+                                                            const Icon(
+                                                              Icons
+                                                                  .remove,
+                                                              size: 18,
+                                                            ))
+                                                            : SizedBox(),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Text(
+                                                          controller.count
+                                                              .toString(),
+                                                          style: Theme.of(
+                                                              context)
+                                                              .textTheme
+                                                              .bodySmall
+                                                              ?.copyWith(
+                                                              color: AppColors
+                                                                  .primaryColor),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        GestureDetector(
+                                                            onTap: () {
+                                                              controller.updateCount(
+                                                                  controller
+                                                                      .count +
+                                                                      1);
+                                                            },
+                                                            child:
+                                                            const Icon(
+                                                              Icons.add,
+                                                              size: 18,
+                                                            )),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                                  : Text(
+                                                  "This product is already in your cart.",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleSmall
+                                                      ?.copyWith(
+                                                      color: AppColors
+                                                          .primaryBlack)),
+                                            ),
+                                            if (controller
+                                                .productDetail?.stockStatus ==
+                                                "instock")
+                                              Consumer<CartController>(
+                                                builder: (context, value,
+                                                    child) =>
+                                                !controller.sellerCartIds
+                                                    .contains(controller
+                                                    .productDetail
+                                                    ?.seller
+                                                    ?.venderId ??
+                                                    1)
+                                                    ? GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      value.addCartDAta(
+                                                        controller
+                                                            .productDetail
+                                                            ?.id,
+                                                        controller
+                                                            .count,
+                                                            (value) {
+                                                          if (value) {
+                                                            controller
+                                                                .count = 1;
+                                                            controller.getProductDetail(
+                                                                controller
+                                                                    .dSlug,
+                                                                1);
+                                                          }
+                                                        },
+                                                        (controller
+                                                            .productDetail
+                                                            ?.seller
+                                                            ?.venderId ??
+                                                            '1')
+                                                            .toString(),
+                                                      );
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    height: 30,
+                                                    decoration: BoxDecoration(
+                                                        color: AppColors
+                                                            .primaryColor,
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(
+                                                            20)),
+                                                    child:
+                                                    const Padding(
+                                                      padding: EdgeInsets
+                                                          .symmetric(
+                                                          horizontal:
+                                                          20),
+                                                      child: Center(
+                                                          child: Text(
+                                                              "Add to Cart")),
+                                                    ),
+                                                  ),
+                                                )
+                                                    : GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder:
+                                                              (context) =>
+                                                          const BottomBarScreen(
+                                                            index: 1,
+                                                            type: 1,
+                                                          ),
+                                                        ));
+                                                  },
+                                                  child: Container(
+                                                    height: 40,
+                                                    decoration: BoxDecoration(
+                                                        color: AppColors
+                                                            .primaryColor,
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(
+                                                            20)),
+                                                    child:
+                                                    const Padding(
+                                                      padding: EdgeInsets
+                                                          .symmetric(
+                                                          horizontal:
+                                                          14.0),
+                                                      child: Center(
+                                                          child: Text(
+                                                              "View Cart")),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                          ],
+                                        ),
                                       // const SizedBox(height: 10),
                                     ],
                                   ),

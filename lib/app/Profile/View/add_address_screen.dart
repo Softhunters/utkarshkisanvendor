@@ -11,10 +11,24 @@ import '../../../common_widgets/snack_bar.dart';
 import '../Controller/profile_controller.dart';
 import '../model/country_model.dart';
 
-class AddAddressScreen extends StatelessWidget {
+class AddAddressScreen extends StatefulWidget {
   final int id;
 
   const AddAddressScreen({super.key, required this.id});
+
+  @override
+  State<AddAddressScreen> createState() => _AddAddressScreenState();
+}
+
+class _AddAddressScreenState extends State<AddAddressScreen> {
+  late ProfileController controller;
+  
+  void initState(){
+    final controller = Provider.of<ProfileController>(context, listen: false);
+    controller.selectedCountry();
+    controller.countryController.text ="India";
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +87,7 @@ class AddAddressScreen extends StatelessWidget {
                   child: ListView(
                     // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Name",
+                      Text("Name*",
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium
@@ -109,7 +123,7 @@ class AddAddressScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("Mobile",
+                                Text("Mobile*",
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium
@@ -204,7 +218,7 @@ class AddAddressScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Address",
+                                Text("Address*",
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium
@@ -250,7 +264,7 @@ class AddAddressScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Apt/Suite/Floor",
+                                Text("Apt/Suite/Floor*",
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium
@@ -295,13 +309,9 @@ class AddAddressScreen extends StatelessWidget {
                           hintText: "Enter Landmark",
                           controller: controller.landmarkController,
                           maxLines: 1,
+
                           keyBoardType: TextInputType.text,
                           focusNode: controller.landmark,
-                          /*  validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter landmark";
-                        }
-                      },*/
                           hintStyle: Theme.of(context)
                               .textTheme
                               .bodyLarge!
@@ -317,7 +327,7 @@ class AddAddressScreen extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Country",
+                              Text("Country*",
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleMedium
@@ -325,82 +335,100 @@ class AddAddressScreen extends StatelessWidget {
                               const SizedBox(
                                 height: 5,
                               ),
-                              DropdownButtonHideUnderline(
-                                child: DropdownButton2<String>(
-                                  value: controller.selectedCountryId,
-                                  style: const TextStyle(
-                                      fontSize: 14, fontWeight: FontWeight.normal),
-                                  iconStyleData: const IconStyleData(
-                                      icon: Icon(
-                                        Icons.keyboard_arrow_down_outlined,
-                                      ),
-                                      iconSize: 30,
-                                      iconEnabledColor: AppColors.primaryBlack),
-                                  isExpanded: true,
-                                  hint: const Text(
-                                    "Country",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal),
-                                  ),
-                                  items: [
-                                    ...controller.countries
-                                        .map((e) => DropdownMenuItem(
-                                        value: e.id.toString(),
-                                        child: SizedBox(
-                                          height:
-                                          MediaQuery.sizeOf(context).width *
-                                              .05,
-                                          width:
-                                          MediaQuery.sizeOf(context).width *
-                                              .65,
-                                          child: Text(e.name ?? "",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Theme.of(context)
-                                                      .primaryColor)),
-                                        )))
-                                        .toList(),
-                                  ],
-                                  onChanged: (String? value) {
-                                    // controller.country = value;
+                              SizedBox(
+                                width: 150,
+                                child: AppTextFormWidget(
+                                    hintText: "India",
+                                    controller: controller.countryController,
+                                    maxLines: 1,
+                                    enable: false,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(color: Colors.black),
 
-                                    controller.selectedCountryId = value;
-                                    controller.getState(
-                                        controller.selectedCountryId.toString());
-                                  },
-                                  menuItemStyleData: const MenuItemStyleData(
-                                    height: 45,
-                                  ),
-                                  buttonStyleData: ButtonStyleData(
-                                    height: 50,
-                                    width: width * .43,
-                                    padding:
-                                    const EdgeInsets.only(left: 14, right: 14),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(14),
-                                        color: AppColors.textFieldColor),
-                                    elevation: 0,
-                                  ),
-                                  dropdownStyleData: DropdownStyleData(
-                                    maxHeight:
-                                    MediaQuery.sizeOf(context).height * .8,
-                                    width: MediaQuery.sizeOf(context).width * .6,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
-                                      color: Colors.white,
-                                    ),
-                                    offset: const Offset(-20, 0),
-                                    scrollbarTheme: ScrollbarThemeData(
-                                      radius: const Radius.circular(40),
-                                      thickness: MaterialStateProperty.all(6),
-                                      thumbVisibility:
-                                      MaterialStateProperty.all(true),
-                                    ),
-                                  ),
-                                ),
+                                    keyBoardType: TextInputType.text,
+                                    hintStyle: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(color: AppColors.divideColor)),
+
                               ),
+                              // DropdownButtonHideUnderline(
+                              //   child: DropdownButton2<String>(
+                              //     value: controller.selectedCountryId,
+                              //     style: const TextStyle(
+                              //         fontSize: 14, fontWeight: FontWeight.normal),
+                              //     iconStyleData: const IconStyleData(
+                              //         icon: Icon(
+                              //           Icons.keyboard_arrow_down_outlined,
+                              //         ),
+                              //         iconSize: 30,
+                              //         iconEnabledColor: AppColors.primaryBlack),
+                              //     isExpanded: true,
+                              //     hint: const Text(
+                              //       "Country",
+                              //       style: TextStyle(
+                              //           fontSize: 14,
+                              //           fontWeight: FontWeight.normal),
+                              //     ),
+                              //     items: [
+                              //       ...controller.countries
+                              //           .map((e) => DropdownMenuItem(
+                              //           value: e.id.toString(),
+                              //           child: SizedBox(
+                              //             height:
+                              //             MediaQuery.sizeOf(context).width *
+                              //                 .05,
+                              //             width:
+                              //             MediaQuery.sizeOf(context).width *
+                              //                 .65,
+                              //             child: Text(e.name ?? "",
+                              //                 style: TextStyle(
+                              //                     fontSize: 14,
+                              //                     fontWeight: FontWeight.w600,
+                              //                     color: Theme.of(context)
+                              //                         .primaryColor)),
+                              //           )))
+                              //           .toList(),
+                              //     ],
+                              //     onChanged: (String? value) {
+                              //       // controller.country = value;
+                              //         print("gfgfgfgfgf Country ʼd ${value}");
+                              //
+                              //     },
+                              //     menuItemStyleData: const MenuItemStyleData(
+                              //       height: 45,
+                              //     ),
+                              //     buttonStyleData: ButtonStyleData(
+                              //       height: 50,
+                              //       width: width * .43,
+                              //       padding:
+                              //       const EdgeInsets.only(left: 14, right: 14),
+                              //       decoration: BoxDecoration(
+                              //           borderRadius: BorderRadius.circular(14),
+                              //           color: AppColors.textFieldColor),
+                              //       elevation: 0,
+                              //     ),
+                              //     dropdownStyleData: DropdownStyleData(
+                              //       maxHeight:
+                              //       MediaQuery.sizeOf(context).height * .8,
+                              //       width: MediaQuery.sizeOf(context).width * .6,
+                              //       decoration: BoxDecoration(
+                              //         borderRadius: BorderRadius.circular(14),
+                              //         color: Colors.white,
+                              //       ),
+                              //       offset: const Offset(-20, 0),
+                              //       scrollbarTheme: ScrollbarThemeData(
+                              //         radius: const Radius.circular(40),
+                              //         thickness: MaterialStateProperty.all(6),
+                              //         thumbVisibility:
+                              //         MaterialStateProperty.all(true),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+
                               const SizedBox(
                                 height: 20,
                               ),
@@ -409,7 +437,7 @@ class AddAddressScreen extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("State",
+                              Text("State*",
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleMedium
@@ -510,7 +538,7 @@ class AddAddressScreen extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("City",
+                              Text("City*",
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleMedium
@@ -599,7 +627,7 @@ class AddAddressScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Zip Code",
+                                Text("Zip Code*",
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium
@@ -748,7 +776,7 @@ class AddAddressScreen extends StatelessWidget {
                           }
                           else {
                             var data = AddressModel(
-                                id: id.toString(),
+                                id: widget.id.toString(),
                                 name: controller.nameController.text,
                                 mobile: controller.mobileController.text,
                                 optionalMobile:
@@ -756,7 +784,7 @@ class AddAddressScreen extends StatelessWidget {
                                 street: controller.streetController.text,
                                 street2: controller.street2Controller.text,
                                 landmark: controller.landmarkController.text,
-                                country: controller.selectedCountryId.toString(),
+                                country: "101",
                                 state: controller.selectedStateId.toString(),
                                 city:  controller.selectedCityId.toString(),
                                 zip: controller.pinController.text,

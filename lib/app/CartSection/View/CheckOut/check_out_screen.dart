@@ -247,6 +247,7 @@ class CheckOutScreen extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               final data = controller.checkOutProduct[index];
+
               return Card(
                 elevation: 1,
                 child: Padding(

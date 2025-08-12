@@ -143,23 +143,24 @@ class AllFeatureProductScreen extends StatelessWidget {
                                                 fit: BoxFit.cover,
                                                 // color: AppColors.primaryColor,
                                               ),
-                                              data.wishlistAvgUserId == "null"
-                                                  ? Positioned(
-                                                  top: 5,
-                                                  right: 5,
-                                                  child: GestureDetector(
-                                                      onTap: () {
-                                                        controller.addWishlistProduct(data.id,3,(data.seller?.venderId??"1").toString());
-                                                      },
-                                                      child: const Icon(Icons.favorite_border,color: AppColors.yellowishColor,)))
-                                                  : Positioned(
-                                                  top: 5,
-                                                  right: 5,
-                                                  child: GestureDetector(
-                                                      onTap: () {
-                                                        controller.addWishlistProduct(data.id,3,(data.seller?.venderId??"1").toString());
-                                                      },
-                                                      child: const Icon(Icons.favorite,color: AppColors.yellowishColor,))),
+                                           if(data.seller!=null)
+                                             data.wishlistAvgUserId == "null"
+                                                 ? Positioned(
+                                                 top: 5,
+                                                 right: 5,
+                                                 child: GestureDetector(
+                                                     onTap: () {
+                                                       controller.addWishlistProduct(data.id,3,(data.seller?.venderId??"1").toString());
+                                                     },
+                                                     child: const Icon(Icons.favorite_border,color: AppColors.yellowishColor,)))
+                                                 : Positioned(
+                                                 top: 5,
+                                                 right: 5,
+                                                 child: GestureDetector(
+                                                     onTap: () {
+                                                       controller.addWishlistProduct(data.id,3,(data.seller?.venderId??"1").toString());
+                                                     },
+                                                     child: const Icon(Icons.favorite,color: AppColors.yellowishColor,))),
                                               if(data.reviewsCount !=0)
                                                 Positioned(
                                                     bottom: 8,

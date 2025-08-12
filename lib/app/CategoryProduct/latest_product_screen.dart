@@ -172,6 +172,8 @@ class LatestProductScreen extends StatelessWidget {
                                     mainAxisSpacing: 0),
                                 itemBuilder: (context, index) {
                                   var data =controller.favoriteIndex  != null ? controller.filterProducts[index] :  controller.allShopProduct[index];
+
+
                                   // var convertedSalePrice = currencyProvider.getConvertedPrice(index);
                                   // var convertedRegularPrice = currencyProvider.getConvertedRegularPrice(index);
                                   //
@@ -212,23 +214,37 @@ class LatestProductScreen extends StatelessWidget {
                                                   fit: BoxFit.cover,
                                                   // color: AppColors.primaryColor,
                                                 ),
+                                              if(data.seller!=null)
                                                 data.wishlistAvgUserId == "null"
                                                     ? Positioned(
                                                     top: 5,
                                                     right: 5,
                                                     child: GestureDetector(
                                                         onTap: () {
-                                                          controller.addWishlistProduct(data.id,3,"");
+                                                          controller.addWishlistProduct(
+                                                              data.id,
+                                                              3,
+                                                              data.seller?.venderId.toString() ??
+                                                                  '1');
+
+                                                          print("pppppp");
+                                                          print("aaaaaqqqqqqq ${data.wishlistAvgUserId}");
                                                         },
-                                                        child: const Icon(Icons.favorite_border,color: AppColors.primaryColor,)))
+                                                        child: const Icon(Icons.favorite_border,color: AppColors.yellowishColor,)))
                                                     : Positioned(
                                                     top: 5,
                                                     right: 5,
                                                     child: GestureDetector(
                                                         onTap: () {
-                                                          controller.addWishlistProduct(data.id,3,"");
+                                                          controller.addWishlistProduct(
+                                                              data.id,
+                                                              3,
+                                                              data.seller?.venderId.toString() ??
+                                                                  '1');
+                                                          print("pppppp");
+                                                          print("aaaaaqqqqqqq ${data.wishlistAvgUserId}");
                                                         },
-                                                        child: const Icon(Icons.favorite,color: AppColors.primaryColor))),
+                                                        child: const Icon(Icons.favorite,color: AppColors.yellowishColor))),
 
 
                                                 if(data.reviewsCount !=0)

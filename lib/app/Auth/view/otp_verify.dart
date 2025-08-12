@@ -10,6 +10,7 @@ import '../../../common_widgets/app_colors.dart';
 import '../../../common_widgets/app_strings.dart';
 import '../../../config/shared_prif.dart';
 import '../../../widgets/app_button_widget.dart';
+import '../../Profile/View/subscription_pakage_view.dart';
 import '../../bottom_bar/bottom_bar_screen.dart';
 import '../view_model/auth_controller.dart';
 
@@ -184,17 +185,25 @@ class _OtpVerificationState extends State<OtpVerification> {
                             }
 
                             controller.otpVerify(
-                                  (value) {
+                                  (value) async{
                                 if (value == true) {
                                   SharedStorage.localStorage?.setBool(
                                       AppStrings.isLogin, true);
+                                  final isBuy = SharedStorage.localStorage?.getBool("isBuySubscription");
 
-                                  Get.offAll(
-                                    const BottomBarScreen(
-                                      index: 0,
-                                      type: 0,
-                                    ),
-                                  );
+                                  if(isBuy==true){
+                                    Get.offAll(
+                                      const BottomBarScreen(
+                                        index: 0,
+                                        type: 0,
+                                      ),
+                                    );
+                                  }else{
+                                    await controller.myPakageModalDetails();
+                                    Get.offAll(
+                                        SubscriptionPakageView()
+                                    );
+                                  }
                                 } else {
                                   SharedStorage.localStorage?.setBool(
                                       AppStrings.isLogin, false);

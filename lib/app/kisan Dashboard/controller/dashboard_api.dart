@@ -310,7 +310,55 @@ class ApiServicess {
     return null;
   }
 
-  Future<bool?> addVariantData(VariantAddModel data) async {
+  // Future<bool?> addVariantData(VariantAddModel data) async {
+  //   final token = SharedStorage.localStorage?.getString("token");
+  //
+  //   try {
+  //     var body = {
+  //       'product_id': data.productId,
+  //       "price": data.price,
+  //       "quantity": data.quantity,
+  //       "additional_info": data.additionalInfo,
+  //     };
+  //     final url = Uri.parse(addVariant);
+  //
+  //     final response = await http.post(
+  //       url,
+  //       body: body,
+  //       headers: {
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     );
+  //
+  //     final parseData = jsonDecode(response.body);
+  //     print("ewewewewew ${parseData["status"]}");
+  //
+  //     if (parseData["status"] != false) {
+  //       showSnackBar(
+  //         snackPosition: SnackPosition.TOP,
+  //         title: "Success",
+  //         description: parseData['message'].toString(),
+  //       );
+  //       return true;
+  //     } else {
+  //       showSnackBar(
+  //         snackPosition: SnackPosition.TOP,
+  //         title: "Failed",
+  //         description: parseData['message'].toString(),
+  //       );
+  //       return false;
+  //     }
+  //   } on Exception catch (e) {
+  //     showSnackBar(
+  //       snackPosition: SnackPosition.TOP,
+  //       title: "Error",
+  //       description: "Something went wrong!",
+  //     );
+  //     return false;
+  //   }
+  // }
+
+  Future<Map<String, dynamic>?> addVariantData(VariantAddModel data) async {
     final token = SharedStorage.localStorage?.getString("token");
 
     try {
@@ -331,6 +379,7 @@ class ApiServicess {
       );
 
       final parseData = jsonDecode(response.body);
+      print("ewewewewew ${parseData["status"]}");
 
       if (parseData["status"] != false) {
         showSnackBar(
@@ -338,24 +387,25 @@ class ApiServicess {
           title: "Success",
           description: parseData['message'].toString(),
         );
-        return true;
       } else {
         showSnackBar(
           snackPosition: SnackPosition.TOP,
           title: "Failed",
           description: parseData['message'].toString(),
         );
-        return false;
       }
-    } on Exception catch (e) {
+
+      return parseData;
+    } catch (e) {
       showSnackBar(
         snackPosition: SnackPosition.TOP,
         title: "Error",
         description: "Something went wrong!",
       );
-      return false;
+      return null;
     }
   }
+
 
   Future<bool?> addQuantityVandorData(AddQuantityModel data) async {
     final token = SharedStorage.localStorage?.getString("token");
@@ -418,6 +468,9 @@ class ApiServicess {
       final response = await get(Uri.parse(ordersForVandor), headers: headers);
 
       final parseData = jsonDecode(response.body);
+
+      print("xzxzxzxzxzxxzx ${response.statusCode}   ${parseData}");
+
 
       if (response.statusCode == 200) {
         var data = VendorOrdersResponse.fromJson(parseData);
@@ -508,7 +561,10 @@ class ApiServicess {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
+
     };
+
+
     try {
       final response =
           await get(Uri.parse("${orderListVander}/${id}"), headers: headers);

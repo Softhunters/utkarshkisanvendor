@@ -23,6 +23,7 @@ class CartApi{
       'Authorization': 'Bearer $token'
     };
     try {
+      print("oooooo ${token}");
       final response = await get(Uri.parse(getCartURL),headers: headers);
 
       final parseData = jsonDecode(response.body);
@@ -48,13 +49,22 @@ class CartApi{
     try {
       final response = await get(Uri.parse(checkOutURL),headers: headers);
 
-      final parseData = jsonDecode(response.body);
 
+
+      final parseData = jsonDecode(response.body);
+      print("klklklklklklk statusCode  ${response.statusCode}");
+      print("klklklklklklk  ${parseData}");
 
 
       if (response.statusCode == 200) {
+
         var data = CheckOutModel.fromJson(parseData);
-        return data;
+        if(data.status==true){
+          return data;
+        }else{
+          showSnackBar(snackPosition: SnackPosition.TOP,title: "Oops!",description: data.message??'');
+        }
+
       } else {
         return null;
       }
@@ -211,10 +221,55 @@ class CartApi{
       final parseData = jsonDecode(response.body);
 
 
+      print("vvvvvvvvvvv ${parseData}");
+
 
       if (response.statusCode == 200) {
 
           showSnackBar(snackPosition: SnackPosition.TOP,
+            title: "Success",
+            description: parseData['message'].toString());
+
+
+        return parseData ;
+      } else {
+        showSnackBar(snackPosition: SnackPosition.TOP,
+            title: "Failed",
+            description: parseData['message'].toString());
+
+        return null;
+      }
+    } on Exception catch (e) {
+      // TODO
+    }
+  }
+
+  Future<dynamic> paymentCompleteApi(PaymentCompleteModel data) async {
+    String  token =  SharedStorage.localStorage?.getString("token") ??"";
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var body = {
+      'order_id': data.orderId,
+      'transaction_id': data.transactionId,
+      'status': data.status,
+    };
+
+    print("bvbvbvbvbvbvbvbvbbv $body");
+    try {
+      final response = await post(Uri.parse(paymentComplete),headers: headers,body:body);
+
+      final parseData = jsonDecode(response.body);
+
+      print("wewewewewewe ${response.statusCode}");
+      print("wewewewewewe  data ${parseData}");
+
+
+
+      if (response.statusCode == 200) {
+
+        showSnackBar(snackPosition: SnackPosition.TOP,
             title: "Success",
             description: parseData['message'].toString());
 

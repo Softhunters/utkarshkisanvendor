@@ -48,7 +48,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   child: Visibility(
                     visible: !controller.isLoading,
                     replacement: const Center(
-                      child: CircularProgressIndicator.adaptive(),
+                      child: CupertinoActivityIndicator(),
                     ),
                     child: controller.order.isEmpty
                         ? Expanded(

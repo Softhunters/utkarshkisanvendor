@@ -57,6 +57,7 @@ class CartData {
   String? updatedAt;
   String? slug;
   String? regularPrice;
+  String? stockStatus;
   String? discountValue;
   String? reviewsAvgRating;
   SellerForCart? seller;
@@ -79,6 +80,7 @@ class CartData {
       this.discountValue,
       this.reviewsAvgRating,
       this.sellerId,
+        this.stockStatus,
       this.sellerName,
       this.seller});
 
@@ -98,6 +100,7 @@ class CartData {
     reviewsAvgRating = json['reviews_avg_rating'].toString();
     sellerId = json['seller_id'].toString();
     sellerName = json['seller_name'].toString();
+    stockStatus=json['stock_status'];
     seller = json['seller'] != null
         ? new SellerForCart.fromJson(json['seller'])
         : null;
@@ -120,6 +123,7 @@ class CartData {
     data['reviews_avg_rating'] = this.reviewsAvgRating;
     data['seller_id'] = this.sellerId;
     data['seller_name'] = this.sellerName;
+    data['stock_status']=this.stockStatus;
     if (this.seller != null) {
       data['seller'] = this.seller!.toJson();
     }

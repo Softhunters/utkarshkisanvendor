@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:utkrashvendor/widgets/connectivity.dart';
 
 import 'app/Auth/view_model/auth_controller.dart';
 import 'app/Brand/controller/brand_controller.dart';
@@ -36,7 +37,7 @@ class MyHttpOverrides extends HttpOverrides{
     = (X509Certificate cert, String host, int port)=> true;
   }
 }
-
+final connectivityNotifier = ConnectivityNotifier();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
@@ -116,10 +117,40 @@ class _MyAppState extends State<MyApp> {
       themeMode: ThemeMode.light,
       darkTheme: AppTheme.dark,
       home: OnBoardScreen(),
-      // routes: {
-      //   "/bottom_navi": (context) => const BottomBarScreen(),
-      //
-      // },
+      builder: (context, child) {
+        return Stack(
+          children: [
+            child ?? SizedBox(),
+            ValueListenableBuilder<bool>(
+              valueListenable: connectivityNotifier.isConnected,
+              builder: (context, isConnected, _) {
+                if (!isConnected) {
+                  return Positioned.fill(
+                    child: Container(
+                      color: Colors.black.withOpacity(0.6),
+                      child: Center(
+                        child: AlertDialog(
+                          title: const Text("No Internet",style: TextStyle(color: Color(0xFF4462EF)),),
+                          content: const Text("Please check your internet connection."),
+                          actions: [
+                            TextButton(
+                              onPressed: () async {
+                                await connectivityNotifier.retry();
+                              },
+                              child: const Text("Retry",style: TextStyle(color: Color(0xFF4462EF)),),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return SizedBox.shrink();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

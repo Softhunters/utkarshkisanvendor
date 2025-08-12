@@ -87,7 +87,9 @@ class _SearchScreenState extends State<SearchScreen> {
                         filterDiscount: "",
                       );
                       controller.saveController(value);
-                      controller.searchedProduct(searchType, value, data, (values) {});
+                     if(controller.searchController.text.length>=3){
+                       controller.searchedProduct(searchType, value, data, (values) {});
+                     }
                     },
 
                 ),
@@ -660,45 +662,49 @@ class _SearchScreenState extends State<SearchScreen> {
                               fit: BoxFit.cover,
                               // color: AppColors.primaryColor,
                             ),
-                            data.wishlistAvgUserId == "null"
-                                ? Positioned(
-                                    top: 5,
-                                    right: 5,
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          controller.addWishlistProduct1(
-                                            data.id,
-                                            (value) {
-                                              if (value == true) {
-                                                homeController
-                                                    .getWishlistProduct(0);
-                                              }
-                                            },
-                                          );
-                                        },
-                                        child: const Icon(
-                                          Icons.favorite_border,
-                                          color: AppColors.yellowishColor,
-                                        )))
-                                : Positioned(
-                                    top: 5,
-                                    right: 5,
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          controller.addWishlistProduct1(
-                                            data.id,
-                                            (value) {
-                                              if (value == true) {
-                                                homeController
-                                                    .getWishlistProduct(0);
-                                              }
-                                            },
-                                          );
-                                        },
-                                        child: const Icon(
-                                          Icons.favorite,
-                                          color: AppColors.yellowishColor,
-                                        ))),
+                           if(data.seller!=null)
+                             data.wishlistAvgUserId == "null"
+                                 ? Positioned(
+                                 top: 5,
+                                 right: 5,
+                                 child: GestureDetector(
+                                     onTap: () {
+                                       controller.addWishlistProduct1(
+                                         data.id,
+                                             (value) {
+                                           if (value == true) {
+                                             homeController
+                                                 .getWishlistProduct(0);
+                                           }
+                                         },  data.seller?.venderId.toString() ??
+                                           '1'
+
+                                       );
+                                     },
+                                     child: const Icon(
+                                       Icons.favorite_border,
+                                       color: AppColors.yellowishColor,
+                                     )))
+                                 : Positioned(
+                                 top: 5,
+                                 right: 5,
+                                 child: GestureDetector(
+                                     onTap: () {
+                                       controller.addWishlistProduct1(
+                                         data.id,
+                                             (value) {
+                                           if (value == true) {
+                                             homeController
+                                                 .getWishlistProduct(0);
+                                           }
+                                         },data.seller?.venderId.toString() ??
+                                           '1'
+                                       );
+                                     },
+                                     child: const Icon(
+                                       Icons.favorite,
+                                       color: AppColors.yellowishColor,
+                                     ))),
                             Positioned(
                                 bottom: 8,
                                 left: 10,

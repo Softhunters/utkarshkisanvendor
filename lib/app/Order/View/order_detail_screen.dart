@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:utkrashvendor/app/CategoryProduct/product_detail_screen.dart';
 import 'package:utkrashvendor/app/Home/controller/home_controller.dart';
 import 'package:utkrashvendor/widgets/cache_network_image.dart';
@@ -65,7 +66,7 @@ class OrderDetailScreen extends StatelessWidget {
           child: Visibility(
             visible: !controller.orderLoading,
             replacement: const Center(
-              child: CircularProgressIndicator.adaptive(),
+              child: CupertinoActivityIndicator(),
             ),
             child: ListView(
               // crossAxisAlignment: CrossAxisAlignment.start,

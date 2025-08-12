@@ -29,7 +29,7 @@ class AppTextFormWidget extends StatelessWidget {
   final int minLine;
 
   final int? maxLength;
-
+  final TextStyle? style;
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
   final void Function(String)? onComplete;
@@ -42,7 +42,7 @@ class AppTextFormWidget extends StatelessWidget {
       {Key? key, required this.hintText, this.maxLength, this.sufixIcon, this.prifixIcon, required this.controller,
         this.obscureText = false, this.enable = true, this.labelText, this.maxLines = 5, this.minLine = 1, this.validator,
         this.keyBoardType, this.onChanged, required this.hintStyle, this.onTap, this.width, this.height, this.onEditing, this.focusNode, this.onComplete,
-        this.inputFormatters
+        this.inputFormatters,this.style
       })
       : super(key: key);
 
@@ -52,6 +52,7 @@ class AppTextFormWidget extends StatelessWidget {
     return TextFormField(
       onTap: onTap,
       minLines: minLine,
+      style: style,
       maxLines: maxLines,
       maxLength: maxLength,
       enabled: enable,

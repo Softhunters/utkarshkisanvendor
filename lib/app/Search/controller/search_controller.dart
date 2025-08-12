@@ -42,10 +42,10 @@ class SearchScreenController extends ChangeNotifier {
   bool productLoading = false;
 int isloader=0;
 
-  Future<dynamic> addWishlistProduct1(id,ValueSetter<bool>onResponse) async {
+  Future<dynamic> addWishlistProduct1(id,ValueSetter<bool>onResponse,sid) async {
 
     productLoading = true;
-    final data = await searchApi.addWishlistApi(id.toString());
+    final data = await searchApi.addWishlistApi(id.toString(),sid);
     if (data != null) {
       var message = data['msg'];
       final datas = ApplyFilterModel(

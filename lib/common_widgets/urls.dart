@@ -1,8 +1,9 @@
 import '../app/Home/model/home_model.dart';
 
 /// Server Url
-// const String serverURL = "http://petshope.jaipurdreams.com/";
-const String serverURL = "https://utkarsh.jaipurdreams.com/";
+
+// const String serverURL = "https://utkarsh.jaipurdreams.com/";   // demo
+const String serverURL = "https://utkarshkisan.com/";     //live
 const String baseURL = "${serverURL}api/";
 
 /// Image Urls
@@ -23,7 +24,7 @@ const String verifyOtpURL = "${baseURL}vendor/mobile-login";
 const String forgotPasswordURL = "${baseURL}vendor/password/email";
 
 ///Home Url
-const String homeURL = "${baseURL}home";
+const String homeURL = "${baseURL}vendor/home";
 const String cateURL = "${baseURL}category/";
 const String shopProductURL = "${baseURL}shop";
 const String productDetailURL = "${baseURL}vendor/product-detail/";
@@ -95,6 +96,15 @@ const String ordersForVandor = "${baseURL}vendor/vendor-orders";
 const String addQuantityVandor = "${baseURL}vendor/add-quantity";
 const String vandorHistoryByProduct = "${baseURL}vendor/product-order-history";
 const String productHistoryById = "${baseURL}vendor/product-history";
+
+const String paymentComplete = "${baseURL}completepayment";
+const String subscritionPakageList = "${baseURL}package-list";
+
+const String mySubscripedPakage = "${baseURL}vendor/my-package";
+const String subscriptionPaymentComplete = "${baseURL}vendor/completepayment";
+
+
+
 
 
 

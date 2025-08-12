@@ -32,7 +32,9 @@ class _OrderListViewState extends State<OrderListView> {
       });
     }
 
+
     return Consumer<DashboardController>(
+
       builder: (context, controller, _) => Scaffold(
         appBar: AppBar(
           title: const Text("Customer Order List"),
@@ -54,6 +56,7 @@ class _OrderListViewState extends State<OrderListView> {
                 itemCount: controller.orderList?.length ?? 0,
                 itemBuilder: (context, index) {
                   var data = controller.orderList![index];
+                  print("qqqqqwwwww ${data?.status}");
                   return GestureDetector(
                     onTap: () async {
                       await controller.getOrderDetailsData(data.id.toString());
@@ -194,19 +197,19 @@ class _OrderListViewState extends State<OrderListView> {
                                               ),
                                         ),
                                         Text(
-                                          "${data.orderApi?.status}",
+                                          "${data?.status}",
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyLarge
                                               ?.copyWith(
                                                 fontWeight: FontWeight.w300,
-                                                color: data.orderApi?.status ==
+                                                color: data?.status ==
                                                         "ordered"
                                                     ? AppColors.indigo
-                                                    : data.orderApi?.status ==
+                                                    : data?.status ==
                                                             "delivered"
                                                         ? AppColors.green
-                                                        : data.orderApi
+                                                        : data
                                                                     ?.status ==
                                                                 "accepted"
                                                             ? AppColors.orange

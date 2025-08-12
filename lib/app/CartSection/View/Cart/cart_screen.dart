@@ -132,6 +132,7 @@ class _CartScreenState extends State<CartScreen> {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       final data = controller.cartData[index];
+                      print("qwqwqwqw ${data.toJson()}");
                       return Card(
                         child: Container(
                           // decoration: BoxDecoration(border: Border.all(color: AppColors.grey),borderRadius: BorderRadius.circular(10)),
@@ -335,6 +336,23 @@ class _CartScreenState extends State<CartScreen> {
                                             );
                                           },
                                         ),
+                                      ),
+                                      Text(
+                                        data?.stockStatus ==
+                                            "instock"
+                                            ? "In Stock"
+                                            : "Out Of Stock",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelSmall
+                                            ?.copyWith(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w700,
+                                            color: data
+                                                ?.stockStatus ==
+                                                "instock"
+                                                ? AppColors.green
+                                                : AppColors.redColor),
                                       ),
                                       const SizedBox(
                                         height: 15,

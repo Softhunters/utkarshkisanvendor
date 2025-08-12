@@ -3,11 +3,13 @@ import 'cart_model.dart';
 class CheckOutModel {
   bool? status;
   Result? result;
+  String? message;
 
-  CheckOutModel({this.status, this.result});
+  CheckOutModel({this.status, this.result,this.message});
 
   CheckOutModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
+    message=json['message'];
     result =
         json['result'] != null ? new Result.fromJson(json['result']) : null;
   }
@@ -15,6 +17,7 @@ class CheckOutModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
+    data['message']=this.message;
     if (this.result != null) {
       data['result'] = this.result!.toJson();
     }

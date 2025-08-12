@@ -8,6 +8,7 @@ import 'package:http/http.dart';
 
 import '../../../common_widgets/urls.dart';
 import '../View/add_address_screen.dart';
+import '../View/subscription_pakage_view.dart';
 import '../model/all_address_model.dart';
 import '../model/contact_us_model.dart';
 import '../model/country_model.dart';
@@ -132,9 +133,13 @@ class ProfileApi{
             description: parseData["msg"]);
         return true;
       } else {
+        final errors = parseData["errors"] as Map<String, dynamic>;
+        final firstErrorEntry = errors.entries.first;
+        final firstErrorMessage = firstErrorEntry.value[0];
+        print(parseData.toString());
         showSnackBar(snackPosition: SnackPosition.TOP,
-            title: "Success",
-            description: parseData["msg"]);
+            title: "Error",
+            description: firstErrorMessage);
         return false;
       }
 
@@ -272,5 +277,50 @@ class ProfileApi{
       // TODO
     }
   }
+
+
+
+  Future<dynamic> paymentCompleteApiForPackageSubscription(PaymentCompleteModelForpackageSubscription data) async {
+    String  token =  SharedStorage.localStorage?.getString("token") ??"";
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var body = {
+      'package_id': data.package_id,
+      'transaction_id': data.transactionId,
+
+    };
+
+    try {
+      final response = await post(Uri.parse(subscriptionPaymentComplete),headers: headers,body:body);
+
+      final parseData = jsonDecode(response.body);
+
+
+
+      if (response.statusCode == 200) {
+
+        showSnackBar(snackPosition: SnackPosition.TOP,
+            title: "Success",
+            description: parseData['message'].toString());
+
+
+        return parseData ;
+      } else {
+        showSnackBar(snackPosition: SnackPosition.TOP,
+            title: "Failed",
+            description: parseData['message'].toString());
+
+        return null;
+      }
+    } on Exception catch (e) {
+      // TODO
+    }
+  }
+
+
+
+
 
 }

@@ -328,7 +328,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
                                     listen: false);
                                 if (provider.defaultAddress.isNotEmpty) {
                                   controller.getCheckOutData();
-                                  Get.to(()=>const CheckOutScreen());
+
                                 } else {
                                   Get.to(()=>const ShippingAddressScreen());
                                 }
